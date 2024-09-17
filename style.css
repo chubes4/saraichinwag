@@ -1,0 +1,490 @@
+/*
+Theme Name: Sarai Chinwag
+*/
+
+@font-face {
+    font-family: 'Gluten';
+    src: url('fonts/Gluten-SemiBold.woff2') format('woff2');
+    font-style: normal;
+    font-weight: 100 900; 
+	font-display: swap;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Gluten';
+    text-transform: uppercase;
+    margin: 18px 0;
+}
+h2{
+    font-size: 1.38em;
+}
+h1.entry-title {
+    font-size: 1.75em;
+    margin: 15px 0;
+    line-height: 1.4;
+}
+.entry-header .recipe-rating {
+    padding: 5px 0 10px;
+}
+
+.widget-title {
+    border-bottom: 3px dashed #ff6eb1;
+    width: max-content;
+}
+button {
+    background-color: #1fc5e2;
+    border-radius: 5px;
+    color: #fff;
+    padding: 10px;
+    cursor: pointer;
+    border: 3px solid #ff6eb1; 
+    margin: 15px 0;
+    font-size: inherit;
+}
+button:hover {
+    border-color: #1fc5e2;
+}
+
+body {
+    max-width: 100%;
+    margin: auto;
+    font-family: Helvetica, Arial, sans-serif;
+	line-height: 1.7;
+    font-size: 19px;
+
+}
+
+img{
+    max-width: 100%;
+    height: auto;
+    object-fit: cover;
+    position: relative; /* Ensure images are positioned relative */
+}
+.entry-content img{
+display: flex;
+align-items: center;
+margin: auto;
+}
+
+.site-main{
+    max-width: 92%;
+    margin: auto;
+}
+/* header */ 
+.site-title {
+    margin: .65em;
+    font-size: inherit;
+}
+p.site-title {
+
+}
+.site-title a{
+    color:#fff;
+    text-decoration-color:#1fc5e2;
+    font-family: 'Gluten';
+    text-transform: uppercase;
+}
+
+.site-branding {
+    flex-grow: 1;
+    text-align: center;
+    border-bottom: 3px solid #1fc5e2;
+
+}
+
+.site-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0; 
+    z-index: 8675310; /* Ensure the header is above other content */
+    background-color: #000; /* Ensure the header has a background color */
+    width: 100%; /* Ensure the header spans the full width */
+}
+#wpadminbar {
+    z-index: 8675311 !important;
+}
+
+.main-navigation {
+    display: none; /* Hide by default */
+    flex-grow: 1;
+    text-align: center;
+    flex-direction: column;
+    position: fixed; /* Fixed positioning to make it stay in place when scrolling */
+    width: 100%; /* Full width */
+    background-color: #000; /* Or any color that fits your design */
+    z-index: 999; /* Ensure it's above other content */
+    transition: transform 0.3s ease-out; /* Smooth transition for expanding */
+    transform: translateY(-100%); /* Start hidden above the screen */
+}
+.main-navigation a {
+    color: #fff;
+    text-decoration: none;
+
+}
+
+.main-navigation li {
+    padding: 12px;
+    border-bottom: 2px solid #ff6eb1;
+    font-size: 20px;
+}
+.main-navigation ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.main-navigation.active {
+    transform: translateY(0); /* Slide down into view */
+    border-bottom: 1px solid;
+    text-transform: uppercase;
+    display: flex;
+}
+.main-navigation a:hover{
+    text-decoration: underline;
+}
+.hamburger-menu {
+    display: block; /* Ensure this is always visible */
+    cursor: pointer;
+    position: absolute;
+    right: 25px; /* Adjust as needed */
+    top:32px;
+
+}
+.entry-title a, .related-items a{
+    color:#000;
+    text-decoration: underline;
+    text-decoration-color: #1fc5e2;
+}
+.related-content h3 {
+    background: #1fc5e2;
+    color: #fff;
+    padding: 8px 15px;
+    border-bottom: 4px solid #000;
+    border-radius: 10px;
+    width: max-content;
+    max-width: 92%;
+}
+
+.hamburger-menu svg {
+    color:#fff;
+}
+/* Search Form Styles */
+
+.header-search {
+    display: none;
+    flex-grow: 1;
+    text-align: center;
+    flex-direction: column;
+    position: fixed;
+    width: 100%;
+    background-color: #000;
+    z-index: 999;
+    transition: transform 0.3s ease-out;
+    transform: translateY(-100%);
+    padding: 20px; /* Adjust padding as needed */
+}
+.header-search div {
+    display: flex;
+    justify-content: center;
+    max-width: 90%;
+  }
+
+.header-search.active {
+    transform: translateY(0);
+    border-bottom: 1px solid;
+    display: flex;
+}
+
+.header-search form {
+    width: 100%;
+}
+
+.header-search input#s {
+    width: 80%; /* Adjust width as needed */
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.header-search input[type="submit"] {
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #1fc5e2;
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+    margin: 0 2px;
+}
+
+.header-search input[type="submit"]:hover {
+    background-color: #17a2b8;
+}
+#search-icon {
+    fill:#fff;
+    height: 1em;
+    right:25px;
+    cursor: pointer;
+    position: absolute;
+    display: block; /* Ensure this is always visible */
+    top:25px;
+}
+#search-icon:hover  {
+    fill:#1fc5e2;
+}
+#random-icon:hover{
+    fill: #1fc5e2;
+}
+.site-header #random-icon{
+    display: block; /* Ensure this is always visible */
+    cursor: pointer;
+    position: absolute;
+    left: 25px; /* Adjust as needed */
+    top:23px;
+    fill: #fff;
+}
+
+#colophon #random-icon {
+    height: 1em;
+fill: #fff;
+}
+.post-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+.post-grid article {
+    padding: 15px;
+    flex: 1 1 35%; /* Adjust flex to ensure consistent sizing within the grid */
+    max-width: 50%;
+}
+
+/* Wrapper to maintain the 1:1 aspect ratio */
+.post-thumbnail {
+    position: relative;
+    width: 100%;
+    padding-bottom: 100%; /* This maintains the 1:1 aspect ratio */
+    overflow: hidden;
+}
+
+/* Styling for the images */
+.post-thumbnail img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.site-footer{
+    background-color: #000;
+    color: #fff;
+    text-align: center;
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    margin-top: 15px;
+}
+
+.footer-clouds{
+    padding: 0 15px;
+    margin-bottom:15px;
+}
+.footer-category-cloud a{
+    color: #1fc5e2;
+}
+.footer-tag-cloud a{
+    color:#ff6eb1;
+}
+.surprise-me{
+    max-width: 80%;
+    width: 40%;
+    margin: 30px auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.stars {
+    display: inline-block;
+}
+
+.star {
+    cursor: pointer;
+    color: gold;
+}
+
+.star.rated,
+.star.selected {
+    color: gold;
+}
+
+#average-rating {
+    margin-left: 10px;
+}
+.random-button-section, .posts-navigation {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    margin: 10px 0;
+    width: 100%;
+}
+.random-button-section a {
+ margin: 0 5px;
+}
+#random_recipes, #random_posts{
+    display: flex;
+    flex-direction: column;
+}
+#random_recipes a, #random_posts a{
+    display: flex;
+    flex-direction: column;
+    font-family: 'Gluten';
+    text-transform: uppercase;
+    font-size: 22px;
+    color: #000;
+    text-decoration-color: #1fc5e2;
+    margin: 15px 0;
+}
+.load-more-container{
+    text-align: center;
+
+}
+.post-type-filters{
+    display: flex;
+    justify-content: center;
+    margin: 10px;
+}
+.post-type-filters label{
+    padding: 0 5px;}
+
+#footer-menu {
+    display: flex;
+    flex-direction:row;
+    list-style: none;
+    margin: auto;
+    justify-content: center;
+    padding: 0;
+}
+#footer-menu .menu-item{
+    padding: 15px;
+
+}
+#footer-menu .menu-item a{
+    color: #fff;
+    text-decoration: underline;
+    text-decoration-style:dotted;
+    text-decoration-color:#ff6eb1;
+
+}
+/*==========  Mobile First Method  ==========*/
+
+/* Custom, iPhone Retina */
+@media only screen and (min-width : 320px) {
+    #secondary, #primary {
+        width: 92%;
+        margin: auto;
+    }
+    h2.entry-title, .related-item h4 {
+        font-size: 1em;
+        margin: 0;
+    }
+    .site-title a {
+        font-size: 22px;
+    }
+    #secondary, .related-items {
+        text-align: center;
+    }
+    h1.page-title {
+        font-size: 22px;
+    }
+}
+
+/* Mini, iPhone Retina */
+@media only screen and (min-width : 400px) {
+    .site-title a{
+        font-size: 25px;
+    }
+    h1.page-title {
+        font-size: 24px;
+    }
+    #secondary img {
+        width: 250px;
+        margin: auto;
+        object-fit: cover;
+        aspect-ratio: 1;
+    }
+}
+/* Extra Small Devices, Phones */
+@media only screen and (min-width : 480px) {
+    .site-title a{
+        font-size: 30px;
+    }
+}
+
+/* Small Devices, Tablets */
+ @media only screen and (min-width : 768px) {
+    h2.entry-title {
+        font-size: 1.25em;
+    }
+    h1.page-title {
+        font-size: 30px;
+    }
+}
+
+/* Medium Devices, Desktops */
+@media only screen and (min-width : 992px) {
+    .post-grid article {
+        max-width: 29%;
+    }
+    .site-main {
+        max-width: 89%;
+    }
+    #primary {
+        float: left;
+        width: 66%;
+    }
+    #secondary {
+        float: right;
+        width: 28%;
+        padding: 0 0 0 6px;
+        display: flex;
+        flex-direction: column;
+    }
+    .content-wrap{
+        max-width: 85%;
+        margin: auto;
+    }
+    .related-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        margin: 15px 0;
+    }
+    .related-items { 
+        display: flex;
+        justify-content: space-between;
+        flex: 1 1 30%; /* Adjust flex to ensure consistent sizing within the grid */
+
+}
+    .related-item {
+        width: 30%;
+    }
+    #secondary img {
+        width: 250px;
+        margin: auto;
+        object-fit: cover;
+        aspect-ratio: 1;
+    }
+}
+/* Large Devices, Wide Screens */
+
+@media only screen and (min-width : 1200px) {
+
+}
+
