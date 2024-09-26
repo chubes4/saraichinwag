@@ -1,7 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     var header = document.querySelector('#masthead');
     var adminBar = document.getElementById('wpadminbar');
-    var searchIcon = document.querySelector('.search-toggle');
     var searchForm = document.querySelector('.header-search');
 
     function adjustSearchPosition() {
@@ -9,7 +8,8 @@ document.addEventListener('DOMContentLoaded', function() {
         var headerHeight = header.offsetHeight;
         var adminBarHeight = (adminBar && scrollTop === 0) ? adminBar.offsetHeight : 0;
 
-        searchForm.style.top = (headerHeight + adminBarHeight) + 'px';
+        // Adjust the position by reducing 1px
+        searchForm.style.top = (headerHeight + adminBarHeight - 1) + 'px';
     }
 
     function toggleSearch() {
@@ -28,15 +28,21 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    if (searchIcon) {
-        searchIcon.addEventListener('click', function(event) {
+    // Use event delegation for .search-toggle clicks
+    document.addEventListener('click', function(event) {
+        if (event.target.closest('.search-toggle')) {
             event.preventDefault();
             toggleSearch();
-        });
-    }
+        }
+    });
 
+    // Close the search form if clicking outside of it, but not when clicking on .search-toggle or inside the search form
     document.addEventListener('click', function(event) {
-        if (!header.contains(event.target)) {
+        if (
+            !header.contains(event.target) &&
+            !searchForm.contains(event.target) &&
+            !event.target.closest('.search-toggle')
+        ) {
             if (searchForm.style.display === 'block') {
                 searchForm.style.display = 'none';
                 searchForm.classList.remove('active');

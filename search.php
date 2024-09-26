@@ -53,11 +53,21 @@ get_header();
 
         <?php endif; ?>
 
-    <?php else : ?>
+        <?php else : ?>
 
-        <p><?php esc_html_e( 'No posts found.', 'sarai-chinwag' ); ?></p>
+            <p>
+        <?php printf( 
+            esc_html__( 'No results for "%s". %s, or try %s.', 'sarai-chinwag' ),
+            get_search_query(),
+            '<a href="#" class="search-toggle">' . esc_html__( 'Try again', 'sarai-chinwag' ) . '</a>',
+            '<a href="/random-all">' . esc_html__( 'randomize', 'sarai-chinwag' ) . '</a>'
+        ); ?>
+    </p>
 
-    <?php endif; ?>
+
+
+<?php endif; ?>
+
 </main><!-- #main -->
 
 <?php
