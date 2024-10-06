@@ -52,7 +52,32 @@ function extra_chill_register_recipe_post_type() {
 
 add_action( 'init', 'extra_chill_register_recipe_post_type' );
 
+/**
+ * Include "recipe" post type in all RSS feeds.
+ */
+function extra_chill_add_recipe_to_rss_feed( $query ) {
+    // Ensure we're modifying the main query for a feed.
+    if ( $query->is_feed() && $query->is_main_query() ) {
+        // Get the current post types or set default to 'post'.
+        $post_types = $query->get( 'post_type' );
+        
+        // Ensure post_types is an array.
+        if ( empty( $post_types ) ) {
+            $post_types = array( 'post', 'recipe' );
+        } else {
+            if ( is_string( $post_types ) ) {
+                $post_types = array( $post_types );
+            }
+            // Ensure 'recipe' is included in the array.
+            if ( ! in_array( 'recipe', $post_types ) ) {
+                $post_types[] = 'recipe';
+            }
+        }
+        
+        // Set the modified post types.
+        $query->set( 'post_type', $post_types );
+    }
+}
 
-
-
+add_action( 'pre_get_posts', 'extra_chill_add_recipe_to_rss_feed' );
 
