@@ -391,8 +391,8 @@ fill: #fff;
         margin: auto;
     }
     h2.entry-title, .related-item h4 {
-        font-size: 1em;
-        margin: 0;
+        font-size: 1.1em;
+        margin:5px 0;
     }
     .site-title a {
         font-size: 22px;
