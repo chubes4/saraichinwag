@@ -44,7 +44,9 @@ function add_pinterest_script_with_attributes() {
             type="text/javascript"
             async defer
             src="https://assets.pinterest.com/js/pinit.js"
-            data-pin-hover="true">
+            data-pin-hover="true"
+            data-pin-tall="true"
+            >
         </script>
     ';
 }
