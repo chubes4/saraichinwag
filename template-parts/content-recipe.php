@@ -22,28 +22,31 @@
         the_title( '<h2 class="entry-title p-name"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark" itemprop="name">', '</a></h2>' );
     }
 
-    // Retrieve and display rating and review count
-    $rating_value = get_post_meta(get_the_ID(), 'rating_value', true);
-    $review_count = get_post_meta(get_the_ID(), 'review_count', true);
-    $average_rating = $review_count > 0 ? round($rating_value, 2) : 0;
-    $rating_display = $review_count > 0 ? "($review_count reviews)" : "(0 reviews)";
+    // Display rating and review count only on single recipe page
+    if ( is_singular() ) {
+        $rating_value = get_post_meta(get_the_ID(), 'rating_value', true);
+        $review_count = get_post_meta(get_the_ID(), 'review_count', true);
+        $average_rating = $review_count > 0 ? round($rating_value, 2) : 0;
+        $rating_display = $review_count > 0 ? "($review_count reviews)" : "(0 reviews)";
     ?>
-
-    <div class="recipe-rating">
-        <div class="stars">
-            <?php
-            // Display stars based on average rating
-            for ($i = 1; $i <= 5; $i++) {
-                if ($i <= $average_rating) {
-                    echo '<span class="star">&#9733;</span>'; // filled star
-                } else {
-                    echo '<span class="star">&#9734;</span>'; // empty star
+    
+        <div class="recipe-rating">
+            <div class="stars">
+                <?php
+                // Display stars based on average rating
+                for ($i = 1; $i <= 5; $i++) {
+                    if ($i <= $average_rating) {
+                        echo '<span class="star">&#9733;</span>'; // filled star
+                    } else {
+                        echo '<span class="star">&#9734;</span>'; // empty star
+                    }
                 }
-            }
-            ?>
+                ?>
+            </div>
+            <span class="rating-text"><?php echo esc_html($rating_display); ?></span>
         </div>
-        <span class="rating-text"><?php echo esc_html($rating_display); ?></span>
-    </div>
+    
+    <?php } ?>
 </header><!-- .entry-header -->
 
 <div class="entry-content">
