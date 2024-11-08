@@ -45,7 +45,7 @@ function sarai_chinwag_related_content() {
             $tag_related_posts = query_related_content($post_types, 'post_tag', array($tag->term_id), array_merge(array($post_id), $related_content_ids), 3);
 
             if (!empty($tag_related_posts)) {
-                echo '<h3>More from <a href="' . get_term_link($tag) . '">' . $tag->name . '</a></h3>';
+                echo '<h3 class="related-title">More from <a href="' . get_term_link($tag) . '">' . $tag->name . '</a></h3>';
                 echo '<div class="related-items">';
                 foreach ($tag_related_posts as $related_post) {
                     setup_postdata($related_post);
