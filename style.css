@@ -14,6 +14,7 @@ h1, h2, h3, h4, h5, h6 {
     font-family: 'Gluten';
     text-transform: uppercase;
     margin: 18px 0;
+    line-height: 1.6;
 }
 h2{
     font-size: 1.38em;
@@ -49,9 +50,11 @@ body {
     max-width: 100%;
     margin: auto;
     font-family: Helvetica, Arial, sans-serif;
-	line-height: 1.7;
-    font-size: 19px;
+    font-size: 20px;
 
+}
+p, li, ul{
+    line-height: 1.9;
 }
 
 img{
@@ -67,7 +70,6 @@ margin: auto;
 }
 
 .site-main{
-    max-width: 92%;
     margin: auto;
 }
 /* header */ 
@@ -76,7 +78,7 @@ margin: auto;
     font-size: inherit;
 }
 p.site-title {
-
+    line-height: 1.6;
 }
 .site-title a{
     color:#fff;
@@ -96,7 +98,7 @@ p.site-title {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: sticky;
+    position: relative;
     top: 0; 
     z-index: 8675310; /* Ensure the header is above other content */
     background-color: #000; /* Ensure the header has a background color */
@@ -254,10 +256,11 @@ fill: #fff;
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
+    margin: 3px;
 }
 
 .post-grid article {
-    padding: 15px;
+    margin: 3px;
     flex: 1 1 35%; /* Adjust flex to ensure consistent sizing within the grid */
     max-width: 50%;
 }
@@ -293,6 +296,7 @@ fill: #fff;
 .footer-clouds{
     padding: 0 15px;
     margin-bottom:15px;
+    line-height: 2em;
 }
 .footer-category-cloud a{
     color: #1fc5e2;
@@ -349,7 +353,6 @@ fill: #fff;
     font-size: 22px;
     color: #000;
     text-decoration-color: #1fc5e2;
-    margin: 15px 0;
 }
 .load-more-container{
     text-align: center;
@@ -382,13 +385,50 @@ fill: #fff;
     text-decoration-color:#ff6eb1;
 
 }
+
+.image-count-badge {
+    display: inline-block;
+    background-color: #0073aa; /* Adjust background color */
+    color: #ffffff; /* Adjust text color */
+    font-size: 0.85em;
+    font-weight: bold;
+    padding: 4px 8px;
+    border-radius: 12px;
+    margin-right: 10px;
+    margin-top: 5px;
+}
+
+/* HIDE GROW WIDGET */
+.grow-content-body.customize-support div#grow-me-root{
+    display: none;
+}
 /*==========  Mobile First Method  ==========*/
 
 /* Custom, iPhone Retina */
 @media only screen and (min-width : 320px) {
-    #secondary, #primary {
-        width: 92%;
+    #secondary {
         margin: auto;
+    }
+    #primary p, #primary h1, #primary h2, #primary h3, #primary h4, #primary h5, ul.wp-block-list, ol.wp-block-list  {
+        width: 92%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    #secondary p, #secondary h1, #secondary h3, #secondary h4, #secondary h5, #secondary button, #secondary #pinterest_follow {
+        width: 92%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .site-info{
+        max-width: 92%;
+        margin: auto;
+    }
+    #secondary #random_posts h2, #secondary #random_recipes h2{
+        width: max-content;
+        margin-left:4%;
+    }
+    h1.entry-title{
+        font-size:1.5em;
     }
     h2.entry-title, .related-item h4 {
         font-size: 1.1em;
@@ -413,12 +453,7 @@ fill: #fff;
     h1.page-title {
         font-size: 24px;
     }
-    #secondary img {
-        width: 250px;
-        margin: auto;
-        object-fit: cover;
-        aspect-ratio: 1;
-    }
+
 }
 /* Extra Small Devices, Phones */
 @media only screen and (min-width : 480px) {
@@ -442,8 +477,15 @@ fill: #fff;
     .post-grid article {
         max-width: 29%;
     }
+    .entry-content img{
+        max-height: 95vh;
+        object-fit: cover;
+    }
     .site-main {
         max-width: 89%;
+    }
+    #primary p, #primary h1, #primary h2, #primary h3, #primary h4, #primary h5, ul.wp-block-list, ol.wp-block-list {
+        width: 100%;
     }
     #primary {
         float: left;
@@ -474,12 +516,6 @@ fill: #fff;
 }
     .related-item {
         width: 30%;
-    }
-    #secondary img {
-        width: 250px;
-        margin: auto;
-        object-fit: cover;
-        aspect-ratio: 1;
     }
 }
 /* Large Devices, Wide Screens */

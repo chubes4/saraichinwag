@@ -127,6 +127,7 @@
     ?>
     <div class="site-info">
         <p>&copy; <?php echo date( 'Y' ); ?> <?php bloginfo( 'name' ); ?>. All rights reserved. Built by <a href="https://chubes.net" style="color: #fff; text-decoration: underline; text-decoration-style: dotted; text-decoration-color:#1fc5e2;"  target="_blank">Chubes</a>.</p>
+        <p>As an Amazon Associate I earn from qualifying purchases.</p>
     </div><!-- .site-info -->
 </footer><!-- #colophon -->
 

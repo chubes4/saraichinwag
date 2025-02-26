@@ -74,7 +74,7 @@ function sarai_chinwag_related_content() {
 
             if (!empty($category_related_posts)) {
                 $category_name = get_cat_name($category_id);
-                echo '<h3>More from <a href="' . get_category_link($category_id) . '">' . $category_name . '</a></h3>';
+                echo '<h3 class="related-title">More from <a href="' . get_category_link($category_id) . '">' . $category_name . '</a></h3>';
                 echo '<div class="related-items">';
                 foreach ($category_related_posts as $related_post) {
                     setup_postdata($related_post);
