@@ -25,11 +25,19 @@
         <section id="random_posts" class="widget">
             <h2 class="widget-title"><?php _e( 'Random Posts', 'sarai-chinwag' ); ?></h2>
                 <?php
-                $random_posts = get_posts(array(
-                    'posts_per_page' => 3, // Number of random posts to display
-                    'orderby' => 'rand', // Order by random
-                    'post_status' => 'publish' // Only show published posts
-                ));
+                // Get cached random posts
+                $cached_random_posts = get_transient('sidebar_random_posts');
+                if ( false === $cached_random_posts ) {
+                    $cached_random_posts = get_posts(array(
+                        'posts_per_page' => 15, // Get more posts to cache
+                        'orderby' => 'rand',
+                        'post_status' => 'publish'
+                    ));
+                    set_transient('sidebar_random_posts', $cached_random_posts, 15 * MINUTE_IN_SECONDS);
+                }
+                
+                // Randomly select 3 from cached results
+                $random_posts = array_slice($cached_random_posts, array_rand($cached_random_posts, min(3, count($cached_random_posts))));
                 foreach( $random_posts as $post_item ) : ?>
                     <a href="<?php echo get_permalink($post_item->ID); ?>">
                         <?php if ( has_post_thumbnail($post_item->ID) ) : ?>
@@ -47,12 +55,20 @@
         <section id="random_recipes" class="widget">
             <h2 class="widget-title"><?php _e( 'Random Recipes', 'sarai-chinwag' ); ?></h2>
                 <?php
-                $random_recipes = get_posts(array(
-                    'posts_per_page' => 2, // Number of random recipes to display
-                    'orderby' => 'rand', // Order by random
-                    'post_type' => 'recipe', // Only show posts of type 'recipe'
-                    'post_status' => 'publish' // Only show published posts
-                ));
+                // Get cached random recipes
+                $cached_random_recipes = get_transient('sidebar_random_recipes');
+                if ( false === $cached_random_recipes ) {
+                    $cached_random_recipes = get_posts(array(
+                        'posts_per_page' => 10, // Get more recipes to cache
+                        'orderby' => 'rand',
+                        'post_type' => 'recipe',
+                        'post_status' => 'publish'
+                    ));
+                    set_transient('sidebar_random_recipes', $cached_random_recipes, 15 * MINUTE_IN_SECONDS);
+                }
+                
+                // Randomly select 2 from cached results
+                $random_recipes = array_slice($cached_random_recipes, array_rand($cached_random_recipes, min(2, count($cached_random_recipes))));
                 foreach( $random_recipes as $post_item ) : ?>
                     <a href="<?php echo get_permalink($post_item->ID); ?>">
                         <?php if ( has_post_thumbnail($post_item->ID) ) : ?>

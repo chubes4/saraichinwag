@@ -74,9 +74,7 @@ function extra_chill_autoload_php_files($directory) {
         
         // Get all PHP files in the directory
         foreach (glob($directory . '*.php') as $filename) {
-            if (file_exists($filename)) {
-                include_once $filename;
-            }
+            include_once $filename;
         }
     }
 }

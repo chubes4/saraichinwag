@@ -24,31 +24,39 @@
     <div class="footer-category-cloud">
         <h2><?php _e('Categories', 'sarai-chinwag'); ?></h2>
         <?php
-        // Get categories with caching
-        $categories = get_transient('footer_categories');
-        if ( false === $categories ) {
+        // Get categories and counts with caching
+        $category_data = get_transient('footer_category_data');
+        if ( false === $category_data ) {
             $categories = get_categories(array(
                 'orderby' => 'name',
                 'order' => 'ASC',
                 'hide_empty' => true, // Only get categories with posts
                 'number' => 0,
             ));
-            set_transient('footer_categories', $categories, HOUR_IN_SECONDS);
-        }
+            
+            $counts = [];
+            foreach ($categories as $category) {
+                $term_ids = get_term_children($category->term_id, 'category');
+                $term_ids[] = $category->term_id;
 
-        $counts = [];
-        foreach ($categories as $category) {
-            $term_ids = get_term_children($category->term_id, 'category');
-            $term_ids[] = $category->term_id;
+                $terms = get_terms(array(
+                    'taxonomy'   => 'category',
+                    'include'    => $term_ids,
+                    'hide_empty' => false,
+                ));
 
-            $terms = get_terms(array(
-                'taxonomy'   => 'category',
-                'include'    => $term_ids,
-                'hide_empty' => false,
-            ));
-
-            $post_count = array_sum(wp_list_pluck($terms, 'count'));
-            $counts[$category->term_id] = $post_count;
+                $post_count = array_sum(wp_list_pluck($terms, 'count'));
+                $counts[$category->term_id] = $post_count;
+            }
+            
+            $category_data = array(
+                'categories' => $categories,
+                'counts' => $counts
+            );
+            set_transient('footer_category_data', $category_data, HOUR_IN_SECONDS);
+        } else {
+            $categories = $category_data['categories'];
+            $counts = $category_data['counts'];
         }
 
         // Get min and max post counts for scaling
@@ -70,7 +78,7 @@
                     $font_size = $min_font_size + $normalized * ($max_font_size - $min_font_size);
                 }
 
-                echo '<a href="' . get_category_link($category->term_id) . '" style="font-size: ' . round($font_size) . 'px;">' . $category->name . ' (' . $post_count . ')</a> ';
+                echo '<a href="' . esc_url(get_category_link($category->term_id)) . '" class="category-cloud-link" style="--cloud-size: ' . round($font_size) . 'px;">' . esc_html($category->name) . ' (' . intval($post_count) . ')</a> ';
             }
         }
         ?>
@@ -108,7 +116,7 @@
                     $font_size = $min_font_size + $normalized * ($max_font_size - $min_font_size);
                 }
 
-                echo '<a href="' . get_tag_link($tag->term_id) . '" style="font-size: ' . round($font_size) . 'px;">' . $tag->name . ' (' . $post_count . ')</a> ';
+                echo '<a href="' . esc_url(get_tag_link($tag->term_id)) . '" class="tag-cloud-link" style="--cloud-size: ' . round($font_size) . 'px;">' . esc_html($tag->name) . ' (' . intval($post_count) . ')</a> ';
             }
         }
         ?>
@@ -126,7 +134,7 @@
     }
     ?>
     <div class="site-info">
-        <p>&copy; <?php echo date( 'Y' ); ?> <?php bloginfo( 'name' ); ?>. All rights reserved. Built by <a href="https://chubes.net" style="color: #fff; text-decoration: underline; text-decoration-style: dotted; text-decoration-color:#1fc5e2;"  target="_blank">Chubes</a>.</p>
+        <p>&copy; <?php echo date( 'Y' ); ?> <?php bloginfo( 'name' ); ?>. All rights reserved. Built by <a href="https://chubes.net" class="footer-credit-link" target="_blank">Chubes</a>.</p>
         <p>As an Amazon Associate I earn from qualifying purchases.</p>
     </div><!-- .site-info -->
 </footer><!-- #colophon -->

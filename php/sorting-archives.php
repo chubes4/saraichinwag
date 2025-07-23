@@ -63,10 +63,13 @@ function sarai_chinwag_filter_posts() {
 
     $post_types = array();
 
-    if (isset($_POST['filter_blog_posts']) && $_POST['filter_blog_posts'] === 'true') {
+    $filter_blog_posts = isset($_POST['filter_blog_posts']) ? sanitize_text_field($_POST['filter_blog_posts']) : '';
+    $filter_recipes = isset($_POST['filter_recipes']) ? sanitize_text_field($_POST['filter_recipes']) : '';
+    
+    if ($filter_blog_posts === 'true') {
         $post_types[] = 'post';
     }
-    if (isset($_POST['filter_recipes']) && $_POST['filter_recipes'] === 'true') {
+    if ($filter_recipes === 'true') {
         $post_types[] = 'recipe';
     }
 

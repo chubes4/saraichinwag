@@ -35,7 +35,7 @@ function sarai_chinwag_related_content() {
     }
 
     echo '<aside class="related-content">';
-    echo '<h2 class="widget-title">Explore More</h2>';
+    echo '<h2 class="widget-title">' . __('Explore More', 'sarai-chinwag') . '</h2>';
 
     $post_types = array('post', 'recipe');
 
@@ -62,6 +62,7 @@ function sarai_chinwag_related_content() {
                     echo '<h4><a href="' . get_permalink($related_post->ID) . '">' . get_the_title($related_post->ID) . '</a></h4>';
                     echo '</div>';
                 }
+                wp_reset_postdata();
                 echo '</div>'; // End of related-items
             }
         }
@@ -91,6 +92,7 @@ function sarai_chinwag_related_content() {
                     echo '<h4><a href="' . get_permalink($related_post->ID) . '">' . get_the_title($related_post->ID) . '</a></h4>';
                     echo '</div>';
                 }
+                wp_reset_postdata();
                 echo '</div>'; // End of related-items
             }
         }

@@ -423,6 +423,11 @@ fill: #fff;
         max-width: 92%;
         margin: auto;
     }
+    .wp-block-separator{
+    border-top: 1px solid;
+    max-width: 92%;
+    margin: auto;
+    }
     #secondary #random_posts h2, #secondary #random_recipes h2{
         width: max-content;
         margin-left:4%;
@@ -477,6 +482,9 @@ fill: #fff;
     .post-grid article {
         max-width: 29%;
     }
+    .wp-block-separator{
+        max-width: 100%;
+    }
     .entry-content img{
         max-height: 95vh;
         object-fit: cover;
@@ -522,5 +530,26 @@ fill: #fff;
 
 @media only screen and (min-width : 1200px) {
 
+}
+
+/* Header search visibility */
+.header-search {
+    display: none;
+}
+.header-search.active {
+    display: block;
+}
+
+/* Footer cloud links with dynamic sizing */
+.category-cloud-link, .tag-cloud-link {
+    font-size: var(--cloud-size, 16px);
+}
+
+/* Footer credit link styling */
+.footer-credit-link {
+    color: #fff;
+    text-decoration: underline;
+    text-decoration-style: dotted;
+    text-decoration-color: #1fc5e2;
 }
 

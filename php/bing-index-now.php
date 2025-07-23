@@ -1,10 +1,18 @@
 <?php
 // Define the function to send IndexNow request
 function send_indexnow_request($urlList) {
+    // Get API key from database
+    $key = get_option('sarai_chinwag_indexnow_key', '');
+    
+    // Exit early if no API key is configured
+    if (empty($key)) {
+        error_log('IndexNow API key not configured in Settings → Sarai Chinwag. IndexNow functionality disabled.');
+        return;
+    }
+    
     $api_url = 'https://api.indexnow.org/indexnow';
     $host = 'saraichinwag.com';
-    $key = '4ee5f0302df14ea9b2d2f5e9dd919fb0';
-    $key_location = 'https://saraichinwag.com/4ee5f0302df14ea9b2d2f5e9dd919fb0.txt';
+    $key_location = 'https://saraichinwag.com/' . $key . '.txt';
 
     $data = array(
         'host' => $host,
