@@ -1,6 +1,6 @@
 # Sarai Chinwag WordPress Theme
 
-A versatile WordPress theme designed for [Sarai Chinwag](https://saraichinwag.com) with dynamic Google Fonts integration and universal customization capabilities.
+A versatile WordPress theme with dynamic Google Fonts integration and universal customization capabilities. See it in action at [saraichinwag.com](https://saraichinwag.com).
 
 ## Features
 
@@ -87,9 +87,13 @@ saraichinwag/
 }
 ```
 
+## Live Demo
+
+See the theme in action at [saraichinwag.com](https://saraichinwag.com).
+
 ## Support
 
-For theme support and updates, visit [saraichinwag.com](https://saraichinwag.com).
+For technical support, please create an issue in this repository or contact the developer at [chubes.net](https://chubes.net).
 
 ## License
 
