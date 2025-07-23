@@ -198,6 +198,11 @@ function sarai_chinwag_wrap_instructions($content) {
 
 
 function sarai_chinwag_wrap_recipe_schema($content) {
+    // Skip schema markup if recipes are disabled
+    if (sarai_chinwag_recipes_disabled()) {
+        return $content;
+    }
+    
     if (is_singular('recipe')) {
         $content = sarai_chinwag_wrap_ingredients($content);
         $content = sarai_chinwag_wrap_total_time($content);
@@ -219,6 +224,11 @@ add_filter('the_content', 'sarai_chinwag_wrap_recipe_schema');
 
 
 function extra_chill_recipe_schema() {
+    // Skip schema markup if recipes are disabled
+    if (sarai_chinwag_recipes_disabled()) {
+        return '';
+    }
+    
     if ( !is_singular('recipe') ) {
         return '';
     }

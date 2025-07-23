@@ -83,7 +83,22 @@ function extra_chill_autoload_php_files($directory) {
 // Call the autoload function with the 'php' directory path
 extra_chill_autoload_php_files(get_template_directory() . '/php');
 
+/**
+ * Check if recipe functionality is disabled
+ *
+ * @return bool True if recipes are disabled, false if enabled
+ */
+function sarai_chinwag_recipes_disabled() {
+    $disabled = get_option('sarai_chinwag_disable_recipes', false);
+    return apply_filters('sarai_chinwag_recipes_disabled', $disabled);
+}
+
 function extra_chill_include_recipes_in_main_query($query) {
+    // Skip if recipes are disabled
+    if (sarai_chinwag_recipes_disabled()) {
+        return;
+    }
+    
     if (!is_admin() && $query->is_main_query() && !$query->is_feed()) {
         if (is_home() || is_category() || is_tag() || is_search()) {
             $query->set('post_type', array('post', 'recipe'));

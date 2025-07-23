@@ -3,6 +3,10 @@
  * Register a custom post type called "Recipe".
  */
 function extra_chill_register_recipe_post_type() {
+    // Skip recipe registration if recipes are disabled
+    if (sarai_chinwag_recipes_disabled()) {
+        return;
+    }
     $labels = array(
         'name'                  => _x( 'Recipes', 'Post type general name', 'sarai-chinwag' ),
         'singular_name'         => _x( 'Recipe', 'Post type singular name', 'sarai-chinwag' ),
@@ -56,6 +60,11 @@ add_action( 'init', 'extra_chill_register_recipe_post_type' );
  * Include "recipe" post type in all RSS feeds.
  */
 function extra_chill_add_recipe_to_rss_feed( $query ) {
+    // Skip if recipes are disabled
+    if (sarai_chinwag_recipes_disabled()) {
+        return;
+    }
+    
     // Ensure we're modifying the main query for a feed.
     if ( $query->is_feed() && $query->is_main_query() ) {
         // Get the current post types or set default to 'post'.

@@ -51,6 +51,7 @@
                 <button onclick="window.location.href='<?php echo esc_url(home_url('/random-post')); ?>'" class="button"><?php _e('Random Post', 'sarai-chinwag'); ?></button>
         </section>
 
+        <?php if (!sarai_chinwag_recipes_disabled()) : ?>
         <!-- Random Recipes Widget -->
         <section id="random_recipes" class="widget">
             <h2 class="widget-title"><?php _e( 'Random Recipes', 'sarai-chinwag' ); ?></h2>
@@ -81,6 +82,7 @@
                 <?php endforeach; wp_reset_postdata(); ?>
                 <button onclick="window.location.href='<?php echo esc_url(home_url('/random-recipe')); ?>'" class="button"><?php _e('Random Recipe', 'sarai-chinwag'); ?></button>
         </section>
+        <?php endif; ?>
 
     <?php endif; ?>
 </aside><!-- #secondary -->

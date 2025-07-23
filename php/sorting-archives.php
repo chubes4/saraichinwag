@@ -31,6 +31,11 @@ function sarai_chinwag_display_post_type_filters() {
 }
 
 function sarai_chinwag_has_both_posts_and_recipes() {
+    // If recipes are disabled, no need to show filters
+    if (sarai_chinwag_recipes_disabled()) {
+        return false;
+    }
+    
     $has_posts = false;
     $has_recipes = false;
 
@@ -82,8 +87,13 @@ function sarai_chinwag_filter_posts() {
     $posts_per_page = get_option('posts_per_page', 10); // Default to 10 if the option is not set
 
     // Initial Query to get remaining posts
+    $default_post_types = array('post');
+    if (!sarai_chinwag_recipes_disabled()) {
+        $default_post_types[] = 'recipe';
+    }
+    
     $initial_args = array(
-        'post_type' => !empty($post_types) ? $post_types : array('post', 'recipe'), // Default to both if no filters set
+        'post_type' => !empty($post_types) ? $post_types : $default_post_types, // Default based on recipe status
         'posts_per_page' => -1, // Retrieve all matching posts
         'post_status' => 'publish',
         'post__not_in' => $loaded_posts,

@@ -5,6 +5,12 @@
  * @package ExtraChill
  */
 
+// If recipes are disabled, use the standard single post template
+if (sarai_chinwag_recipes_disabled()) {
+    include(get_template_directory() . '/single.php');
+    return;
+}
+
 get_header(); ?>
 
 <div id="primary" class="content-area">

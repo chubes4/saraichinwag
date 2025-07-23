@@ -3,6 +3,11 @@
  * Handle recipe rating via AJAX.
  */
 function extra_chill_rate_recipe() {
+    // Skip if recipes are disabled
+    if (sarai_chinwag_recipes_disabled()) {
+        wp_send_json_error(['message' => 'Recipe functionality is disabled.']);
+        wp_die();
+    }
     // Check for nonce security
     if (!check_ajax_referer('rate_recipe_nonce', 'rate_recipe_nonce', false)) {
         wp_send_json_error(['message' => 'Nonce verification failed.']);
@@ -54,6 +59,11 @@ add_action('wp_ajax_nopriv_rate_recipe', 'extra_chill_rate_recipe');
  * Enqueue scripts and localize AJAX URL.
  */
 function extra_chill_enqueue_rating_script() {
+    // Skip if recipes are disabled
+    if (sarai_chinwag_recipes_disabled()) {
+        return;
+    }
+    
     if (is_singular('recipe')) {
         wp_enqueue_script('rating-js', get_template_directory_uri() . '/js/rating.js', array(), '1.0.0', true);
         wp_localize_script('rating-js', 'rating_ajax_obj', array(

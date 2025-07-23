@@ -1,9 +1,35 @@
 /*
 Theme Name: Sarai Chinwag
+Description: A versatile WordPress theme with dynamic Google Fonts integration. Features recipe functionality, universal customization, and percentage-based font scaling. Perfect for food blogs or any content site.
+Author: Chris Huber
+Author URI: https://chubes.net
+Theme URI: https://saraichinwag.com
+Version: 2.0
+License: Custom
+License URI: https://saraichinwag.com/license
+Text Domain: sarai-chinwag
+Tags: blog, food, recipes, custom-fonts, responsive, google-fonts, customization
+Requires at least: 5.0
+Tested up to: 6.4
+Requires PHP: 7.4
 */
 
+:root {
+    /* Typography */
+    --font-heading: 'Gluten', serif;
+    --font-body: 'Helvetica', Arial, sans-serif;
+    
+    /* Colors */
+    --color-primary: #1fc5e2;
+    --color-secondary: #ff6eb1;
+    --color-text: #000;
+    --color-background: #fff;
+    --color-text-light: #666;
+    --color-border: #ddd;
+}
+
 @font-face {
-    font-family: 'Gluten';
+    font-family: var(--font-heading);
     src: url('fonts/Gluten-SemiBold.woff2') format('woff2');
     font-style: normal;
     font-weight: 100 900; 
@@ -11,7 +37,7 @@ Theme Name: Sarai Chinwag
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: 'Gluten';
+    font-family: var(--font-heading);
     text-transform: uppercase;
     margin: 18px 0;
     line-height: 1.6;
@@ -29,27 +55,27 @@ h1.entry-title {
 }
 
 .widget-title {
-    border-bottom: 3px dashed #ff6eb1;
+    border-bottom: 3px dashed var(--color-secondary);
     width: max-content;
 }
 button {
-    background-color: #1fc5e2;
+    background-color: var(--color-primary);
     border-radius: 5px;
-    color: #fff;
+    color: var(--color-background);
     padding: 10px;
     cursor: pointer;
-    border: 3px solid #ff6eb1; 
+    border: 3px solid var(--color-secondary); 
     margin: 15px 0;
     font-size: inherit;
 }
 button:hover {
-    border-color: #1fc5e2;
+    border-color: var(--color-primary);
 }
 
 body {
     max-width: 100%;
     margin: auto;
-    font-family: Helvetica, Arial, sans-serif;
+    font-family: var(--font-body);
     font-size: 20px;
 
 }
@@ -81,16 +107,16 @@ p.site-title {
     line-height: 1.6;
 }
 .site-title a{
-    color:#fff;
-    text-decoration-color:#1fc5e2;
-    font-family: 'Gluten';
+    color: var(--color-background);
+    text-decoration-color: var(--color-primary);
+    font-family: var(--font-heading);
     text-transform: uppercase;
 }
 
 .site-branding {
     flex-grow: 1;
     text-align: center;
-    border-bottom: 3px solid #1fc5e2;
+    border-bottom: 3px solid var(--color-primary);
 
 }
 
@@ -101,7 +127,7 @@ p.site-title {
     position: relative;
     top: 0; 
     z-index: 8675310; /* Ensure the header is above other content */
-    background-color: #000; /* Ensure the header has a background color */
+    background-color: var(--color-text); /* Ensure the header has a background color */
     width: 100%; /* Ensure the header spans the full width */
 }
 #wpadminbar {
@@ -115,20 +141,20 @@ p.site-title {
     flex-direction: column;
     position: fixed; /* Fixed positioning to make it stay in place when scrolling */
     width: 100%; /* Full width */
-    background-color: #000; /* Or any color that fits your design */
+    background-color: var(--color-text); /* Or any color that fits your design */
     z-index: 999; /* Ensure it's above other content */
     transition: transform 0.3s ease-out; /* Smooth transition for expanding */
     transform: translateY(-100%); /* Start hidden above the screen */
 }
 .main-navigation a {
-    color: #fff;
+    color: var(--color-background);
     text-decoration: none;
 
 }
 
 .main-navigation li {
     padding: 12px;
-    border-bottom: 2px solid #ff6eb1;
+    border-bottom: 2px solid var(--color-secondary);
     font-size: 20px;
 }
 .main-navigation ul {
@@ -154,13 +180,13 @@ p.site-title {
 
 }
 .entry-title a, .related-items a{
-    color:#000;
+    color: var(--color-text);
     text-decoration: underline;
-    text-decoration-color: #1fc5e2;
+    text-decoration-color: var(--color-primary);
 }
 .related-content h3 {
-    background: #1fc5e2;
-    color: #fff;
+    background: var(--color-primary);
+    color: var(--color-background);
     padding: 8px 15px;
     border-bottom: 4px solid #000;
     border-radius: 10px;
@@ -169,7 +195,7 @@ p.site-title {
 }
 
 .hamburger-menu svg {
-    color:#fff;
+    color: var(--color-background);
 }
 /* Search Form Styles */
 
@@ -180,7 +206,7 @@ p.site-title {
     flex-direction: column;
     position: fixed;
     width: 100%;
-    background-color: #000;
+    background-color: var(--color-text);
     z-index: 999;
     transition: transform 0.3s ease-out;
     transform: translateY(-100%);
@@ -213,10 +239,10 @@ p.site-title {
 .header-search input[type="submit"] {
     padding: 10px 20px;
     font-size: 16px;
-    background-color: #1fc5e2;
+    background-color: var(--color-primary);
     border: none;
     border-radius: 4px;
-    color: #fff;
+    color: var(--color-background);
     cursor: pointer;
     margin: 0 2px;
 }
@@ -234,10 +260,10 @@ p.site-title {
     top:25px;
 }
 #search-icon:hover  {
-    fill:#1fc5e2;
+    fill: var(--color-primary);
 }
 #random-icon:hover{
-    fill: #1fc5e2;
+    fill: var(--color-primary);
 }
 .site-header #random-icon{
     display: block; /* Ensure this is always visible */
@@ -284,8 +310,8 @@ fill: #fff;
 }
 
 .site-footer{
-    background-color: #000;
-    color: #fff;
+    background-color: var(--color-text);
+    color: var(--color-background);
     text-align: center;
     display: flex;
     width: 100%;
@@ -299,10 +325,10 @@ fill: #fff;
     line-height: 2em;
 }
 .footer-category-cloud a{
-    color: #1fc5e2;
+    color: var(--color-primary);
 }
 .footer-tag-cloud a{
-    color:#ff6eb1;
+    color: var(--color-secondary);
 }
 .surprise-me{
     max-width: 80%;
@@ -348,11 +374,11 @@ fill: #fff;
 #random_recipes a, #random_posts a{
     display: flex;
     flex-direction: column;
-    font-family: 'Gluten';
+    font-family: var(--font-heading);
     text-transform: uppercase;
     font-size: 22px;
     color: #000;
-    text-decoration-color: #1fc5e2;
+    text-decoration-color: var(--color-primary);
 }
 .load-more-container{
     text-align: center;
@@ -379,10 +405,10 @@ fill: #fff;
 
 }
 #footer-menu .menu-item a{
-    color: #fff;
+    color: var(--color-background);
     text-decoration: underline;
     text-decoration-style:dotted;
-    text-decoration-color:#ff6eb1;
+    text-decoration-color: var(--color-secondary);
 
 }
 
@@ -547,9 +573,9 @@ fill: #fff;
 
 /* Footer credit link styling */
 .footer-credit-link {
-    color: #fff;
+    color: var(--color-background);
     text-decoration: underline;
     text-decoration-style: dotted;
-    text-decoration-color: #1fc5e2;
+    text-decoration-color: var(--color-primary);
 }
 

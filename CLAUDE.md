@@ -7,8 +7,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 This is a WordPress theme for "Sarai Chinwag" with no build process. All files are directly edited and changes are immediately reflected. No package.json, composer.json, or build tools are configured.
 
 ### Admin Settings
-The theme includes an admin settings page accessible via **Settings → Sarai Chinwag** in the WordPress admin. This page allows configuration of:
+The theme includes an admin settings page accessible via **Settings → Theme Settings** in the WordPress admin. This page allows configuration of:
 - IndexNow API Key for automatic search engine indexing
+- Recipe Functionality Toggle: Completely disable all recipe-related features for universal theme usage
 
 ## Theme Architecture
 
@@ -43,6 +44,8 @@ The theme uses an autoload system in functions.php:712 that includes all PHP fil
 - `template-parts/content.php` & `template-parts/content-single.php`: Standard post templates
 
 ### Key Features
+- **Universal theme design**: Can function as recipe site or standard blog via admin toggle
+- **Recipe functionality**: Complete recipe post type with ratings, schema markup, and specialized templates (when enabled)
 - **Pinterest integration**: Automatic Pinterest save buttons with `data-pin-url` attributes on featured images
 - **Dynamic asset versioning**: Uses `filemtime()` for cache busting on CSS and JS files
 - **Rating system**: AJAX-powered recipe ratings with security nonces and validation (1-5 range)
@@ -76,6 +79,34 @@ No build commands are available. Direct file editing workflow:
 - Random posts/recipes are cached for 15 minutes to reduce database load
 - CSS uses custom properties for dynamic styling instead of inline styles
 - All queries use proper WordPress functions and avoid direct database access
+
+## Universal Theme Usage
+
+### Recipe Toggle Feature
+The theme includes a "Disable Recipe Functionality" setting in **Settings → Theme Settings** that allows complete control over recipe features:
+
+**When Recipes Enabled (Default):**
+- Recipe post type registered and available
+- Recipe-specific templates and widgets active
+- Rating system functional
+- Schema.org recipe markup applied
+- Recipe filtering in archives
+- Random recipe functionality
+
+**When Recipes Disabled:**
+- All recipe functionality completely hidden
+- Theme operates as standard blog theme
+- Existing recipe posts remain accessible via direct URL only
+- Clean, blog-focused user experience
+- No recipe-specific scripts or styles loaded
+
+### Helper Function
+Use `sarai_chinwag_recipes_disabled()` to check recipe status in custom code:
+```php
+if (!sarai_chinwag_recipes_disabled()) {
+    // Recipe-specific code here
+}
+```
 
 ## Security Notes
 

@@ -37,7 +37,10 @@ function sarai_chinwag_related_content() {
     echo '<aside class="related-content">';
     echo '<h2 class="widget-title">' . __('Explore More', 'sarai-chinwag') . '</h2>';
 
-    $post_types = array('post', 'recipe');
+    $post_types = array('post');
+    if (!sarai_chinwag_recipes_disabled()) {
+        $post_types[] = 'recipe';
+    }
 
     // Display related content by tags
     if (!empty($tag_ids)) {
