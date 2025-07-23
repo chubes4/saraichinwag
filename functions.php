@@ -3,10 +3,13 @@
  * Sarai Chinwag WordPress Theme
  * 
  * A versatile WordPress theme designed for saraichinwag.com with dynamic Google Fonts 
- * integration and universal customization capabilities. Features include recipe functionality,
- * percentage-based font scaling, responsive design, and white-label ready architecture.
+ * integration, randomized content discovery, and universal customization capabilities. 
+ * Features anti-chronological design, recipe functionality, percentage-based font scaling, 
+ * responsive design, and white-label ready architecture.
  *
  * Features:
+ * - Randomized content discovery with anti-chronological design  
+ * - Random post/recipe pages for serendipitous browsing
  * - Dynamic Google Fonts API integration with category filtering
  * - Universal theme design (recipe mode + standard blog mode)
  * - Percentage-based font scaling system (1-100%)
