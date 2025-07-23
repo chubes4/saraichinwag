@@ -1,9 +1,18 @@
 <!DOCTYPE html>
-<html <?php language_attributes(); ?>>
+<html <?php language_attributes(); ?> xml:lang="<?php echo get_locale() === 'en_US' ? 'en' : substr(get_locale(), 0, 2); ?>">
 <head>
     <meta charset="<?php bloginfo( 'charset' ); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="p:domain_verify" content="ffbbb836b7a2b01491d3bf888541c048"/>
+    <meta name="google-translate-customization" content="9f841e7780177523-3214ceb76f765f38-gc38c6fe6f9d06436-c">
+    <meta name="content-language" content="<?php echo get_locale() === 'en_US' ? 'en' : substr(get_locale(), 0, 2); ?>">
+    <meta http-equiv="content-language" content="<?php echo get_locale() === 'en_US' ? 'en' : substr(get_locale(), 0, 2); ?>">
+    
+    <!-- Hreflang for international SEO -->
+    <link rel="alternate" hreflang="<?php echo get_locale() === 'en_US' ? 'en' : substr(get_locale(), 0, 2); ?>" href="<?php echo esc_url( home_url( $_SERVER['REQUEST_URI'] ) ); ?>" />
+    <link rel="alternate" hreflang="x-default" href="<?php echo esc_url( home_url( $_SERVER['REQUEST_URI'] ) ); ?>" />
+    <link rel="canonical" href="<?php echo esc_url( home_url( $_SERVER['REQUEST_URI'] ) ); ?>" />
+    
     <link rel="profile" href="http://gmpg.org/xfn/11">
     <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-LHTD7BD80D"></script>
@@ -19,6 +28,7 @@
 </head>
 
 <body <?php body_class(); ?>>
+<?php wp_body_open(); ?>
 <header id="masthead" class="site-header">
     
 <a href="<?php echo esc_url(home_url('/random-all')); ?>" id="random-icon-link">
@@ -32,13 +42,13 @@
         $site_title = get_bloginfo( 'name' );
         if ( ! empty( $site_title ) ) :
             if ( is_front_page() && is_home() ) : ?>
-                <h1 class="site-title">
+                <h1 class="site-title" translate="no">
                     <a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home">
                         <?php echo esc_html( $site_title ); ?>
                     </a>
                 </h1>
             <?php else : ?>
-                <p class="site-title">
+                <p class="site-title" translate="no">
                     <a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home">
                         <?php echo esc_html( $site_title ); ?>
                     </a>
@@ -68,4 +78,5 @@
 // Add action hook to insert custom scripts or content
 do_action( 'after_header' );
 ?>
-<div class="content-wrap">
+<div class="content-wrap" role="main" lang="<?php echo get_locale() === 'en_US' ? 'en' : substr(get_locale(), 0, 2); ?>" itemscope itemtype="https://schema.org/WebPage">
+    <meta itemprop="inLanguage" content="<?php echo get_locale() === 'en_US' ? 'en' : substr(get_locale(), 0, 2); ?>">

@@ -65,7 +65,10 @@ function extra_chill_enqueue_rating_script() {
     }
     
     if (is_singular('recipe')) {
-        wp_enqueue_script('rating-js', get_template_directory_uri() . '/js/rating.js', array(), '1.0.0', true);
+        // Use dynamic versioning for cache busting
+        $script_version = filemtime(get_template_directory() . '/js/rating.js');
+        wp_enqueue_script('rating-js', get_template_directory_uri() . '/js/rating.js', array('wp-i18n'), $script_version, true);
+        wp_set_script_translations('rating-js', 'sarai-chinwag');
         wp_localize_script('rating-js', 'rating_ajax_obj', array(
             'ajax_url' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('rate_recipe_nonce')

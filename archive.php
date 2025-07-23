@@ -15,6 +15,9 @@ get_header();
 
         <header class="page-header">
             <?php
+                // Display breadcrumbs for archive pages
+                sarai_chinwag_archive_breadcrumbs();
+                
                 the_archive_title( '<h1 class="page-title">', '</h1>' );
                 the_archive_description( '<div class="archive-description">', '</div>' );
             ?>
@@ -69,6 +72,5 @@ get_header();
 </main><!-- #main -->
 
 <?php
-get_sidebar();
 get_footer();
 ?>

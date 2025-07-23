@@ -22,6 +22,7 @@ function sarai_chinwag_settings_init() {
     register_setting('sarai_chinwag_settings', 'sarai_chinwag_indexnow_key');
     register_setting('sarai_chinwag_settings', 'sarai_chinwag_disable_recipes');
     register_setting('sarai_chinwag_settings', 'sarai_chinwag_google_fonts_api_key');
+    register_setting('sarai_chinwag_settings', 'sarai_chinwag_pinterest_username');
     
     add_settings_section(
         'sarai_chinwag_settings_section',
@@ -49,6 +50,14 @@ function sarai_chinwag_settings_init() {
         'sarai_chinwag_google_fonts_api_key',
         __('Google Fonts API Key', 'sarai-chinwag'),
         'sarai_chinwag_google_fonts_api_key_render',
+        'sarai_chinwag_settings',
+        'sarai_chinwag_settings_section'
+    );
+    
+    add_settings_field(
+        'sarai_chinwag_pinterest_username',
+        __('Pinterest Username', 'sarai-chinwag'),
+        'sarai_chinwag_pinterest_username_render',
         'sarai_chinwag_settings',
         'sarai_chinwag_settings_section'
     );
@@ -87,6 +96,14 @@ function sarai_chinwag_google_fonts_api_key_render() {
     echo '<input type="text" name="sarai_chinwag_google_fonts_api_key" value="' . esc_attr($value) . '" size="50" />';
     echo '<p class="description">' . __('Enter your Google Fonts API key to enable dynamic font loading. Required for accessing all Google Fonts.', 'sarai-chinwag') . '</p>';
     echo '<p class="description">' . __('Get your API key at: <a href="https://developers.google.com/fonts/docs/developer_api" target="_blank">Google Fonts Developer API</a>', 'sarai-chinwag') . '</p>';
+}
+
+// Pinterest username field render  
+function sarai_chinwag_pinterest_username_render() {
+    $value = get_option('sarai_chinwag_pinterest_username', '');
+    echo '<input type="text" name="sarai_chinwag_pinterest_username" value="' . esc_attr($value) . '" size="30" />';
+    echo '<p class="description">' . __('Enter your Pinterest username to display a Pinterest follow widget in the sidebar. Leave empty to disable Pinterest integration.', 'sarai-chinwag') . '</p>';
+    echo '<p class="description">' . __('Example: If your Pinterest URL is pinterest.com/yourname, enter "yourname"', 'sarai-chinwag') . '</p>';
 }
 
 // Disable recipes field render

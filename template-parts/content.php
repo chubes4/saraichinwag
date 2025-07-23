@@ -8,6 +8,11 @@
 
 <header class="entry-header">
     <?php
+    // Show badge-breadcrumbs for single posts
+    if ( is_singular() ) {
+        sarai_chinwag_post_badges();
+    }
+    
     if ( !is_singular() && has_post_thumbnail() ) {
         echo '<div class="post-thumbnail">';
         echo '<a href="' . esc_url( get_permalink() ) . '">';
@@ -24,7 +29,7 @@
     ?>
 </header><!-- .entry-header -->
 
-<div class="entry-content">
+<div class="entry-content" lang="<?php echo get_locale() === 'en_US' ? 'en' : substr(get_locale(), 0, 2); ?>" itemprop="mainEntity">
     <?php
     if ( is_singular() ) {
         the_content();

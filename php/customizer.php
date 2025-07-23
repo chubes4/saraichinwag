@@ -144,6 +144,19 @@ function sarai_chinwag_customize_register($wp_customize) {
         'section' => 'sarai_chinwag_colors',
         'description' => __('Main background color for the site.', 'sarai-chinwag'),
     )));
+
+    // Header/Footer Background Color Control
+    $wp_customize->add_setting('sarai_chinwag_header_footer_bg_color', array(
+        'default' => '#000000',
+        'sanitize_callback' => 'sanitize_hex_color',
+        'transport' => 'postMessage',
+    ));
+
+    $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'sarai_chinwag_header_footer_bg_color', array(
+        'label' => __('Header/Footer Background Color', 'sarai-chinwag'),
+        'section' => 'sarai_chinwag_colors',
+        'description' => __('Background color for header and footer sections.', 'sarai-chinwag'),
+    )));
 }
 add_action('customize_register', 'sarai_chinwag_customize_register');
 
@@ -198,7 +211,7 @@ function sarai_chinwag_get_google_fonts($type = '') {
     
     // Add theme fallback fonts first
     $fallback_fonts = array(
-        'Gluten' => 'Gluten (Theme)',
+        'Gluten' => 'Gluten (Google)',
         'System Fonts' => 'System Fonts'
     );
     
@@ -237,7 +250,7 @@ function sarai_chinwag_enqueue_google_fonts() {
     
     // Check each font and add to load list if it's a Google Font
     foreach ($fonts_to_check as $font) {
-        if ($font !== 'Gluten' && $font !== 'System Fonts' && !in_array($font, $fonts_to_load)) {
+        if ($font !== 'System Fonts' && !in_array($font, $fonts_to_load)) {
             $fonts_to_load[] = $font;
         }
     }
@@ -267,6 +280,7 @@ function sarai_chinwag_customizer_css() {
     $secondary_color = get_theme_mod('sarai_chinwag_secondary_color', '#ff6eb1');
     $text_color = get_theme_mod('sarai_chinwag_text_color', '#000000');
     $background_color = get_theme_mod('sarai_chinwag_background_color', '#ffffff');
+    $header_footer_bg_color = get_theme_mod('sarai_chinwag_header_footer_bg_color', '#000000');
     
     // Generate font family values
     $heading_font_family = sarai_chinwag_get_font_family($heading_font);
@@ -286,6 +300,7 @@ function sarai_chinwag_customizer_css() {
         --color-secondary: {$secondary_color};
         --color-text: {$text_color};
         --color-background: {$background_color};
+        --color-header-footer-bg: {$header_footer_bg_color};
     }
     
     /* Scale body font size (current: 20px at 50%) */
@@ -345,12 +360,12 @@ function sarai_chinwag_customizer_css() {
 function sarai_chinwag_get_font_family($font_name) {
     switch ($font_name) {
         case 'Gluten':
-            return "'Gluten', serif";
+            return "'Gluten', 'Helvetica', Arial, sans-serif";
         case 'System Fonts':
             return "'Helvetica', Arial, sans-serif";
         default:
-            // Simple fallback: Google Font → Gluten → System
-            return "'{$font_name}', 'Gluten', 'Helvetica', Arial, sans-serif";
+            // Simple fallback: Google Font → Helvetica → System
+            return "'{$font_name}', 'Helvetica', Arial, sans-serif";
     }
 }
 

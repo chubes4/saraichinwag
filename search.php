@@ -14,8 +14,12 @@ get_header();
     <?php if ( have_posts() ) : ?>
 
         <header class="page-header">
+            <?php
+                // Display breadcrumbs for search results
+                sarai_chinwag_archive_breadcrumbs();
+            ?>
             <h1 class="page-title">
-                <?php printf( esc_html__( 'Search Results for: %s', 'sarai-chinwag' ), '<span>' . get_search_query() . '</span>' ); ?>
+                <?php printf( esc_html__( 'Search Results for: %s', 'sarai-chinwag' ), '<span translate="no">' . get_search_query() . '</span>' ); ?>
             </h1>
         </header><!-- .page-header -->
 
@@ -58,7 +62,7 @@ get_header();
             <p>
         <?php printf( 
             esc_html__( 'No results for "%s". %s, or try %s.', 'sarai-chinwag' ),
-            get_search_query(),
+            '<span translate="no">' . get_search_query() . '</span>',
             '<a href="#" class="search-toggle">' . esc_html__( 'Try again', 'sarai-chinwag' ) . '</a>',
             '<a href="/random-all">' . esc_html__( 'randomize', 'sarai-chinwag' ) . '</a>'
         ); ?>

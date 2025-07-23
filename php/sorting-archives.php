@@ -2,8 +2,8 @@
 
 function sarai_chinwag_enqueue_filter_scripts() {
     if (is_home() || is_archive() || is_search()) {
-        wp_enqueue_script('sarai-chinwag-filters', get_template_directory_uri() . '/js/filters.js', array(), filemtime(get_template_directory() . '/js/filters.js'), true);
-        wp_localize_script('sarai-chinwag-filters', 'sarai_chinwag_ajax', array(
+        wp_enqueue_script('sarai-chinwag-advanced-filters', get_template_directory_uri() . '/js/advanced-filters.js', array(), filemtime(get_template_directory() . '/js/advanced-filters.js'), true);
+        wp_localize_script('sarai-chinwag-advanced-filters', 'sarai_chinwag_ajax', array(
             'ajaxurl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('filter_posts_nonce'),
             'posts_per_page' => get_option('posts_per_page', 10)
@@ -14,20 +14,9 @@ add_action('wp_enqueue_scripts', 'sarai_chinwag_enqueue_filter_scripts');
 
 
 function sarai_chinwag_display_post_type_filters() {
-    if (sarai_chinwag_has_both_posts_and_recipes()) {
-        ?>
-        <div class="post-type-filters">
-            <label>
-                <input type="checkbox" id="filter-blog-posts" checked>
-                Blog Posts
-            </label>
-            <label>
-                <input type="checkbox" id="filter-recipes" checked>
-                Recipes
-            </label>
-        </div>
-        <?php
-    }
+    // Legacy function - post type filtering now handled by advanced filter bar
+    // Kept for backwards compatibility but no longer outputs anything
+    return;
 }
 
 function sarai_chinwag_has_both_posts_and_recipes() {
@@ -66,16 +55,43 @@ add_action('before_post_grid', 'sarai_chinwag_display_post_type_filters');
 function sarai_chinwag_filter_posts() {
     check_ajax_referer('filter_posts_nonce', 'nonce');
 
-    $post_types = array();
-
+    // Get sort parameter
+    $sort_by = isset($_POST['sort_by']) ? sanitize_text_field($_POST['sort_by']) : 'random';
+    
+    // Get post type filters
+    $post_type_filter = isset($_POST['post_type_filter']) ? sanitize_text_field($_POST['post_type_filter']) : 'all';
+    
+    // Legacy support for existing checkbox system
     $filter_blog_posts = isset($_POST['filter_blog_posts']) ? sanitize_text_field($_POST['filter_blog_posts']) : '';
     $filter_recipes = isset($_POST['filter_recipes']) ? sanitize_text_field($_POST['filter_recipes']) : '';
     
-    if ($filter_blog_posts === 'true') {
-        $post_types[] = 'post';
-    }
-    if ($filter_recipes === 'true') {
-        $post_types[] = 'recipe';
+    // Determine post types to query
+    $post_types = array();
+    if ($post_type_filter === 'posts') {
+        $post_types = array('post');
+    } elseif ($post_type_filter === 'recipes') {
+        $post_types = array('recipe');
+    } elseif ($post_type_filter === 'all') {
+        $post_types = array('post');
+        if (!sarai_chinwag_recipes_disabled()) {
+            $post_types[] = 'recipe';
+        }
+    } else {
+        // Legacy checkbox system
+        if ($filter_blog_posts === 'true') {
+            $post_types[] = 'post';
+        }
+        if ($filter_recipes === 'true') {
+            $post_types[] = 'recipe';
+        }
+        
+        // Default to all if none specified
+        if (empty($post_types)) {
+            $post_types = array('post');
+            if (!sarai_chinwag_recipes_disabled()) {
+                $post_types[] = 'recipe';
+            }
+        }
     }
 
     $loaded_posts = isset($_POST['loadedPosts']) ? json_decode(stripslashes($_POST['loadedPosts']), true) : array();
@@ -84,64 +100,58 @@ function sarai_chinwag_filter_posts() {
     $search = isset($_POST['search']) ? sanitize_text_field($_POST['search']) : '';
 
     // Retrieve the posts per page setting from the admin
-    $posts_per_page = get_option('posts_per_page', 10); // Default to 10 if the option is not set
+    $posts_per_page = get_option('posts_per_page', 10);
 
-    // Initial Query to get remaining posts
-    $default_post_types = array('post');
-    if (!sarai_chinwag_recipes_disabled()) {
-        $default_post_types[] = 'recipe';
-    }
-    
-    $initial_args = array(
-        'post_type' => !empty($post_types) ? $post_types : $default_post_types, // Default based on recipe status
-        'posts_per_page' => -1, // Retrieve all matching posts
+    // Build query arguments based on sort type
+    $args = array(
+        'post_type' => $post_types,
+        'posts_per_page' => $posts_per_page,
         'post_status' => 'publish',
         'post__not_in' => $loaded_posts,
-        'fields' => 'ids',
     );
 
+    // Add category/tag/search constraints
     if ($category) {
-        $initial_args['category_name'] = $category;
+        $args['category_name'] = $category;
     }
-
     if ($tag) {
-        $initial_args['tag'] = $tag;
+        $args['tag'] = $tag;
     }
-
     if ($search) {
-        $initial_args['s'] = $search;
+        $args['s'] = $search;
     }
 
-    // Execute the initial query to get remaining post IDs
-    $initial_query = new WP_Query($initial_args);
-    $remaining_posts = $initial_query->posts;
-    $remaining_posts_count = count($remaining_posts);
-
-    // If no remaining posts, return no posts found
-    if ($remaining_posts_count == 0) {
-        echo '<p>' . esc_html__('No posts found.', 'sarai-chinwag') . '</p>';
-        wp_die();
+    // Apply sorting based on sort_by parameter
+    switch ($sort_by) {
+        case 'popular':
+            $args['meta_key'] = '_post_views';
+            $args['orderby'] = 'meta_value_num date';
+            $args['order'] = 'DESC';
+            $args['meta_query'] = array(
+                array(
+                    'key' => '_post_views',
+                    'compare' => 'EXISTS'
+                )
+            );
+            break;
+            
+        case 'recent':
+            $args['orderby'] = 'date';
+            $args['order'] = 'DESC';
+            break;
+            
+        case 'oldest':
+            $args['orderby'] = 'date';
+            $args['order'] = 'ASC';
+            break;
+            
+        case 'random':
+        default:
+            $args['orderby'] = 'rand';
+            break;
     }
 
-    // Shuffle the remaining posts to randomize the selection
-    shuffle($remaining_posts);
-
-    // Calculate the number of posts to load
-    $posts_to_load = min($posts_per_page, $remaining_posts_count);
-
-    // Get the IDs of posts to load in this request
-    $post_ids_to_load = array_slice($remaining_posts, 0, $posts_to_load);
-
-    // Construct the main query arguments
-    $args = array(
-        'post_type' => !empty($post_types) ? $post_types : array('post', 'recipe'), // Default to both if no filters set
-        'posts_per_page' => $posts_to_load,
-        'post_status' => 'publish',
-        'post__in' => $post_ids_to_load,
-        'orderby' => 'post__in',
-    );
-
-    // Execute the main query
+    // Execute the query
     $query = new WP_Query($args);
 
     if ($query->have_posts()) {

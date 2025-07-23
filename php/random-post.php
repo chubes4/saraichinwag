@@ -1,17 +1,20 @@
 <?php
 function extra_chill_redirect_to_random_post() {
-    if (is_page('random-post')) { // Replace 'random-post' with the slug of your page
-        $args = array(
-            'post_type' => 'post',
-            'orderby' => 'rand',
-            'posts_per_page' => 1,
-        );
-        $random_post_query = new WP_Query($args);
-        if ($random_post_query->have_posts()) {
-            $random_post_query->the_post();
-            wp_redirect(get_the_permalink());
-            exit;
+    if (is_page('random-post')) {
+        // Use cached random post ID for high performance (replaces expensive orderby => 'rand')
+        $random_post_id = sarai_chinwag_get_cached_random_post_id('post');
+        
+        if ($random_post_id) {
+            $permalink = get_permalink($random_post_id);
+            if ($permalink) {
+                wp_redirect($permalink);
+                exit;
+            }
         }
+        
+        // Fallback to homepage if no random post found
+        wp_redirect(home_url());
+        exit;
     }
 }
 add_action('template_redirect', 'extra_chill_redirect_to_random_post');
@@ -24,40 +27,48 @@ function extra_chill_redirect_to_random_recipe() {
         exit;
     }
     
-    if (is_page('random-recipe')) { // Replace 'random-recipe' with the slug of your page
-        $args = array(
-            'post_type' => 'recipe', // Only include the 'recipe' post type
-            'orderby' => 'rand',
-            'posts_per_page' => 1,
-        );
-        $random_recipe_query = new WP_Query($args);
-        if ($random_recipe_query->have_posts()) {
-            $random_recipe_query->the_post();
-            wp_redirect(get_the_permalink());
-            exit;
+    if (is_page('random-recipe')) {
+        // Use cached random recipe ID for high performance
+        $random_recipe_id = sarai_chinwag_get_cached_random_post_id('recipe');
+        
+        if ($random_recipe_id) {
+            $permalink = get_permalink($random_recipe_id);
+            if ($permalink) {
+                wp_redirect($permalink);
+                exit;
+            }
         }
+        
+        // Fallback to random post if no recipe found
+        wp_redirect(home_url('/random-post'));
+        exit;
     }
 }
 add_action('template_redirect', 'extra_chill_redirect_to_random_recipe');
 
 function extra_chill_redirect_to_random_all() {
-    if (is_page('random-all')) { // Replace 'random-all' with the slug of your page
+    if (is_page('random-all')) {
+        // Build array of possible post types
         $post_types = array('post');
         if (!sarai_chinwag_recipes_disabled()) {
             $post_types[] = 'recipe';
         }
         
-        $args = array(
-            'post_type' => $post_types, // Include post types based on recipe status
-            'orderby' => 'rand',
-            'posts_per_page' => 1,
-        );
-        $random_all_query = new WP_Query($args);
-        if ($random_all_query->have_posts()) {
-            $random_all_query->the_post();
-            wp_redirect(get_the_permalink());
-            exit;
+        // Randomly select a post type first, then get random post from that type
+        $random_post_type = $post_types[array_rand($post_types)];
+        $random_post_id = sarai_chinwag_get_cached_random_post_id($random_post_type);
+        
+        if ($random_post_id) {
+            $permalink = get_permalink($random_post_id);
+            if ($permalink) {
+                wp_redirect($permalink);
+                exit;
+            }
         }
+        
+        // Fallback to homepage if no random post found
+        wp_redirect(home_url());
+        exit;
     }
 }
 add_action('template_redirect', 'extra_chill_redirect_to_random_all');

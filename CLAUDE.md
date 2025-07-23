@@ -28,38 +28,46 @@ The theme uses an autoload system in functions.php that includes all PHP files f
 - `admin-settings.php`: Theme settings page with API key management
 - `bing-index-now.php`: Bing indexing integration
 - `customizer.php`: Dynamic Google Fonts system with API integration and percentage-based scaling
+- `filter-bar.php`: Advanced filter bar interface for home/archive pages
 - `image-counts.php`: Image handling utilities
 - `random-post.php` & `random-queries.php`: Random content functionality (anti-chronological design)
 - `ratings.php`: AJAX-based recipe rating system with nonce security
 - `recipes.php`: Custom post type registration
-- `related-posts.php`: Related content functionality
+- `related-posts.php`: Random discovery functionality (replaces complex related logic)
 - `schema-recipe.php`: Schema.org structured data for recipes
-- `sorting-archives.php`: Archive sorting functionality
+- `sorting-archives.php`: Advanced AJAX filtering and sorting system
+- `view-counter.php`: Simple post view tracking for popularity sorting
 - `yoast-stuff.php`: Yoast SEO customizations
 
 ### JavaScript Structure
 - **js/nav.js**: Header search functionality with position adjustment for admin bar
 - **js/customizer.js**: Live preview functionality for font changes and size scaling in WordPress Customizer
-- **js/filters.js**: Filtering functionality
-- **js/rating.js**: Client-side rating interactions
+- **js/advanced-filters.js**: Advanced AJAX filtering system with sort options and Load More integration
+- **js/filters.js**: Legacy filtering functionality (maintained for compatibility)
+- **js/rating.js**: AJAX rating system with localStorage persistence, nonce security, and dual-state management (user + server average)
 
 ### Template Parts
 - `template-parts/content-recipe.php`: Recipe display with Schema.org microdata
 - `template-parts/content.php` & `template-parts/content-single.php`: Standard post templates
 
 ### Key Features
-- **Randomized content discovery**: Anti-chronological design with home page and archives displaying posts in random order
-- **Random access pages**: `/random-post` and `/random-recipe` pages for serendipitous browsing
+- **Advanced Filter System**: Full-width filter bar with sort options (Random, Most Popular, Recent, Oldest) and post type filtering
+- **Full-Width Layout**: Home and archive pages display 4-column responsive grid (sidebar removed for maximum content visibility)
+- **View Counter System**: Simple post meta tracking for popularity sorting (`_post_views` field)
+- **Randomized content discovery**: Anti-chronological design with randomization as default behavior
+- **Random access pages**: `/random-post`, `/random-recipe`, and `/random-all` pages for serendipitous browsing
 - **Dynamic Google Fonts system**: API integration with category filtering (display fonts for headings, sans-serif + serif for body)
 - **Percentage-based font scaling**: 1-100% size control with 50% = current theme baseline, maintains heading hierarchy
 - **Universal theme design**: Can function as recipe site or standard blog via admin toggle
 - **Recipe functionality**: Complete recipe post type with ratings, schema markup, and specialized templates (when enabled)
 - **WordPress Customizer integration**: Live preview for font changes and size scaling with custom CSS properties
-- **Pinterest integration**: Automatic Pinterest save buttons with `data-pin-url` attributes on featured images
+- **Pinterest integration**: Footer follow button + automatic Pinterest save buttons with `data-pin-url` attributes
+- **Badge-breadcrumb system**: Category/tag badges on single posts for navigation, traditional breadcrumbs on archives
+- **Random discovery section**: 3-post random grid replaces complex related posts logic
 - **Dynamic asset versioning**: Uses `filemtime()` for cache busting on CSS and JS files
-- **Rating system**: AJAX-powered recipe ratings with security nonces and validation (1-5 range)
+- **Rating system**: AJAX-powered recipe ratings with localStorage persistence, nonce security, and dual-state management
 - **Schema.org markup**: Full structured data implementation for recipes
-- **Performance optimizations**: Transient caching for Google Fonts API calls, category/tag clouds and random posts
+- **Performance optimizations**: Transient caching for Google Fonts API calls, category/tag clouds, random posts, and view counters
 - **Security enhancements**: All output properly escaped, input sanitized, secure API key storage
 
 ## Dynamic Google Fonts Architecture
@@ -91,8 +99,42 @@ The theme uses an autoload system in functions.php that includes all PHP files f
 ### Random Access Pages  
 - **Direct Random Posts**: `/random-post` page redirects to random post via `extra_chill_redirect_to_random_post()`
 - **Direct Random Recipes**: `/random-recipe` page redirects to random recipe (respects recipe toggle)
+- **Direct Random All**: `/random-all` page redirects to random post or recipe (mixed selection)
 - **Fallback Logic**: When recipes disabled, random-recipe redirects to random-post instead
 - **Implementation**: Uses `WP_Query` with `orderby: rand` and `posts_per_page: 1`
+
+## Advanced Filter System Architecture
+
+### Filter Bar Components
+- **Sort Options**: Random (default) | Most Popular (by view count) | Most Recent | Oldest
+- **Content Types**: All | Posts | Recipes (only shown when both post types exist)
+- **AJAX Integration**: Real-time filtering without page reload, preserves filter state across Load More
+- **Mobile Responsive**: Collapsible interface with touch-friendly buttons (44px minimum height)
+- **Legacy Compatibility**: Old checkbox system deprecated in favor of cleaner button interface
+
+### View Counter System
+- **Storage**: Simple post meta (`_post_views`) incremented on each post view
+- **Tracking**: Automatic on `wp_head` for singular posts/recipes only
+- **Performance**: Efficient meta queries for popularity sorting
+- **Functions**: `sarai_chinwag_track_post_view()`, `sarai_chinwag_get_post_views($post_id)`
+
+### Layout Strategy
+- **Full-Width Pages**: Home, archives, search (sidebars removed for 4-column grid)
+- **Sidebar Pages**: Single posts, recipes, pages (maintains discovery widgets)
+- **Responsive Grid**: 4 columns (desktop) → 3 (laptop) → 2 (tablet) → 1 (mobile)
+- **Filter Persistence**: AJAX Load More preserves active sort and type filters
+
+## Badge-Breadcrumb Navigation System
+
+### Single Posts/Recipes
+- **Badge Navigation**: Clickable category (blue) and tag (pink) badges above post title
+- **No Home Link**: Random icon and underlined site title serve this purpose
+- **Function**: `sarai_chinwag_post_badges()` displays primary category + up to 3 tags
+
+### Archive Pages
+- **Traditional Breadcrumbs**: Text-based hierarchy (Home > Category/Tag/Search)
+- **Context Aware**: Different patterns for category, tag, search, author, date archives
+- **Function**: `sarai_chinwag_archive_breadcrumbs()` generates appropriate breadcrumb trail
 
 ## Development Commands
 
@@ -104,14 +146,16 @@ No build commands are available. Direct file editing workflow:
 ## Code Conventions
 
 - Follow WordPress coding standards
-- Use `wp_remote_get()` instead of cURL functions
-- All output should be run through escaping functions (`esc_url()`, `esc_html()`, etc.)
-- Nonce verification required for AJAX requests
+- Use `wp_remote_get()` instead of cURL functions  
+- All output should be run through escaping functions (`esc_url()`, `esc_html()`, `esc_attr()`, etc.)
+- Nonce verification required for AJAX requests using `wp_verify_nonce()`
 - Use `get_template_directory()` and `get_template_directory_uri()` for file paths
-- Dynamic versioning for static assets using `filemtime()`
+- Dynamic versioning for static assets using `filemtime()` for cache busting
 - Always call `wp_reset_postdata()` after custom post queries using `setup_postdata()`
-- Sanitize all `$_POST` data with appropriate functions
-- Use transient caching for expensive queries (set to 1 hour or 15 minutes)
+- Sanitize all `$_POST` data with appropriate WordPress functions (`sanitize_text_field()`, etc.)
+- Use transient caching for expensive queries (15 minutes for random posts, 24 hours for Google Fonts)
+- Use modular PHP file organization in `/php` directory with descriptive naming
+- JavaScript should use WordPress i18n (`wp.i18n`) for user-facing messages
 
 ## Performance Notes
 
@@ -150,8 +194,9 @@ if (!sarai_chinwag_recipes_disabled()) {
 
 ## Security Notes
 
-- All user input is properly sanitized
-- All output is properly escaped
-- API keys stored in database options, not hardcoded
-- Rating validation prevents invalid data submission
-- AJAX endpoints include proper nonce verification
+- All user input is properly sanitized using WordPress functions
+- All output is properly escaped with `esc_html()`, `esc_url()`, `esc_attr()`, etc.
+- API keys stored in database options via `get_option()`, never hardcoded
+- Rating system uses WordPress nonce verification for CSRF protection
+- AJAX endpoints include proper nonce verification and validation
+- Client-side localStorage provides graceful degradation if server requests fail

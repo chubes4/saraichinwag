@@ -16,7 +16,7 @@ Requires PHP: 7.4
 
 :root {
     /* Typography */
-    --font-heading: 'Gluten', serif;
+    --font-heading: 'Gluten', 'Helvetica', Arial, sans-serif;
     --font-body: 'Helvetica', Arial, sans-serif;
     
     /* Colors */
@@ -24,23 +24,18 @@ Requires PHP: 7.4
     --color-secondary: #ff6eb1;
     --color-text: #000;
     --color-background: #fff;
+    --color-header-footer-bg: #000;
     --color-text-light: #666;
     --color-border: #ddd;
 }
 
-@font-face {
-    font-family: var(--font-heading);
-    src: url('fonts/Gluten-SemiBold.woff2') format('woff2');
-    font-style: normal;
-    font-weight: 100 900; 
-	font-display: swap;
-}
 
 h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
     text-transform: uppercase;
     margin: 18px 0;
     line-height: 1.6;
+    font-weight: 600;
 }
 h2{
     font-size: 1.38em;
@@ -77,7 +72,7 @@ body {
     margin: auto;
     font-family: var(--font-body);
     font-size: 20px;
-
+    background-color: var(--color-background);
 }
 p, li, ul{
     line-height: 1.9;
@@ -111,6 +106,7 @@ p.site-title {
     text-decoration-color: var(--color-primary);
     font-family: var(--font-heading);
     text-transform: uppercase;
+    font-weight: 600;
 }
 
 .site-branding {
@@ -127,7 +123,7 @@ p.site-title {
     position: relative;
     top: 0; 
     z-index: 8675310; /* Ensure the header is above other content */
-    background-color: var(--color-text); /* Ensure the header has a background color */
+    background-color: var(--color-header-footer-bg); /* Ensure the header has a background color */
     width: 100%; /* Ensure the header spans the full width */
 }
 #wpadminbar {
@@ -141,7 +137,7 @@ p.site-title {
     flex-direction: column;
     position: fixed; /* Fixed positioning to make it stay in place when scrolling */
     width: 100%; /* Full width */
-    background-color: var(--color-text); /* Or any color that fits your design */
+    background-color: var(--color-header-footer-bg); /* Or any color that fits your design */
     z-index: 999; /* Ensure it's above other content */
     transition: transform 0.3s ease-out; /* Smooth transition for expanding */
     transform: translateY(-100%); /* Start hidden above the screen */
@@ -206,7 +202,7 @@ p.site-title {
     flex-direction: column;
     position: fixed;
     width: 100%;
-    background-color: var(--color-text);
+    background-color: var(--color-header-footer-bg);
     z-index: 999;
     transition: transform 0.3s ease-out;
     transform: translateY(-100%);
@@ -262,16 +258,32 @@ p.site-title {
 #search-icon:hover  {
     fill: var(--color-primary);
 }
-#random-icon:hover{
+#random-icon:hover,
+#random-icon-link:hover #random-icon {
     fill: var(--color-primary);
 }
-.site-header #random-icon{
-    display: block; /* Ensure this is always visible */
-    cursor: pointer;
+
+#random-icon-link {
+    display: block;
     position: absolute;
-    left: 25px; /* Adjust as needed */
-    top:23px;
+    left: 25px;
+    top: 23px;
+    padding: 5px; /* Increase hover area */
+    line-height: 0; /* Remove line height spacing */
+}
+
+.site-header #random-icon{
+    display: block;
+    cursor: pointer;
     fill: #fff;
+    transition: all 0.3s ease; /* Smooth transition for all properties */
+    filter: drop-shadow(0 0 3px rgba(31, 197, 226, 0.3)); /* Subtle glow */
+}
+
+.site-header #random-icon:hover {
+    fill: var(--color-primary);
+    filter: drop-shadow(0 0 6px rgba(31, 197, 226, 0.6)); /* Enhanced glow on hover */
+    animation: randomIconPulse 2s ease-in-out infinite; /* Gentle pulse */
 }
 
 #colophon #random-icon {
@@ -310,7 +322,7 @@ fill: #fff;
 }
 
 .site-footer{
-    background-color: var(--color-text);
+    background-color: var(--color-header-footer-bg);
     color: var(--color-background);
     text-align: center;
     display: flex;
@@ -384,13 +396,10 @@ fill: #fff;
     text-align: center;
 
 }
-.post-type-filters{
-    display: flex;
-    justify-content: center;
-    margin: 10px;
+/* Legacy post type filters (deprecated) */
+.post-type-filters {
+    display: none; /* Hidden - now handled by advanced filter bar */
 }
-.post-type-filters label{
-    padding: 0 5px;}
 
 #footer-menu {
     display: flex;
@@ -577,5 +586,550 @@ fill: #fff;
     text-decoration: underline;
     text-decoration-style: dotted;
     text-decoration-color: var(--color-primary);
+}
+
+/* ===== ENHANCED USER EXPERIENCE IMPROVEMENTS ===== */
+
+/* 1. Enhanced Random Button Interactions */
+.random-button-section a {
+    transition: all 0.3s ease;
+    transform: translateY(0);
+}
+.random-button-section a:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* 2. Enhanced Widget Separation */
+.widget {
+    padding: .5em;
+    background-color: rgba(255,255,255,0.02);
+    border-radius: 8px;
+}
+
+/* 3. Better Related Content Cards */
+#random_posts a, #random_recipes a {
+    transition: transform 0.2s ease;
+    border-radius: 6px;
+    overflow: hidden;
+}
+#random_posts a:hover, #random_recipes a:hover {
+    transform: scale(1.02);
+}
+
+/* 4. Consistent Button Hover States */
+button:hover, .random-button-section a:hover {
+    background-color: var(--color-secondary);
+    border-color: var(--color-primary);
+    transition: all 0.3s ease;
+}
+
+/* 5. Mobile Touch Targets */
+@media (max-width: 768px) {
+    #random_posts a, #random_recipes a {
+        min-height: 44px;
+        padding: 12px;
+    }
+}
+
+/* 6. Loading State for AJAX Rating */
+.recipe-rating.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+.recipe-rating.loading:after {
+    content: " Loading...";
+    font-size: 0.8em;
+}
+
+/* 7. Smooth Font Transitions */
+body, h1, h2, h3, h4, h5, h6 {
+    transition: font-size 0.3s ease, font-family 0.3s ease;
+}
+
+/* 8. Better Focus States */
+button:focus, a:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: 3px;
+}
+
+/* 9. Random Icon Pulse Animation */
+@keyframes randomIconPulse {
+    0%, 100% {
+        transform: scale(1);
+        filter: drop-shadow(0 0 6px rgba(31, 197, 226, 0.6));
+    }
+    50% {
+        transform: scale(1.05);
+        filter: drop-shadow(0 0 8px rgba(31, 197, 226, 0.8));
+    }
+}
+
+/* Enhanced touch target for mobile */
+@media (max-width: 768px) {
+    #random-icon-link {
+        padding: 8px; /* Larger touch area on mobile */
+    }
+}
+
+/* ===== BADGE-BREADCRUMB SYSTEM ===== */
+
+/* Badge-breadcrumbs for single posts */
+.post-badge-breadcrumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 15px 0 10px;
+    padding: 0;
+}
+
+.badge-breadcrumb {
+    display: inline-block;
+    padding: 6px 12px;
+    font-size: 0.85em;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 20px;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.badge-category {
+    background-color: var(--color-primary);
+    color: var(--color-background);
+}
+
+.badge-category:hover {
+    background-color: var(--color-secondary);
+    color: var(--color-background);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.badge-tag {
+    background-color: var(--color-secondary);
+    color: var(--color-background);
+}
+
+.badge-tag:hover {
+    background-color: var(--color-primary);
+    color: var(--color-background);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Traditional breadcrumbs for archive pages */
+.archive-breadcrumbs {
+    font-size: 0.9em;
+    color: var(--color-text-light);
+    margin: 10px 0 15px;
+    padding: 0;
+}
+
+.archive-breadcrumbs a {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.archive-breadcrumbs a:hover {
+    color: var(--color-secondary);
+    text-decoration: underline;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .post-badge-breadcrumbs {
+        margin: 10px 0 8px;
+        gap: 6px;
+    }
+    
+    .badge-breadcrumb {
+        padding: 5px 10px;
+        font-size: 0.8em;
+    }
+    
+    .archive-breadcrumbs {
+        font-size: 0.85em;
+        margin: 8px 0 12px;
+    }
+}
+
+/* ===== RANDOM DISCOVERY SECTION ===== */
+
+.random-discovery {
+    margin: 30px 0;
+    padding: 20px 0;
+    border-top: 3px dashed var(--color-secondary);
+}
+
+.random-discovery .widget-title {
+    text-align: center;
+    margin-bottom: 20px;
+    background: var(--color-primary);
+    color: var(--color-background);
+    padding: 8px 15px;
+    border-bottom: 4px solid #000;
+    border-radius: 10px;
+    width: max-content;
+    margin: 0 auto 20px;
+}
+
+.discovery-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    gap: 15px;
+}
+
+.discovery-post {
+    flex: 1 1 30%;
+    max-width: 30%;
+    min-width: 250px;
+    text-align: center;
+}
+
+.discovery-post .entry-title {
+    font-size: 1.1em;
+    margin: 10px 0 5px;
+    line-height: 1.4;
+}
+
+.discovery-post .entry-title a {
+    color: var(--color-text);
+    text-decoration: underline;
+    text-decoration-color: var(--color-primary);
+}
+
+.discovery-post .entry-title a:hover {
+    text-decoration-color: var(--color-secondary);
+}
+
+/* Mobile adjustments for discovery section */
+@media (max-width: 768px) {
+    .random-discovery {
+        margin: 20px 0;
+        padding: 15px 0;
+    }
+    
+    .discovery-grid {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .discovery-post {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+}
+
+@media (min-width: 992px) {
+    .discovery-post {
+        max-width: 29%;
+    }
+}
+
+/* ===== FULL-WIDTH LAYOUT SYSTEM ===== */
+
+/* Full-width layout for home and archive pages */
+.home #primary, 
+.archive #primary, 
+.search #primary {
+    width: 100%;
+    max-width: 100%;
+    float: none;
+}
+
+.home #secondary, 
+.archive #secondary, 
+.search #secondary {
+    display: none;
+}
+
+.home .content-wrap,
+.archive .content-wrap,
+.search .content-wrap {
+    max-width: 95%;
+}
+
+/* Enhanced post grid for full-width layouts */
+.home .post-grid,
+.archive .post-grid,
+.search .post-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 15px;
+    margin: 15px 0;
+}
+
+.home .post-grid article,
+.archive .post-grid article,
+.search .post-grid article {
+    flex: 1 1 calc(23% - 10px);
+    max-width: calc(23% - 10px);
+    margin: 0;
+}
+
+/* Responsive grid adjustments */
+@media only screen and (max-width: 1199px) {
+    .home .post-grid article,
+    .archive .post-grid article,
+    .search .post-grid article {
+        flex: 1 1 calc(30% - 10px);
+        max-width: calc(30% - 10px);
+    }
+}
+
+@media only screen and (max-width: 991px) {
+    .home .post-grid article,
+    .archive .post-grid article,
+    .search .post-grid article {
+        flex: 1 1 calc(47% - 10px);
+        max-width: calc(47% - 10px);
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .home .post-grid,
+    .archive .post-grid,
+    .search .post-grid {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .home .post-grid article,
+    .archive .post-grid article,
+    .search .post-grid article {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+    
+    .home .content-wrap,
+    .archive .content-wrap,
+    .search .content-wrap {
+        max-width: 98%;
+    }
+}
+
+/* ===== FOOTER PINTEREST BUTTON ===== */
+
+.footer-pinterest {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.pinterest-follow-btn {
+    display: inline-block;
+    background-color: #E60023; /* Pinterest brand color */
+    color: white;
+    padding: 12px 24px;
+    border-radius: 24px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 16px;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.pinterest-follow-btn:hover {
+    background-color: #ad081b; /* Darker Pinterest red */
+    color: white;
+    border-color: var(--color-secondary);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(230, 0, 35, 0.3);
+}
+
+/* ===== FILTER BAR SYSTEM ===== */
+
+.filter-bar {
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid var(--color-border);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0 30px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.filter-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.filter-label {
+    font-weight: 600;
+    color: var(--color-text);
+    margin-right: 5px;
+    white-space: nowrap;
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    background: white;
+    border: 2px solid var(--color-border);
+    color: var(--color-text);
+    padding: 8px 16px;
+    border-radius: 24px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.filter-btn:hover {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: white;
+    transform: translateY(-1px);
+}
+
+.filter-btn.active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+}
+
+.clear-btn {
+    background: var(--color-secondary) !important;
+    border-color: var(--color-secondary) !important;
+    color: white !important;
+}
+
+.clear-btn:hover {
+    background: #e55a9b !important;
+    border-color: #e55a9b !important;
+}
+
+.filter-loading {
+    text-align: center;
+    padding: 20px;
+    margin: 10px 0;
+}
+
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid var(--color-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Mobile responsiveness for filter bar */
+@media (max-width: 768px) {
+    .filter-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+        padding: 15px;
+    }
+    
+    .filter-section {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .filter-buttons {
+        justify-content: flex-end;
+        flex: 1;
+    }
+    
+    .filter-btn {
+        padding: 6px 12px;
+        font-size: 13px;
+    }
+}
+
+@media (max-width: 480px) {
+    .filter-buttons {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .filter-section {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    
+    /* Enhanced mobile filter bar */
+    .filter-bar {
+        margin: 10px 0 20px;
+        padding: 12px;
+    }
+    
+    .filter-btn {
+        padding: 8px 14px;
+        font-size: 12px;
+        min-width: 60px;
+    }
+    
+    /* Mobile-friendly Pinterest button */
+    .pinterest-follow-btn {
+        padding: 10px 20px;
+        font-size: 14px;
+    }
+    
+    /* Better mobile grid spacing */
+    .home .post-grid,
+    .archive .post-grid,
+    .search .post-grid {
+        gap: 15px;
+        margin: 10px 0;
+    }
+}
+
+/* Touch-friendly improvements */
+@media (max-width: 767px) {
+    /* Larger touch targets for buttons */
+    .filter-btn {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Better spacing for mobile post titles */
+    .home .entry-title,
+    .archive .entry-title {
+        font-size: 1.1em;
+        line-height: 1.3;
+        margin: 8px 0;
+    }
+    
+    /* Load more button mobile optimization */
+    #load-more {
+        width: 100%;
+        max-width: 300px;
+        margin: 20px auto;
+        padding: 15px;
+        font-size: 16px;
+    }
+    
+    .load-more-container {
+        text-align: center;
+        padding: 0 15px;
+    }
 }
 
