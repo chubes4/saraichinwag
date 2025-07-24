@@ -14,10 +14,29 @@ Tested up to: 6.4
 Requires PHP: 7.4
 */
 
+/* ===== CSS VARIABLES ===== */
 :root {
     /* Typography */
     --font-heading: 'Gluten', 'Helvetica', Arial, sans-serif;
     --font-body: 'Helvetica', Arial, sans-serif;
+    
+    /* Font Scaling - Default to 100% (1.0) */
+    --font-heading-scale: 1.0;
+    --font-body-scale: 1.0;
+    
+    /* Base Font Sizes (50% = baseline) */
+    --font-size-base: 1.25rem; /* 20px base */
+    --font-size-h1: 1.75em;
+    --font-size-h2: 1.38em;
+    --font-size-h3: 1.2em;
+    --font-size-small: 0.85em;
+    
+    /* Spacing Scale */
+    --space-xs: 5px;
+    --space-sm: 10px;
+    --space-md: 15px;
+    --space-lg: 20px;
+    --space-xl: 30px;
     
     /* Colors */
     --color-primary: #1fc5e2;
@@ -29,6 +48,15 @@ Requires PHP: 7.4
     --color-border: #ddd;
 }
 
+/* ===== TYPOGRAPHY ===== */
+body {
+    font-family: var(--font-body);
+    font-size: calc(var(--font-size-base) * var(--font-body-scale));
+    background-color: var(--color-background);
+    max-width: 100%;
+    margin: auto;
+    overflow-x: hidden;
+}
 
 h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
@@ -37,11 +65,20 @@ h1, h2, h3, h4, h5, h6 {
     line-height: 1.6;
     font-weight: 600;
 }
-h2{
-    font-size: 1.38em;
+
+h1 {
+    font-size: calc(var(--font-size-h1) * var(--font-heading-scale));
 }
+
+h2 {
+    font-size: calc(var(--font-size-h2) * var(--font-heading-scale));
+}
+
+h3 {
+    font-size: calc(var(--font-size-h3) * var(--font-heading-scale));
+}
+
 h1.entry-title {
-    font-size: 1.75em;
     margin: 15px 0;
     line-height: 1.4;
 }
@@ -53,6 +90,7 @@ h1.entry-title {
     border-bottom: 3px dashed var(--color-secondary);
     width: max-content;
 }
+/* ===== BUTTONS AND FORM ELEMENTS ===== */
 button {
     background-color: var(--color-primary);
     border-radius: 5px;
@@ -63,17 +101,8 @@ button {
     margin: 15px 0;
     font-size: inherit;
 }
-button:hover {
-    border-color: var(--color-primary);
-}
 
-body {
-    max-width: 100%;
-    margin: auto;
-    font-family: var(--font-body);
-    font-size: 20px;
-    background-color: var(--color-background);
-}
+/* ===== LAYOUT AND BASE STYLES ===== */
 p, li, ul{
     line-height: 1.9;
 }
@@ -81,7 +110,6 @@ p, li, ul{
 img{
     max-width: 100%;
     height: auto;
-    object-fit: cover;
     position: relative; /* Ensure images are positioned relative */
 }
 .entry-content img{
@@ -93,9 +121,10 @@ margin: auto;
 .site-main{
     margin: auto;
 }
-/* header */ 
+
+/* ===== HEADER AND NAVIGATION ===== */ 
 .site-title {
-    margin: .65em;
+    margin: .65em 0; /* Only vertical margins for proper flexbox centering */
     font-size: inherit;
 }
 p.site-title {
@@ -112,8 +141,6 @@ p.site-title {
 .site-branding {
     flex-grow: 1;
     text-align: center;
-    border-bottom: 3px solid var(--color-primary);
-
 }
 
 .site-header {
@@ -122,12 +149,15 @@ p.site-title {
     align-items: center;
     position: relative;
     top: 0; 
-    z-index: 8675310; /* Ensure the header is above other content */
+    z-index: 100; /* Ensure the header is above other content */
     background-color: var(--color-header-footer-bg); /* Ensure the header has a background color */
     width: 100%; /* Ensure the header spans the full width */
+    padding: 0 25px; /* Add horizontal padding for icon spacing */
+    box-sizing: border-box; /* Include padding in width calculation */
+    border-bottom: 3px solid var(--color-primary); /* Full width border */
 }
 #wpadminbar {
-    z-index: 8675311 !important;
+    z-index: 110 !important;
 }
 
 .main-navigation {
@@ -138,7 +168,7 @@ p.site-title {
     position: fixed; /* Fixed positioning to make it stay in place when scrolling */
     width: 100%; /* Full width */
     background-color: var(--color-header-footer-bg); /* Or any color that fits your design */
-    z-index: 999; /* Ensure it's above other content */
+    z-index: 90; /* Ensure it's above other content */
     transition: transform 0.3s ease-out; /* Smooth transition for expanding */
     transform: translateY(-100%); /* Start hidden above the screen */
 }
@@ -167,14 +197,6 @@ p.site-title {
 .main-navigation a:hover{
     text-decoration: underline;
 }
-.hamburger-menu {
-    display: block; /* Ensure this is always visible */
-    cursor: pointer;
-    position: absolute;
-    right: 25px; /* Adjust as needed */
-    top:32px;
-
-}
 .entry-title a, .related-items a{
     color: var(--color-text);
     text-decoration: underline;
@@ -190,9 +212,6 @@ p.site-title {
     max-width: 92%;
 }
 
-.hamburger-menu svg {
-    color: var(--color-background);
-}
 /* Search Form Styles */
 
 .header-search {
@@ -203,7 +222,7 @@ p.site-title {
     position: fixed;
     width: 100%;
     background-color: var(--color-header-footer-bg);
-    z-index: 999;
+    z-index: 90;
     transition: transform 0.3s ease-out;
     transform: translateY(-100%);
     padding: 20px; /* Adjust padding as needed */
@@ -249,11 +268,8 @@ p.site-title {
 #search-icon {
     fill:#fff;
     height: 1em;
-    right:25px;
     cursor: pointer;
-    position: absolute;
     display: block; /* Ensure this is always visible */
-    top:25px;
 }
 #search-icon:hover  {
     fill: var(--color-primary);
@@ -265,9 +281,6 @@ p.site-title {
 
 #random-icon-link {
     display: block;
-    position: absolute;
-    left: 25px;
-    top: 23px;
     padding: 5px; /* Increase hover area */
     line-height: 0; /* Remove line height spacing */
 }
@@ -290,37 +303,44 @@ p.site-title {
     height: 1em;
 fill: #fff;
 }
-.post-grid {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
-    margin: 3px;
-}
+/* ===== POST GRID AND CONTENT LAYOUT ===== */
 
-.post-grid article {
-    margin: 3px;
-    flex: 1 1 35%; /* Adjust flex to ensure consistent sizing within the grid */
-    max-width: 50%;
-}
 
-/* Wrapper to maintain the 1:1 aspect ratio */
+/* Square aspect ratio for post thumbnails */
 .post-thumbnail {
-    position: relative;
     width: 100%;
-    padding-bottom: 100%; /* This maintains the 1:1 aspect ratio */
+    aspect-ratio: 1 / 1; /* Modern browsers */
     overflow: hidden;
+    position: relative;
 }
 
-/* Styling for the images */
+.discovery-post .post-thumbnail {
+    margin-bottom: 10px;
+}
+
+/* Fallback for older browsers */
+@supports not (aspect-ratio: 1 / 1) {
+    .post-thumbnail {
+        padding-bottom: 100%; /* 1:1 aspect ratio fallback */
+    }
+    
+    .post-thumbnail img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+}
+
+/* Image styling */
 .post-thumbnail img {
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
+/* ===== FOOTER ===== */
 .site-footer{
     background-color: var(--color-header-footer-bg);
     color: var(--color-background);
@@ -388,7 +408,7 @@ fill: #fff;
     flex-direction: column;
     font-family: var(--font-heading);
     text-transform: uppercase;
-    font-size: 22px;
+    font-size: calc(1.1rem * var(--font-heading-scale));
     color: #000;
     text-decoration-color: var(--color-primary);
 }
@@ -437,7 +457,8 @@ fill: #fff;
 .grow-content-body.customize-support div#grow-me-root{
     display: none;
 }
-/*==========  Mobile First Method  ==========*/
+/* ===== RESPONSIVE MEDIA QUERIES ===== */
+/* Mobile First Method - Progressive Enhancement */
 
 /* Custom, iPhone Retina */
 @media only screen and (min-width : 320px) {
@@ -463,60 +484,52 @@ fill: #fff;
     max-width: 92%;
     margin: auto;
     }
+    .post-badge-breadcrumbs, .archive-breadcrumbs {
+        width: 92%;
+    }
     #secondary #random_posts h2, #secondary #random_recipes h2{
         width: max-content;
         margin-left:4%;
     }
-    h1.entry-title{
-        font-size:1.5em;
-    }
-    h2.entry-title, .related-item h4 {
-        font-size: 1.1em;
+    .related-item h4 {
+        font-size: calc(1.1em * var(--font-heading-scale));
         margin:5px 0;
     }
-    .site-title a {
-        font-size: 22px;
+    .site-title a,
+    h1.page-title {
+        font-size: calc(1.1rem * var(--font-heading-scale));
     }
     #secondary, .related-items {
         text-align: center;
-    }
-    h1.page-title {
-        font-size: 22px;
     }
 }
 
 /* Mini, iPhone Retina */
 @media only screen and (min-width : 400px) {
     .site-title a{
-        font-size: 25px;
+        font-size: calc(1.25rem * var(--font-heading-scale));
     }
     h1.page-title {
-        font-size: 24px;
+        font-size: calc(1.2rem * var(--font-heading-scale));
     }
 
 }
 /* Extra Small Devices, Phones */
 @media only screen and (min-width : 480px) {
     .site-title a{
-        font-size: 30px;
+        font-size: calc(1.5rem * var(--font-heading-scale));
     }
 }
 
 /* Small Devices, Tablets */
  @media only screen and (min-width : 768px) {
-    h2.entry-title {
-        font-size: 1.25em;
-    }
     h1.page-title {
-        font-size: 30px;
+        font-size: calc(1.5rem * var(--font-heading-scale));
     }
 }
 
 /* Medium Devices, Desktops */
 @media only screen and (min-width : 992px) {
-    .post-grid article {
-        max-width: 29%;
-    }
     .wp-block-separator{
         max-width: 100%;
     }
@@ -527,7 +540,7 @@ fill: #fff;
     .site-main {
         max-width: 89%;
     }
-    #primary p, #primary h1, #primary h2, #primary h3, #primary h4, #primary h5, ul.wp-block-list, ol.wp-block-list {
+    #primary p, #primary h1, #primary h2, #primary h3, #primary h4, #primary h5, ul.wp-block-list, ol.wp-block-list, .post-badge-breadcrumbs, .archive-breadcrumbs {
         width: 100%;
     }
     #primary {
@@ -545,6 +558,13 @@ fill: #fff;
         max-width: 85%;
         margin: auto;
     }
+    
+    /* Full-width pages override */
+    .home .content-wrap,
+    .archive .content-wrap,
+    .search .content-wrap {
+        max-width: 95%;
+    }
     .related-content {
         display: flex;
         flex-direction: column;
@@ -560,6 +580,7 @@ fill: #fff;
     .related-item {
         width: 30%;
     }
+    
 }
 /* Large Devices, Wide Screens */
 
@@ -567,13 +588,6 @@ fill: #fff;
 
 }
 
-/* Header search visibility */
-.header-search {
-    display: none;
-}
-.header-search.active {
-    display: block;
-}
 
 /* Footer cloud links with dynamic sizing */
 .category-cloud-link, .tag-cloud-link {
@@ -598,6 +612,8 @@ fill: #fff;
 .random-button-section a:hover {
     transform: translateY(-2px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    background-color: var(--color-secondary);
+    border-color: var(--color-primary);
 }
 
 /* 2. Enhanced Widget Separation */
@@ -609,7 +625,7 @@ fill: #fff;
 
 /* 3. Better Related Content Cards */
 #random_posts a, #random_recipes a {
-    transition: transform 0.2s ease;
+    transition: transform 0.3s ease;
     border-radius: 6px;
     overflow: hidden;
 }
@@ -618,19 +634,13 @@ fill: #fff;
 }
 
 /* 4. Consistent Button Hover States */
-button:hover, .random-button-section a:hover {
+button:hover {
     background-color: var(--color-secondary);
     border-color: var(--color-primary);
     transition: all 0.3s ease;
 }
 
 /* 5. Mobile Touch Targets */
-@media (max-width: 768px) {
-    #random_posts a, #random_recipes a {
-        min-height: 44px;
-        padding: 12px;
-    }
-}
 
 /* 6. Loading State for AJAX Rating */
 .recipe-rating.loading {
@@ -667,11 +677,6 @@ button:focus, a:focus {
 }
 
 /* Enhanced touch target for mobile */
-@media (max-width: 768px) {
-    #random-icon-link {
-        padding: 8px; /* Larger touch area on mobile */
-    }
-}
 
 /* ===== BADGE-BREADCRUMB SYSTEM ===== */
 
@@ -680,18 +685,18 @@ button:focus, a:focus {
     display: flex;
     flex-wrap: wrap;
     gap: 8px;
-    margin: 15px 0 10px;
+    margin: 15px 0 10px 0;
     padding: 0;
 }
 
 .badge-breadcrumb {
     display: inline-block;
     padding: 6px 12px;
-    font-size: 0.85em;
+    font-size: 0.75em;
     font-weight: 500;
     text-decoration: none;
     border-radius: 20px;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
     white-space: nowrap;
 }
 
@@ -721,16 +726,16 @@ button:focus, a:focus {
 
 /* Traditional breadcrumbs for archive pages */
 .archive-breadcrumbs {
-    font-size: 0.9em;
+    font-size: 0.8em;
     color: var(--color-text-light);
-    margin: 10px 0 15px;
+    margin: 10px 0 15px 0;
     padding: 0;
 }
 
 .archive-breadcrumbs a {
     color: var(--color-primary);
     text-decoration: none;
-    transition: color 0.2s ease;
+    transition: color 0.3s ease;
 }
 
 .archive-breadcrumbs a:hover {
@@ -739,22 +744,6 @@ button:focus, a:focus {
 }
 
 /* Mobile responsiveness */
-@media (max-width: 768px) {
-    .post-badge-breadcrumbs {
-        margin: 10px 0 8px;
-        gap: 6px;
-    }
-    
-    .badge-breadcrumb {
-        padding: 5px 10px;
-        font-size: 0.8em;
-    }
-    
-    .archive-breadcrumbs {
-        font-size: 0.85em;
-        margin: 8px 0 12px;
-    }
-}
 
 /* ===== RANDOM DISCOVERY SECTION ===== */
 
@@ -807,22 +796,6 @@ button:focus, a:focus {
 }
 
 /* Mobile adjustments for discovery section */
-@media (max-width: 768px) {
-    .random-discovery {
-        margin: 20px 0;
-        padding: 15px 0;
-    }
-    
-    .discovery-grid {
-        flex-direction: column;
-        gap: 20px;
-    }
-    
-    .discovery-post {
-        flex: 1 1 100%;
-        max-width: 100%;
-    }
-}
 
 @media (min-width: 992px) {
     .discovery-post {
@@ -847,11 +820,6 @@ button:focus, a:focus {
     display: none;
 }
 
-.home .content-wrap,
-.archive .content-wrap,
-.search .content-wrap {
-    max-width: 95%;
-}
 
 /* Enhanced post grid for full-width layouts */
 .home .post-grid,
@@ -891,7 +859,12 @@ button:focus, a:focus {
     }
 }
 
-@media only screen and (max-width: 767px) {
+@media only screen and (max-width: 768px) {
+    /* Reduce header padding on mobile */
+    .site-header {
+        padding: 0 15px;
+    }
+    
     .home .post-grid,
     .archive .post-grid,
     .search .post-grid {
@@ -904,12 +877,42 @@ button:focus, a:focus {
     .search .post-grid article {
         flex: 1 1 100%;
         max-width: 100%;
+        position: relative;
+        margin-bottom: 20px;
     }
+    
     
     .home .content-wrap,
     .archive .content-wrap,
     .search .content-wrap {
-        max-width: 98%;
+        max-width: 100%;
+    }
+    
+    /* Better spacing for mobile post titles */
+    .home .entry-title,
+    .archive .entry-title {
+        font-size: 1.1em;
+        line-height: 1.3;
+        margin: 10px 0;
+    }
+    
+    /* Reduce navigation font size on mobile */
+    .main-navigation li {
+        font-size: 20px;
+    }
+    
+    /* Load more button mobile optimization */
+    #load-more {
+        width: 100%;
+        max-width: 300px;
+        margin: 20px auto;
+        padding: 15px;
+        font-size: 16px;
+    }
+    
+    .load-more-container {
+        text-align: center;
+        padding: 0 15px;
     }
 }
 
@@ -921,7 +924,9 @@ button:focus, a:focus {
 }
 
 .pinterest-follow-btn {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
     background-color: #E60023; /* Pinterest brand color */
     color: white;
     padding: 12px 24px;
@@ -941,6 +946,10 @@ button:focus, a:focus {
     box-shadow: 0 4px 8px rgba(230, 0, 35, 0.3);
 }
 
+.pinterest-logo {
+    flex-shrink: 0;
+}
+
 /* ===== FILTER BAR SYSTEM ===== */
 
 .filter-bar {
@@ -948,7 +957,8 @@ button:focus, a:focus {
     border: 2px solid var(--color-border);
     border-radius: 12px;
     padding: 20px;
-    margin: 20px 0 30px;
+    margin: 20px auto 30px;
+    max-width: 75%;
     display: flex;
     flex-wrap: wrap;
     gap: 20px;
@@ -1003,16 +1013,24 @@ button:focus, a:focus {
     color: white;
 }
 
-.clear-btn {
-    background: var(--color-secondary) !important;
-    border-color: var(--color-secondary) !important;
-    color: white !important;
+/* Secondary color for type filter buttons */
+.type-btn {
+    border-color: var(--color-secondary);
 }
 
-.clear-btn:hover {
-    background: #e55a9b !important;
-    border-color: #e55a9b !important;
+.type-btn:hover {
+    border-color: var(--color-secondary);
+    background: var(--color-secondary);
+    color: white;
+    transform: translateY(-1px);
 }
+
+.type-btn.active {
+    background: var(--color-secondary);
+    border-color: var(--color-secondary);
+    color: white;
+}
+
 
 .filter-loading {
     text-align: center;
@@ -1039,50 +1057,111 @@ button:focus, a:focus {
 /* Mobile responsiveness for filter bar */
 @media (max-width: 768px) {
     .filter-bar {
+        max-width: 95%;
         flex-direction: column;
-        align-items: flex-start;
-        gap: 15px;
-        padding: 15px;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        margin: 15px auto 25px;
     }
     
     .filter-section {
-        width: 100%;
-        justify-content: space-between;
-    }
-    
-    .filter-buttons {
-        justify-content: flex-end;
-        flex: 1;
-    }
-    
-    .filter-btn {
-        padding: 6px 12px;
-        font-size: 13px;
-    }
-}
-
-@media (max-width: 480px) {
-    .filter-buttons {
         width: 100%;
         justify-content: center;
     }
     
-    .filter-section {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-    }
-    
-    /* Enhanced mobile filter bar */
-    .filter-bar {
-        margin: 10px 0 20px;
-        padding: 12px;
+    .filter-buttons {
+        justify-content: center;
+        flex-wrap: wrap;
     }
     
     .filter-btn {
-        padding: 8px 14px;
+        padding: 8px 12px;
+        font-size: 13px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    /* Consolidated mobile touch targets */
+    #random_posts a, #random_recipes a {
+        min-height: 44px;
+        padding: 12px;
+    }
+    
+    #random-icon-link {
+        padding: 8px;
+    }
+    
+    /* Consolidated badge-breadcrumb mobile styles */
+    .post-badge-breadcrumbs {
+        margin: 10px auto 8px;
+        gap: 6px;
+    }
+    
+    .badge-breadcrumb {
+        padding: 5px 10px;
+        font-size: 0.7em;
+    }
+    
+    .archive-breadcrumbs {
+        font-size: 0.75em;
+        margin: 8px auto 12px;
+    }
+    
+    /* Consolidated discovery section mobile styles */
+    .random-discovery {
+        margin: 20px 0;
+        padding: 15px 0;
+    }
+    
+    .discovery-grid {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .discovery-post {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+    
+    .discovery-post .post-thumbnail {
+        margin-bottom: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .filter-bar {
+        max-width: 98%;
+        margin: 10px auto 20px;
+        padding: 10px;
+    }
+    
+    .filter-section {
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+    
+    .filter-buttons {
+        width: 100%;
+        justify-content: center;
+        gap: 6px;
+    }
+    
+    .filter-btn {
+        padding: 8px 12px;
         font-size: 12px;
-        min-width: 60px;
+        min-width: 50px;
+        min-height: 44px;
+    }
+    
+    
+    .home .entry-title,
+    .archive .entry-title {
+        font-size: 1em;
+        margin: 12px 0;
     }
     
     /* Mobile-friendly Pinterest button */
@@ -1090,46 +1169,4 @@ button:focus, a:focus {
         padding: 10px 20px;
         font-size: 14px;
     }
-    
-    /* Better mobile grid spacing */
-    .home .post-grid,
-    .archive .post-grid,
-    .search .post-grid {
-        gap: 15px;
-        margin: 10px 0;
-    }
 }
-
-/* Touch-friendly improvements */
-@media (max-width: 767px) {
-    /* Larger touch targets for buttons */
-    .filter-btn {
-        min-height: 44px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-    
-    /* Better spacing for mobile post titles */
-    .home .entry-title,
-    .archive .entry-title {
-        font-size: 1.1em;
-        line-height: 1.3;
-        margin: 8px 0;
-    }
-    
-    /* Load more button mobile optimization */
-    #load-more {
-        width: 100%;
-        max-width: 300px;
-        margin: 20px auto;
-        padding: 15px;
-        font-size: 16px;
-    }
-    
-    .load-more-container {
-        text-align: center;
-        padding: 0 15px;
-    }
-}
-

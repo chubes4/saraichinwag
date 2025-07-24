@@ -1,19 +1,36 @@
 # Sarai Chinwag WordPress Theme
 
-A versatile WordPress theme with dynamic Google Fonts integration, randomized content discovery, and universal customization capabilities. Features anti-chronological design that encourages serendipitous browsing. See it in action at [saraichinwag.com](https://saraichinwag.com).
+A versatile WordPress theme with advanced filtering, randomized content discovery, and full-width layout optimization. Features anti-chronological design that encourages serendipitous browsing through intelligent content presentation. See it in action at [saraichinwag.com](https://saraichinwag.com).
 
 ## Features
+
+### Advanced Filter System
+- **Multiple Sort Options**: Random (default), Most Popular (by view count), Most Recent, Oldest
+- **Content Type Filtering**: Filter between Posts, Recipes, or All content seamlessly
+- **AJAX-Powered**: Real-time filtering without page reloads, preserves state across Load More
+- **Mobile Optimized**: Touch-friendly interface with collapsible design
+
+### Full-Width Layout System
+- **Maximized Content Discovery**: 4-column responsive grid on home and archive pages (vs traditional 2-3)
+- **Strategic Sidebar Placement**: Removed from browse pages, maintained on single content for discovery widgets
+- **Responsive Grid**: 4 columns (desktop) → 3 (laptop) → 2 (tablet) → 1 (mobile)
+- **Performance Focused**: Simple view counter system tracks popularity without complex analytics
 
 ### Universal Theme Design
 - **Recipe Site Mode**: Full recipe post type with ratings, schema markup, and specialized templates
 - **Standard Blog Mode**: Clean blog functionality via admin toggle  
 - **White Label Ready**: Customizable for any site type
 
+### Enhanced Navigation
+- **Badge-Breadcrumb System**: Clickable category/tag badges on single posts for intuitive navigation
+- **Smart Breadcrumbs**: Context-aware hierarchical navigation on archive pages
+- **Random Discovery**: Multiple random access points including `/random-all` for mixed content
+
 ### Randomization Focus
-- **Random Post Discovery**: Home page and archives display posts in random order
-- **Random Post/Recipe Pages**: Direct links to `/random-post` and `/random-recipe` for instant discovery
-- **Serendipitous Browsing**: Encourages content exploration through randomized presentation
-- **Anti-Chronological Design**: Breaks traditional blog patterns for better content discoverability
+- **Anti-Chronological Design**: Randomization as default behavior breaks traditional blog patterns
+- **Random Content Discovery**: Home and archive pages encourage serendipitous browsing
+- **Multiple Random Endpoints**: `/random-post`, `/random-recipe`, and `/random-all` for instant discovery
+- **Performance Optimized**: Cached random queries for fast randomization without database strain
 
 ### Dynamic Typography System
 - **Google Fonts Integration**: Access to all Google Fonts via API
@@ -56,16 +73,25 @@ Toggle recipe functionality in **Settings → Theme Settings**:
 ### File Structure
 ```
 saraichinwag/
-├── php/                    # Modular PHP components
-│   ├── customizer.php     # Font customization system
-│   ├── recipes.php        # Recipe post type
-│   ├── ratings.php        # AJAX rating system
-│   └── admin-settings.php # Theme settings panel
-├── js/                    # JavaScript files
-│   ├── customizer.js      # Live preview functionality
-│   └── nav.js            # Navigation enhancements
-├── fonts/                 # Local theme fonts
-└── template-parts/        # Reusable template components
+├── php/                          # Modular PHP components
+│   ├── filter-bar.php           # Advanced filter interface
+│   ├── view-counter.php         # View tracking system
+│   ├── sorting-archives.php     # AJAX filtering backend
+│   ├── customizer.php           # Font customization system
+│   ├── recipes.php              # Recipe post type
+│   ├── ratings.php              # AJAX rating system
+│   ├── related-posts.php        # Random discovery section
+│   └── admin-settings.php       # Theme settings panel
+├── js/                          # JavaScript files
+│   ├── advanced-filters.js      # Filter system frontend
+│   ├── customizer.js            # Live preview functionality
+│   ├── rating.js                # Recipe rating interactions
+│   └── nav.js                   # Navigation enhancements
+├── template-parts/              # Reusable template components
+│   ├── content-recipe.php       # Recipe display templates
+│   ├── content-single.php       # Single post template
+│   └── content.php              # Standard post template
+└── fonts/                       # Local theme fonts
 ```
 
 ### Coding Standards
@@ -107,7 +133,20 @@ This theme is designed for personal use and white-labeling. Commercial distribut
 
 ---
 
-**Version**: 2.0  
+**Version**: 2.1  
 **Author**: Chris Huber  
 **Website**: [chubes.net](https://chubes.net)  
 **Theme URI**: [saraichinwag.com](https://saraichinwag.com)
+
+## Changelog
+
+### v2.1 - Advanced Filter & Layout System
+- **NEW**: Advanced filter bar with multiple sort options (Random, Popular, Recent, Oldest)
+- **NEW**: Full-width 4-column responsive grid layout for maximum content discovery
+- **NEW**: Simple view counter system for popularity tracking
+- **NEW**: Badge-breadcrumb navigation system for enhanced UX
+- **NEW**: Pinterest follow button relocated to footer
+- **NEW**: Random discovery section replaces complex related posts logic
+- **IMPROVED**: Mobile-optimized responsive design with touch-friendly controls
+- **IMPROVED**: AJAX filtering with seamless Load More integration
+- **PERFORMANCE**: Optimized queries and smart caching for all new features

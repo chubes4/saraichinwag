@@ -1,15 +1,13 @@
 <!DOCTYPE html>
-<html <?php language_attributes(); ?> xml:lang="<?php echo get_locale() === 'en_US' ? 'en' : substr(get_locale(), 0, 2); ?>">
+<html <?php language_attributes(); ?>>
 <head>
     <meta charset="<?php bloginfo( 'charset' ); ?>">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="p:domain_verify" content="ffbbb836b7a2b01491d3bf888541c048"/>
-    <meta name="google-translate-customization" content="9f841e7780177523-3214ceb76f765f38-gc38c6fe6f9d06436-c">
-    <meta name="content-language" content="<?php echo get_locale() === 'en_US' ? 'en' : substr(get_locale(), 0, 2); ?>">
-    <meta http-equiv="content-language" content="<?php echo get_locale() === 'en_US' ? 'en' : substr(get_locale(), 0, 2); ?>">
+    <meta name="content-language" content="en">
     
     <!-- Hreflang for international SEO -->
-    <link rel="alternate" hreflang="<?php echo get_locale() === 'en_US' ? 'en' : substr(get_locale(), 0, 2); ?>" href="<?php echo esc_url( home_url( $_SERVER['REQUEST_URI'] ) ); ?>" />
+    <link rel="alternate" hreflang="en" href="<?php echo esc_url( home_url( $_SERVER['REQUEST_URI'] ) ); ?>" />
     <link rel="alternate" hreflang="x-default" href="<?php echo esc_url( home_url( $_SERVER['REQUEST_URI'] ) ); ?>" />
     <link rel="canonical" href="<?php echo esc_url( home_url( $_SERVER['REQUEST_URI'] ) ); ?>" />
     
@@ -78,5 +76,5 @@
 // Add action hook to insert custom scripts or content
 do_action( 'after_header' );
 ?>
-<div class="content-wrap" role="main" lang="<?php echo get_locale() === 'en_US' ? 'en' : substr(get_locale(), 0, 2); ?>" itemscope itemtype="https://schema.org/WebPage">
-    <meta itemprop="inLanguage" content="<?php echo get_locale() === 'en_US' ? 'en' : substr(get_locale(), 0, 2); ?>">
+<div class="content-wrap" role="main" lang="en" itemscope itemtype="https://schema.org/WebPage">
+    <meta itemprop="inLanguage" content="en">

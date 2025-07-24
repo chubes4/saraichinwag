@@ -22,7 +22,6 @@ function sarai_chinwag_display_filter_bar() {
     ?>
     <div class="filter-bar" id="filter-bar">
         <div class="filter-section sort-filters">
-            <label class="filter-label"><?php _e('Sort by:', 'sarai-chinwag'); ?></label>
             <div class="filter-buttons">
                 <button class="filter-btn sort-btn active" data-sort="random">
                     <?php _e('Random', 'sarai-chinwag'); ?>
@@ -41,7 +40,6 @@ function sarai_chinwag_display_filter_bar() {
         
         <?php if (!sarai_chinwag_recipes_disabled() && sarai_chinwag_has_both_posts_and_recipes()) : ?>
         <div class="filter-section type-filters">
-            <label class="filter-label"><?php _e('Content:', 'sarai-chinwag'); ?></label>
             <div class="filter-buttons">
                 <button class="filter-btn type-btn active" data-type="all">
                     <?php _e('All', 'sarai-chinwag'); ?>
@@ -55,12 +53,6 @@ function sarai_chinwag_display_filter_bar() {
             </div>
         </div>
         <?php endif; ?>
-        
-        <div class="filter-section filter-actions">
-            <button class="filter-btn clear-btn" id="clear-filters">
-                <?php _e('Clear All', 'sarai-chinwag'); ?>
-            </button>
-        </div>
         
         <!-- Hidden data for JavaScript -->
         <div class="filter-data" style="display: none;">

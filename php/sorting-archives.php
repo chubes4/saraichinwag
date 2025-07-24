@@ -25,10 +25,27 @@ function sarai_chinwag_has_both_posts_and_recipes() {
         return false;
     }
     
-    $has_posts = false;
-    $has_recipes = false;
-
-    if (is_home() || is_archive() || is_search()) {
+    // For homepage, check if both post types exist on the site
+    if (is_home()) {
+        $has_posts = get_posts(array(
+            'post_type' => 'post',
+            'post_status' => 'publish',
+            'numberposts' => 1,
+            'fields' => 'ids'
+        ));
+        
+        $has_recipes = get_posts(array(
+            'post_type' => 'recipe',
+            'post_status' => 'publish', 
+            'numberposts' => 1,
+            'fields' => 'ids'
+        ));
+        
+        return !empty($has_posts) && !empty($has_recipes);
+    }
+    
+    // For archives and search, check within current query context
+    if (is_archive() || is_search()) {
         global $wp_query;
 
         // Clone the original query
@@ -46,9 +63,11 @@ function sarai_chinwag_has_both_posts_and_recipes() {
         $has_recipes = $recipe_query->have_posts();
 
         wp_reset_postdata();
+        
+        return $has_posts && $has_recipes;
     }
 
-    return $has_posts && $has_recipes;
+    return false;
 }
 
 add_action('before_post_grid', 'sarai_chinwag_display_post_type_filters');

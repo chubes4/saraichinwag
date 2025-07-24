@@ -16,8 +16,9 @@ The theme includes an admin settings page accessible via **Settings → Theme Se
 
 ### Core Structure
 - **functions.php**: Main theme setup, enqueues styles/scripts with dynamic versioning using `filemtime()`, autoloads PHP modules from `/php` directory
-- **style.css**: Primary stylesheet with custom font declarations and theme styles
-- **Template hierarchy**: Standard WordPress templates (single.php, archive.php, home.php, search.php, etc.)
+- **style.css**: Primary stylesheet with custom font declarations and theme styles  
+- **Template hierarchy**: Standard WordPress templates (single.php, archive.php, home.php, search.php, page.php, etc.)
+- **page.php**: Standard page template using `template-parts/content-single.php` with sidebar support
 
 ### Custom Post Types
 - **Recipe post type**: Registered via `php/recipes.php` with full labels and Schema.org markup support
@@ -138,10 +139,16 @@ The theme uses an autoload system in functions.php that includes all PHP files f
 
 ## Development Commands
 
-No build commands are available. Direct file editing workflow:
+No build process required - this is a direct-edit WordPress theme:
 1. Edit PHP, CSS, or JS files directly
-2. Changes are immediately reflected (CSS/JS have dynamic versioning)
+2. Changes are immediately reflected (CSS/JS have dynamic versioning via `filemtime()`)
 3. For PHP changes, reload the page to see updates
+4. No package.json, composer.json, or build tools configured
+
+### Testing
+- Test functionality directly in WordPress environment
+- Use WordPress debugging (`WP_DEBUG`) for PHP errors
+- Browser developer tools for JavaScript debugging
 
 ## Code Conventions
 
@@ -200,3 +207,17 @@ if (!sarai_chinwag_recipes_disabled()) {
 - Rating system uses WordPress nonce verification for CSRF protection
 - AJAX endpoints include proper nonce verification and validation
 - Client-side localStorage provides graceful degradation if server requests fail
+
+## Theme Information
+
+**Current Version**: 2.1 (Advanced Filter & Layout System)  
+**Live Demo**: [saraichinwag.com](https://saraichinwag.com)  
+**Developer**: Chris Huber ([chubes.net](https://chubes.net))
+
+### Recent Major Updates (v2.1)
+- Advanced filter bar with multiple sort options
+- Full-width 4-column responsive grid layout  
+- Simple view counter system for popularity tracking
+- Badge-breadcrumb navigation system
+- Pinterest integration improvements
+- Performance optimizations for all filtering features

@@ -168,20 +168,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
     
-    // Clear filters button
-    const clearFiltersBtn = document.getElementById('clear-filters');
-    if (clearFiltersBtn) {
-        clearFiltersBtn.addEventListener('click', function(e) {
-            e.preventDefault();
-            
-            // Reset to defaults
-            currentFilters.sort_by = 'random';
-            currentFilters.post_type_filter = 'all';
-            
-            applyFilters();
-        });
-    }
-    
     // Load More button event listener
     if (loadMoreButton) {
         loadMoreButton.addEventListener('click', function(e) {

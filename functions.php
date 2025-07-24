@@ -259,6 +259,17 @@ function sarai_chinwag_widgets_init() {
 add_action( 'widgets_init', 'sarai_chinwag_widgets_init' );
 
 /**
+ * Set Content-Language HTTP header for browser translation detection
+ * This helps browsers determine when to offer translation services
+ */
+function sarai_chinwag_set_content_language_header() {
+    if (!headers_sent()) {
+        header('Content-Language: en');
+    }
+}
+add_action('wp_head', 'sarai_chinwag_set_content_language_header', 1);
+
+/**
  * Display badge-breadcrumbs for single posts and recipes
  * Shows clickable category and tag badges that serve as navigation
  */

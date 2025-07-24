@@ -303,23 +303,23 @@ function sarai_chinwag_customizer_css() {
         --color-header-footer-bg: {$header_footer_bg_color};
     }
     
-    /* Scale body font size (current: 20px at 50%) */
+    /* Scale body font size with fluid clamp (18px-20px) */
     body {
-        font-size: calc(20px * var(--font-body-scale));
+        font-size: calc(clamp(18px, 2.5vw, 20px) * var(--font-body-scale));
     }
     
-    /* Scale heading sizes while maintaining hierarchy */
+    /* Scale heading sizes while maintaining hierarchy with fluid scaling */
     h1.entry-title {
-        font-size: calc(1.75em * var(--font-heading-scale));
+        font-size: calc(clamp(1.45em, 3vw, 1.75em) * var(--font-heading-scale));
     }
     h2 {
-        font-size: calc(1.38em * var(--font-heading-scale));
+        font-size: calc(clamp(1.15em, 2.5vw, 1.38em) * var(--font-heading-scale));
     }
     
     /* Scale responsive heading sizes */
     @media (max-width: 768px) {
         h1.entry-title {
-            font-size: calc(1.5em * var(--font-heading-scale));
+            font-size: calc(1.45em * var(--font-heading-scale));
         }
         h2.entry-title, .related-item h4 {
             font-size: calc(1.1em * var(--font-heading-scale));
@@ -331,22 +331,22 @@ function sarai_chinwag_customizer_css() {
     
     @media (max-width: 600px) {
         body {
-            font-size: calc(22px * var(--font-body-scale));
+            font-size: calc(20px * var(--font-body-scale));
         }
         h1.page-title {
-            font-size: calc(24px * var(--font-heading-scale));
+            font-size: calc(22px * var(--font-heading-scale));
         }
     }
     
     @media (max-width: 480px) {
         body {
-            font-size: calc(25px * var(--font-body-scale));
+            font-size: calc(18px * var(--font-body-scale));
         }
         h1.page-title {
-            font-size: calc(30px * var(--font-heading-scale));
+            font-size: calc(20px * var(--font-heading-scale));
         }
         h2.entry-title {
-            font-size: calc(1.25em * var(--font-heading-scale));
+            font-size: calc(1.15em * var(--font-heading-scale));
         }
     }
     ";
