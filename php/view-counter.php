@@ -98,7 +98,7 @@ add_action('wp_head', 'sarai_chinwag_track_post_view');
  */
 function sarai_chinwag_initialize_post_views() {
     // Only run occasionally to avoid performance impact
-    if (get_transient('sarai_chinwag_views_initialized')) {
+    if (wp_cache_get('views_initialized', 'sarai_chinwag_views')) {
         return;
     }
     
@@ -120,7 +120,7 @@ function sarai_chinwag_initialize_post_views() {
         update_post_meta($post->ID, '_post_views', 0);
     }
     
-    // Set transient to prevent this from running too often
-    set_transient('sarai_chinwag_views_initialized', true, DAY_IN_SECONDS);
+    // Set cache to prevent this from running too often
+    wp_cache_set('views_initialized', true, 'sarai_chinwag_views', DAY_IN_SECONDS);
 }
 add_action('init', 'sarai_chinwag_initialize_post_views');

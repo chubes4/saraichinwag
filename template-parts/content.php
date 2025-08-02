@@ -16,7 +16,7 @@
     if ( !is_singular() && has_post_thumbnail() ) {
         echo '<div class="post-thumbnail">';
         echo '<a href="' . esc_url( get_permalink() ) . '">';
-        the_post_thumbnail('medium', array('itemprop' => 'image'));
+        the_post_thumbnail('grid-thumb', array('itemprop' => 'image'));
         echo '</a>';
         echo '</div>';
     }

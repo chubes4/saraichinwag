@@ -27,14 +27,14 @@
         <h2 class="widget-title"><?php _e( 'Random Posts', 'sarai-chinwag' ); ?></h2>
             <?php
             // Get cached random posts
-            $cached_random_posts = get_transient('sidebar_random_posts');
+            $cached_random_posts = wp_cache_get('sidebar_random_posts', 'sarai_chinwag_sidebar');
             if ( false === $cached_random_posts ) {
                 $cached_random_posts = get_posts(array(
                     'posts_per_page' => 15, // Get more posts to cache
                     'orderby' => 'rand',
                     'post_status' => 'publish'
                 ));
-                set_transient('sidebar_random_posts', $cached_random_posts, 15 * MINUTE_IN_SECONDS);
+                wp_cache_set('sidebar_random_posts', $cached_random_posts, 'sarai_chinwag_sidebar', 15 * MINUTE_IN_SECONDS);
             }
             
             // Randomly select 3 from cached results
@@ -45,7 +45,7 @@
                     <a href="<?php echo get_permalink($post_item->ID); ?>">
                         <?php if ( has_post_thumbnail($post_item->ID) ) : ?>
                             <div class="post-thumbnail">
-                                <?php echo get_the_post_thumbnail($post_item->ID, 'medium'); ?>
+                                <?php echo get_the_post_thumbnail($post_item->ID, 'grid-thumb'); ?>
                             </div>
                         <?php endif; ?>
                         <h3><?php echo esc_html($post_item->post_title); ?></h3>
@@ -62,7 +62,7 @@
         <h2 class="widget-title"><?php _e( 'Random Recipes', 'sarai-chinwag' ); ?></h2>
             <?php
             // Get cached random recipes
-            $cached_random_recipes = get_transient('sidebar_random_recipes');
+            $cached_random_recipes = wp_cache_get('sidebar_random_recipes', 'sarai_chinwag_sidebar');
             if ( false === $cached_random_recipes ) {
                 $cached_random_recipes = get_posts(array(
                     'posts_per_page' => 10, // Get more recipes to cache
@@ -70,7 +70,7 @@
                     'post_type' => 'recipe',
                     'post_status' => 'publish'
                 ));
-                set_transient('sidebar_random_recipes', $cached_random_recipes, 15 * MINUTE_IN_SECONDS);
+                wp_cache_set('sidebar_random_recipes', $cached_random_recipes, 'sarai_chinwag_sidebar', 15 * MINUTE_IN_SECONDS);
             }
             
             // Randomly select 2 from cached results
@@ -81,7 +81,7 @@
                     <a href="<?php echo get_permalink($post_item->ID); ?>">
                         <?php if ( has_post_thumbnail($post_item->ID) ) : ?>
                             <div class="post-thumbnail">
-                                <?php echo get_the_post_thumbnail($post_item->ID, 'medium'); ?>
+                                <?php echo get_the_post_thumbnail($post_item->ID, 'grid-thumb'); ?>
                             </div>
                         <?php endif; ?>
                         <h3><?php echo esc_html($post_item->post_title); ?></h3>

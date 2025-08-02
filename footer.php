@@ -45,35 +45,27 @@
         // Get categories and counts with indefinite caching (clears when content changes)
         $cache_version = wp_cache_get_last_changed('posts') . wp_cache_get_last_changed('terms');
         $cache_key = 'footer_category_data_' . md5($cache_version);
-        $category_data = get_transient($cache_key);
+        $category_data = wp_cache_get($cache_key, 'sarai_chinwag_footer');
         if ( false === $category_data ) {
+            // Get categories with their built-in counts - much more efficient
             $categories = get_categories(array(
                 'orderby' => 'name',
                 'order' => 'ASC',
                 'hide_empty' => true, // Only get categories with posts
-                'number' => 0,
+                'number' => 30, // Limit to prevent memory issues
             ));
             
+            // Use the built-in category counts - no extra queries needed
             $counts = [];
             foreach ($categories as $category) {
-                $term_ids = get_term_children($category->term_id, 'category');
-                $term_ids[] = $category->term_id;
-
-                $terms = get_terms(array(
-                    'taxonomy'   => 'category',
-                    'include'    => $term_ids,
-                    'hide_empty' => false,
-                ));
-
-                $post_count = array_sum(wp_list_pluck($terms, 'count'));
-                $counts[$category->term_id] = $post_count;
+                $counts[$category->term_id] = $category->count;
             }
             
             $category_data = array(
                 'categories' => $categories,
                 'counts' => $counts
             );
-            set_transient($cache_key, $category_data, 0); // 0 = never expire (cleared when content changes)
+            wp_cache_set($cache_key, $category_data, 'sarai_chinwag_footer', 0); // 0 = never expire (cleared when content changes)
         } else {
             $categories = $category_data['categories'];
             $counts = $category_data['counts'];
@@ -115,15 +107,15 @@
         <?php
         // Get tags with indefinite caching (clears when content changes)
         $tag_cache_key = 'footer_tags_' . md5($cache_version);
-        $tags = get_transient($tag_cache_key);
+        $tags = wp_cache_get($tag_cache_key, 'sarai_chinwag_footer');
         if ( false === $tags ) {
             $tags = get_tags(array(
                 'orderby' => 'name',
                 'order' => 'ASC',
                 'hide_empty' => true, // Only get tags with posts
-                'number' => 0,
+                'number' => 50, // Limit to prevent memory issues
             ));
-            set_transient($tag_cache_key, $tags, 0); // 0 = never expire (cleared when content changes)
+            wp_cache_set($tag_cache_key, $tags, 'sarai_chinwag_footer', 0); // 0 = never expire (cleared when content changes)
         }
 
         $tag_counts = wp_list_pluck($tags, 'count');

@@ -170,8 +170,8 @@ function sarai_chinwag_fetch_google_fonts_by_category($category = '') {
         return array();
     }
     
-    $transient_key = 'sarai_chinwag_google_fonts_' . $category;
-    $fonts = get_transient($transient_key);
+    $cache_key = 'google_fonts_' . $category;
+    $fonts = wp_cache_get($cache_key, 'sarai_chinwag_fonts');
     
     if (false === $fonts) {
         $api_url = 'https://www.googleapis.com/webfonts/v1/webfonts?key=' . $api_key . '&sort=popularity';
@@ -197,7 +197,7 @@ function sarai_chinwag_fetch_google_fonts_by_category($category = '') {
             }
         }
         
-        set_transient($transient_key, $fonts, DAY_IN_SECONDS);
+        wp_cache_set($cache_key, $fonts, 'sarai_chinwag_fonts', DAY_IN_SECONDS);
     }
     
     return $fonts;

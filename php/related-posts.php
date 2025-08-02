@@ -9,7 +9,7 @@ function sarai_chinwag_random_discovery() {
     
     // Check cache first - random discovery cached for 15 minutes
     $cache_key = "random_discovery_{$current_post_id}";
-    $cached_content = get_transient($cache_key);
+    $cached_content = wp_cache_get($cache_key, 'sarai_chinwag_related');
     
     if (false !== $cached_content) {
         echo $cached_content;
@@ -54,7 +54,7 @@ function sarai_chinwag_random_discovery() {
         if (has_post_thumbnail()) {
             echo '<div class="post-thumbnail">';
             echo '<a href="' . esc_url(get_permalink()) . '">';
-            the_post_thumbnail('medium', array('itemprop' => 'image'));
+            the_post_thumbnail('grid-thumb', array('itemprop' => 'image'));
             echo '</a>';
             echo '</div>';
         }
@@ -73,7 +73,7 @@ function sarai_chinwag_random_discovery() {
     
     // Cache the output for 15 minutes
     $output = ob_get_contents();
-    set_transient($cache_key, $output, 15 * MINUTE_IN_SECONDS);
+    wp_cache_set($cache_key, $output, 'sarai_chinwag_related', 15 * MINUTE_IN_SECONDS);
     
     ob_end_flush();
 }
