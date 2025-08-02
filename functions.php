@@ -20,7 +20,7 @@
  * 
  * @package Sarai_Chinwag
  * @author Chris Huber
- * @version 2.0
+ * @version 2.1
  * @link https://saraichinwag.com
  * @since 1.0.0
  */
@@ -37,7 +37,15 @@ if ( ! function_exists( 'sarai_chinwag_setup' ) ) :
         add_theme_support( 'custom-logo' );
         add_theme_support( 'menus' );
         add_theme_support( 'editor-styles' );
-        add_editor_style( 'style.css' ); 
+        add_editor_style( 'style.css' );
+        
+        // Remove unused WordPress image sizes to optimize performance
+        remove_image_size('thumbnail');    // 150px - too small, unused
+        remove_image_size('medium');       // 300px - causes oversizing issues  
+        remove_image_size('medium_large'); // 768px - wastes bandwidth
+        
+        // Add optimized custom image size for post grids
+        add_image_size('grid-thumb', 450, 450, true); // 450x450 cropped for 412px display 
         register_nav_menus( array(
             'primary' => __( 'Primary Menu', 'sarai-chinwag' ),
             'footer'  => __( 'Footer Menu', 'sarai-chinwag' ),
@@ -121,8 +129,7 @@ function sarai_chinwag_recipes_disabled() {
  * Cache is indefinite until content is modified
  */
 function sarai_chinwag_clear_footer_cache() {
-    delete_transient('footer_category_data');
-    delete_transient('footer_tags');
+    wp_cache_flush_group('sarai_chinwag_footer');
 }
 
 // Clear footer cache when posts or terms are modified
@@ -141,32 +148,32 @@ add_action('delete_term', 'sarai_chinwag_clear_footer_cache');
  */
 function sarai_chinwag_get_cached_random_post_id($post_type = 'post') {
     $cache_key = "random_{$post_type}_ids";
-    $random_ids = get_transient($cache_key);
+    $random_ids = wp_cache_get($cache_key, 'sarai_chinwag_random');
     
     if (false === $random_ids || empty($random_ids)) {
-        // Get all post IDs for this post type (fast query - no content)
+        // Get limited post IDs for this post type (prevent memory issues)
         $all_posts = get_posts(array(
             'post_type' => $post_type,
             'fields' => 'ids',
-            'numberposts' => -1,
-            'post_status' => 'publish'
+            'numberposts' => 500, // Limit to prevent memory issues
+            'post_status' => 'publish',
+            'orderby' => 'rand' // Let MySQL handle randomization for large datasets
         ));
         
         if (empty($all_posts)) {
             return false;
         }
         
-        // Randomize in PHP (much faster than MySQL rand())
-        shuffle($all_posts);
+        // Already randomized by MySQL - no need to shuffle again
         
         // Cache for 1 hour - refreshes automatically
-        set_transient($cache_key, $all_posts, HOUR_IN_SECONDS);
+        wp_cache_set($cache_key, $all_posts, 'sarai_chinwag_random', HOUR_IN_SECONDS);
         $random_ids = $all_posts;
     }
     
     // Return first ID and rotate array for next request
     $post_id = array_shift($random_ids);
-    set_transient($cache_key, $random_ids, HOUR_IN_SECONDS);
+    wp_cache_set($cache_key, $random_ids, 'sarai_chinwag_random', HOUR_IN_SECONDS);
     
     return $post_id;
 }
@@ -181,27 +188,27 @@ function sarai_chinwag_get_cached_random_post_id($post_type = 'post') {
  */
 function sarai_chinwag_get_cached_random_query_ids($post_types, $count = 10) {
     $cache_key = 'random_query_' . md5(serialize($post_types) . $count);
-    $random_ids = get_transient($cache_key);
+    $random_ids = wp_cache_get($cache_key, 'sarai_chinwag_random');
     
     if (false === $random_ids || empty($random_ids)) {
-        // Get all post IDs for specified post types (fast query - no content)
+        // Get limited random post IDs for specified post types
         $all_posts = get_posts(array(
             'post_type' => $post_types,
             'fields' => 'ids',
-            'numberposts' => -1,
-            'post_status' => 'publish'
+            'numberposts' => min($count * 10, 500), // Get 10x what we need, max 500
+            'post_status' => 'publish',
+            'orderby' => 'rand' // Let MySQL handle randomization
         ));
         
         if (empty($all_posts)) {
             return array();
         }
         
-        // Randomize in PHP and take only what we need
-        shuffle($all_posts);
-        $random_ids = array_slice($all_posts, 0, $count * 3); // Get 3x what we need for variety
+        // Already randomized by MySQL
+        $random_ids = $all_posts;
         
         // Cache for 30 minutes - shorter than individual post cache for more variety
-        set_transient($cache_key, $random_ids, 30 * MINUTE_IN_SECONDS);
+        wp_cache_set($cache_key, $random_ids, 'sarai_chinwag_random', 30 * MINUTE_IN_SECONDS);
     }
     
     // Return the requested number of IDs
@@ -369,4 +376,5 @@ function sarai_chinwag_archive_breadcrumbs() {
         echo '</nav>';
     }
 }
+
 ?>

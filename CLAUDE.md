@@ -68,8 +68,20 @@ The theme uses an autoload system in functions.php that includes all PHP files f
 - **Dynamic asset versioning**: Uses `filemtime()` for cache busting on CSS and JS files
 - **Rating system**: AJAX-powered recipe ratings with localStorage persistence, nonce security, and dual-state management
 - **Schema.org markup**: Full structured data implementation for recipes
-- **Performance optimizations**: Transient caching for Google Fonts API calls, category/tag clouds, random posts, and view counters
+- **Performance optimizations**: Object caching with wp_cache_* functions, indefinite footer caching, cache groups, and limited query results
 - **Security enhancements**: All output properly escaped, input sanitized, secure API key storage
+
+## Image Optimization Strategy
+
+**Custom Image Sizes:**
+- **grid-thumb**: 450x450px cropped for post grid display (optimized for 412px mobile viewports)
+- **Removed unused WordPress defaults**: thumbnail (150px), medium (300px), medium_large (768px) to reduce storage overhead
+
+**Performance Benefits:**
+- Single optimized image size reduces server storage and bandwidth usage
+- 450px size provides crisp display on mobile devices while remaining lightweight
+- Eliminates WordPress generation of unnecessary image variations
+- Improves theme loading speed by serving appropriately sized images
 
 ## Dynamic Google Fonts Architecture
 
@@ -78,7 +90,7 @@ The theme uses an autoload system in functions.php that includes all PHP files f
 - **Customizer Controls**: Two font dropdowns (Header/Body) + two size sliders (1-100%) accessible via **Appearance → Customize → Typography**
 - **CSS Scaling System**: Uses CSS custom properties (`--font-heading-scale`, `--font-body-scale`) for proportional scaling
 - **Live Preview**: `js/customizer.js` provides real-time font and size changes in WordPress Customizer
-- **Caching Strategy**: 24-hour transients for API responses using keys like `sarai_chinwag_google_fonts_display`
+- **Caching Strategy**: Object cache groups with `sarai_chinwag_fonts` group for all font-related data, 24-hour wp_cache for Google Fonts API responses using dynamic cache keys
 
 ### Font Organization
 - **Header Fonts**: Display category fonts only (`category=display` API parameter)
@@ -87,15 +99,17 @@ The theme uses an autoload system in functions.php that includes all PHP files f
 
 ### Scaling System
 - **50% = Baseline**: Current theme sizes (20px body, 1.75em h1, 1.38em h2)  
-- **CSS Implementation**: `calc()` functions with custom properties maintain responsive breakpoints
-- **Hierarchy Preservation**: All heading levels (h1-h6) scale proportionally
+- **Fluid Responsive Scaling**: Uses `clamp()` functions for optimal display across all devices
+- **CSS Implementation**: `calc()` functions with custom properties and clamp() for responsive breakpoints
+- **Mobile Optimization**: Specific breakpoints at 768px, 600px, and 480px for enhanced mobile typography
+- **Hierarchy Preservation**: All heading levels (h1-h6) scale proportionally while maintaining fluid responsiveness
 
 ## Randomization System Architecture
 
 ### Anti-Chronological Design
 - **Main Query Modification**: `php/random-queries.php` modifies home and archive queries to use `orderby: rand`
 - **Post Type Integration**: Includes both 'post' and 'recipe' post types in randomized queries
-- **Performance Consideration**: Random queries can be expensive; uses proper caching strategies
+- **Performance Optimizations**: Cached random ID arrays replace expensive `orderby => 'rand'` queries with rotation system and limited datasets (max 500 posts)
 
 ### Random Access Pages  
 - **Direct Random Posts**: `/random-post` page redirects to random post via `extra_chill_redirect_to_random_post()`
@@ -160,14 +174,25 @@ No build process required - this is a direct-edit WordPress theme:
 - Dynamic versioning for static assets using `filemtime()` for cache busting
 - Always call `wp_reset_postdata()` after custom post queries using `setup_postdata()`
 - Sanitize all `$_POST` data with appropriate WordPress functions (`sanitize_text_field()`, etc.)
-- Use transient caching for expensive queries (15 minutes for random posts, 24 hours for Google Fonts)
+- Use wp_cache_* functions with appropriate cache groups for expensive queries (1 hour for random posts, 24 hours for Google Fonts, indefinite for footer content)
 - Use modular PHP file organization in `/php` directory with descriptive naming
 - JavaScript should use WordPress i18n (`wp.i18n`) for user-facing messages
 
 ## Performance Notes
 
-- Category and tag clouds use transient caching to avoid N+1 queries
-- Random posts/recipes are cached for 15 minutes to reduce database load
+**Object Caching Architecture:**
+- **wp_cache_* functions** replace transients throughout theme for better performance
+- **Cache Groups**: `sarai_chinwag_footer`, `sarai_chinwag_random`, `sarai_chinwag_related`, `sarai_chinwag_fonts`, `sarai_chinwag_sidebar`
+- **Dynamic cache versioning** using `wp_cache_get_last_changed()` for content-dependent caches
+- **Indefinite caching** for footer content (cleared only when content changes via hooks)
+- **Limited query results** (max 500 posts) to prevent memory issues in large sites
+
+**Specific Optimizations:**
+- Category/tag clouds use indefinite caching with automatic invalidation
+- Random posts cached for 1 hour with rotation system to reduce `orderby => 'rand'` queries  
+- Related content cached for 15 minutes per post
+- Google Fonts API responses cached for 24 hours
+- Sidebar widgets cached for 15 minutes
 - CSS uses custom properties for dynamic styling instead of inline styles
 - All queries use proper WordPress functions and avoid direct database access
 
@@ -199,6 +224,19 @@ if (!sarai_chinwag_recipes_disabled()) {
 }
 ```
 
+## Internationalization & Browser Compatibility
+
+**Language Support:**
+- **Content-Language HTTP header**: Automatically set to 'en' to help browsers determine when to offer translation services
+- **Language attributes**: Dynamic language attributes in template parts using `get_locale()` for proper content marking
+- **Translation ready**: Full i18n support with `load_theme_textdomain()` and translatable strings throughout
+- **Browser translation detection**: Helps browsers like Chrome and Edge determine when to show translation options
+
+**Implementation Details:**
+- Header function `sarai_chinwag_set_content_language_header()` sets HTTP headers before content output
+- Template parts include `lang` attributes on content containers
+- All user-facing strings use WordPress translation functions with proper text domains
+
 ## Security Notes
 
 - All user input is properly sanitized using WordPress functions
@@ -210,14 +248,17 @@ if (!sarai_chinwag_recipes_disabled()) {
 
 ## Theme Information
 
-**Current Version**: 2.1 (Advanced Filter & Layout System)  
+**Current Version**: 2.1 (Advanced Filter & Layout System + Performance Optimization)  
 **Live Demo**: [saraichinwag.com](https://saraichinwag.com)  
 **Developer**: Chris Huber ([chubes.net](https://chubes.net))
 
 ### Recent Major Updates (v2.1)
-- Advanced filter bar with multiple sort options
-- Full-width 4-column responsive grid layout  
-- Simple view counter system for popularity tracking
-- Badge-breadcrumb navigation system
-- Pinterest integration improvements
-- Performance optimizations for all filtering features
+- **Object Caching System**: Replaced transients with wp_cache_* functions for better performance
+- **Image Optimization**: Custom 450x450 grid-thumb size, removed unused WordPress image sizes
+- **Fluid Typography**: Implemented clamp() functions for responsive font scaling across all devices
+- **Internationalization**: Content-Language HTTP headers and dynamic language attributes
+- **Performance Caching**: Indefinite caching for footer, 1-hour rotation for random posts, cache groups
+- **Advanced filter bar** with multiple sort options (Random, Popular, Recent, Oldest)
+- **Full-width 4-column responsive grid** layout for maximum content visibility
+- **Simple view counter system** for popularity tracking with `_post_views` meta field
+- **Badge-breadcrumb navigation** system for single posts, traditional breadcrumbs for archives
