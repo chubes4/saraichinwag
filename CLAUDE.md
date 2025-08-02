@@ -28,7 +28,7 @@ The theme includes an admin settings page accessible via **Settings → Theme Se
 The theme uses an autoload system in functions.php that includes all PHP files from the `/php` directory:
 - `admin-settings.php`: Theme settings page with API key management
 - `bing-index-now.php`: Bing indexing integration
-- `customizer.php`: Dynamic Google Fonts system with API integration and percentage-based scaling
+- `customizer.php`: Dynamic Google Fonts system with API integration, percentage-based scaling, and WordPress editor font integration
 - `filter-bar.php`: Advanced filter bar interface for home/archive pages
 - `image-counts.php`: Image handling utilities
 - `random-post.php` & `random-queries.php`: Random content functionality (anti-chronological design)
@@ -62,6 +62,7 @@ The theme uses an autoload system in functions.php that includes all PHP files f
 - **Universal theme design**: Can function as recipe site or standard blog via admin toggle
 - **Recipe functionality**: Complete recipe post type with ratings, schema markup, and specialized templates (when enabled)
 - **WordPress Customizer integration**: Live preview for font changes and size scaling with custom CSS properties
+- **WordPress Editor Font Integration**: Consistent font experience between Block Editor, Classic Editor, and frontend display
 - **Pinterest integration**: Footer follow button + automatic Pinterest save buttons with `data-pin-url` attributes
 - **Badge-breadcrumb system**: Category/tag badges on single posts for navigation, traditional breadcrumbs on archives
 - **Random discovery section**: 3-post random grid replaces complex related posts logic
@@ -83,6 +84,37 @@ The theme uses an autoload system in functions.php that includes all PHP files f
 - Eliminates WordPress generation of unnecessary image variations
 - Improves theme loading speed by serving appropriately sized images
 
+## WordPress Editor Font Integration
+
+### WYSIWYG Font Consistency
+The theme provides seamless font integration between WordPress editors and frontend display, ensuring content creators see exactly how their content will appear to visitors.
+
+**Editor Support:**
+- **Block Editor (Gutenberg)**: Full font integration via `enqueue_block_editor_assets` hook
+- **Classic Editor**: Font loading on post edit pages via `admin_enqueue_scripts` hook
+- **Dynamic Font Loading**: Same Google Fonts loaded in editors as on frontend
+- **Real-time Scaling**: Editor typography scales with customizer settings using CSS custom properties
+
+**Technical Implementation:**
+- `sarai_chinwag_enqueue_editor_fonts()`: Loads Google Fonts for both editors using identical font selection logic as frontend
+- `sarai_chinwag_enqueue_editor_css()`: Generates editor-specific CSS with proper WordPress selectors
+- **Editor CSS Selectors**: `.editor-styles-wrapper`, `.wp-block-editor`, `.wp-block-*` for Block Editor compatibility
+- **Classic Editor Support**: Targets post edit pages specifically (`post.php`, `post-new.php`)
+- **Font Scaling**: Editors inherit percentage-based scaling from customizer settings
+
+**User Experience Benefits:**
+- Content creators see accurate font representation while editing
+- Eliminates guesswork about final post appearance
+- Improved editorial workflow with consistent typography
+- Reduced need for preview during content creation
+- Professional editing environment matching site design
+
+**Performance Considerations:**
+- Google Fonts loaded only once per editing session
+- Conditional loading based on customizer font selections
+- Editor CSS generated dynamically to match current theme settings
+- Minimal overhead - only loads fonts actually selected in customizer
+
 ## Dynamic Google Fonts Architecture
 
 ### Font System Components
@@ -90,6 +122,7 @@ The theme uses an autoload system in functions.php that includes all PHP files f
 - **Customizer Controls**: Two font dropdowns (Header/Body) + two size sliders (1-100%) accessible via **Appearance → Customize → Typography**
 - **CSS Scaling System**: Uses CSS custom properties (`--font-heading-scale`, `--font-body-scale`) for proportional scaling
 - **Live Preview**: `js/customizer.js` provides real-time font and size changes in WordPress Customizer
+- **Editor Integration**: Consistent font loading in Block Editor and Classic Editor matching frontend selections
 - **Caching Strategy**: Object cache groups with `sarai_chinwag_fonts` group for all font-related data, 24-hour wp_cache for Google Fonts API responses using dynamic cache keys
 
 ### Font Organization
@@ -174,24 +207,47 @@ No build process required - this is a direct-edit WordPress theme:
 - Dynamic versioning for static assets using `filemtime()` for cache busting
 - Always call `wp_reset_postdata()` after custom post queries using `setup_postdata()`
 - Sanitize all `$_POST` data with appropriate WordPress functions (`sanitize_text_field()`, etc.)
-- Use wp_cache_* functions with appropriate cache groups for expensive queries (1 hour for random posts, 24 hours for Google Fonts, indefinite for footer content)
+- Use wp_cache_* functions with appropriate cache groups for expensive queries (1 hour for random posts, 24 hours for Google Fonts, view counter caching)
 - Use modular PHP file organization in `/php` directory with descriptive naming
 - JavaScript should use WordPress i18n (`wp.i18n`) for user-facing messages
+
+## Footer Architecture
+
+### Simplified Footer Design
+The footer has been streamlined for better user experience and SEO performance:
+
+**Core Elements:**
+- **Surprise Me Button**: Random content discovery with shuffle icon
+- **Pinterest Follow Button**: Dynamic integration using admin-configured username
+- **Footer Menu**: WordPress nav menu support for footer navigation
+- **Site Information**: Copyright notice with Amazon affiliate disclosure
+
+**SEO Benefits:**
+- **Reduced Link Bloat**: Eliminated category/tag clouds that created 130+ redundant links on every page
+- **Improved Crawl Efficiency**: Search engines focus on primary content instead of repetitive footer links
+- **Clean Information Architecture**: Footer now serves user navigation rather than SEO manipulation
+- **Pinterest Integration**: Maintains valuable social media connectivity
+
+**Technical Implementation:**
+- Dynamic Pinterest username from admin settings (`sarai_chinwag_pinterest_username`)
+- Clean Bootstrap Icons SVG for Pinterest logo (16x16 viewBox)
+- Proper `rel="noopener noreferrer"` attributes for external links
+- Translation-ready text with `translate="no"` attributes for proper names
 
 ## Performance Notes
 
 **Object Caching Architecture:**
 - **wp_cache_* functions** replace transients throughout theme for better performance
-- **Cache Groups**: `sarai_chinwag_footer`, `sarai_chinwag_random`, `sarai_chinwag_related`, `sarai_chinwag_fonts`, `sarai_chinwag_sidebar`
+- **Cache Groups**: `sarai_chinwag_random`, `sarai_chinwag_related`, `sarai_chinwag_fonts`, `sarai_chinwag_views`, `sarai_chinwag_sidebar`
 - **Dynamic cache versioning** using `wp_cache_get_last_changed()` for content-dependent caches
-- **Indefinite caching** for footer content (cleared only when content changes via hooks)
 - **Limited query results** (max 500 posts) to prevent memory issues in large sites
 
 **Specific Optimizations:**
-- Category/tag clouds use indefinite caching with automatic invalidation
 - Random posts cached for 1 hour with rotation system to reduce `orderby => 'rand'` queries  
 - Related content cached for 15 minutes per post
 - Google Fonts API responses cached for 24 hours
+- Editor font integration with conditional loading based on customizer selections
+- View counter system uses efficient wp_cache with `sarai_chinwag_views` cache group
 - Sidebar widgets cached for 15 minutes
 - CSS uses custom properties for dynamic styling instead of inline styles
 - All queries use proper WordPress functions and avoid direct database access
@@ -248,17 +304,16 @@ if (!sarai_chinwag_recipes_disabled()) {
 
 ## Theme Information
 
-**Current Version**: 2.1 (Advanced Filter & Layout System + Performance Optimization)  
+**Current Version**: 2.2 (WordPress Editor Integration & Footer Simplification)  
 **Live Demo**: [saraichinwag.com](https://saraichinwag.com)  
 **Developer**: Chris Huber ([chubes.net](https://chubes.net))
 
-### Recent Major Updates (v2.1)
-- **Object Caching System**: Replaced transients with wp_cache_* functions for better performance
-- **Image Optimization**: Custom 450x450 grid-thumb size, removed unused WordPress image sizes
-- **Fluid Typography**: Implemented clamp() functions for responsive font scaling across all devices
-- **Internationalization**: Content-Language HTTP headers and dynamic language attributes
-- **Performance Caching**: Indefinite caching for footer, 1-hour rotation for random posts, cache groups
-- **Advanced filter bar** with multiple sort options (Random, Popular, Recent, Oldest)
-- **Full-width 4-column responsive grid** layout for maximum content visibility
-- **Simple view counter system** for popularity tracking with `_post_views` meta field
-- **Badge-breadcrumb navigation** system for single posts, traditional breadcrumbs for archives
+### Recent Major Updates (v2.2)
+- **WordPress Editor Font Integration**: Consistent font experience between Block Editor, Classic Editor, and frontend
+- **Footer Architecture Simplification**: Removed category/tag clouds for better UX and SEO (130+ link reduction)
+- **Pinterest Icon Enhancement**: Clean Bootstrap Icons SVG with proper 16x16 viewBox
+- **Object Caching Evolution**: New cache groups for views and sidebar, continued wp_cache_* migration
+- **Image Optimization**: Consistent 'grid-thumb' usage across all templates for better performance
+- **SEO Improvements**: Reduced footer link bloat, improved crawl efficiency
+- **Editor CSS Integration**: Dynamic scaling and font loading in WordPress editors
+- **Performance Optimizations**: Enhanced caching strategies with proper cache group segregation

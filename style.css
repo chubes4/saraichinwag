@@ -352,17 +352,6 @@ fill: #fff;
     margin-top: 15px;
 }
 
-.footer-clouds{
-    padding: 0 15px;
-    margin-bottom:15px;
-    line-height: 2em;
-}
-.footer-category-cloud a{
-    color: var(--color-primary);
-}
-.footer-tag-cloud a{
-    color: var(--color-secondary);
-}
 .surprise-me{
     max-width: 80%;
     width: 40%;
@@ -590,10 +579,6 @@ fill: #fff;
 }
 
 
-/* Footer cloud links with dynamic sizing */
-.category-cloud-link, .tag-cloud-link {
-    font-size: var(--cloud-size, 16px);
-}
 
 /* Footer credit link styling */
 .footer-credit-link {

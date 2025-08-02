@@ -29,124 +29,14 @@
            target="_blank" 
            rel="noopener noreferrer"
            class="pinterest-follow-btn">
-            <svg class="pinterest-logo" width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12,2A10,10 0 0,0 2,12C2,16.42 4.87,20.17 8.84,21.5C8.76,20.53 8.64,19.33 8.85,18.85L9.85,15.32C9.85,15.32 9.6,14.82 9.6,14.82C9.6,13.81 10.13,13.06 10.8,13.06C11.34,13.06 11.6,13.45 11.6,13.92C11.6,14.44 11.28,15.22 11.11,15.93C10.97,16.54 11.42,17.04 12,17.04C13.08,17.04 13.93,15.92 13.93,14.27C13.93,12.81 12.95,11.83 12,11.83C10.78,11.83 10.05,12.74 10.05,13.76C10.05,14.15 10.2,14.57 10.4,14.81C10.46,14.91 10.47,15 10.45,15.1L10.17,16.26C10.13,16.43 10.04,16.47 9.87,16.39C9.09,16 8.57,14.92 8.57,13.73C8.57,11.78 10,10.08 12.21,10.08C14.02,10.08 15.42,11.37 15.42,14.24C15.42,17.2 13.84,19.6 11.66,19.6C10.97,19.6 10.32,19.25 10.11,18.84L9.66,20.68C9.5,21.29 9.12,22.06 8.84,22.5C9.83,22.82 10.9,23 12,23A10,10 0 0,0 22,12A10,10 0 0,0 12,2Z"/>
+            <svg class="pinterest-logo" width="20" height="20" viewBox="0 0 16 16" fill="currentColor">
+                <path d="M8 0a8 8 0 0 0-2.915 15.452c-.07-.633-.134-1.606.027-2.297.146-.625.938-3.977.938-3.977s-.239-.479-.239-1.187c0-1.113.645-1.943 1.448-1.943.682 0 1.012.512 1.012 1.127 0 .686-.437 1.712-.663 2.663-.188.796.4 1.446 1.185 1.446 1.422 0 2.515-1.5 2.515-3.664 0-1.915-1.377-3.254-3.342-3.254-2.276 0-3.612 1.707-3.612 3.471 0 .688.265 1.425.595 1.826a.24.24 0 0 1 .056.23c-.061.252-.196.796-.222.907-.035.146-.116.177-.268.107-1-.465-1.624-1.926-1.624-3.1 0-2.523 1.834-4.84 5.286-4.84 2.775 0 4.932 1.977 4.932 4.62 0 2.757-1.739 4.976-4.151 4.976-.811 0-1.573-.421-1.834-.919l-.498 1.902c-.181.695-.669 1.566-.995 2.097A8 8 0 1 0 8 0"/>
             </svg>
             <?php _e('Follow on Pinterest', 'sarai-chinwag'); ?>
         </a>
     </div>
     <?php endif; ?>
     
-    <div class="footer-clouds">
-    <!-- Category Cloud -->
-    <div class="footer-category-cloud">
-        <h2><?php _e('Categories', 'sarai-chinwag'); ?></h2>
-        <?php
-        // Get categories and counts with indefinite caching (clears when content changes)
-        $cache_version = wp_cache_get_last_changed('posts') . wp_cache_get_last_changed('terms');
-        $cache_key = 'footer_category_data_' . md5($cache_version);
-        $category_data = wp_cache_get($cache_key, 'sarai_chinwag_footer');
-        if ( false === $category_data ) {
-            // Get categories with their built-in counts - much more efficient
-            $categories = get_categories(array(
-                'orderby' => 'name',
-                'order' => 'ASC',
-                'hide_empty' => true, // Only get categories with posts
-                'number' => 30, // Limit to prevent memory issues
-            ));
-            
-            // Use the built-in category counts - no extra queries needed
-            $counts = [];
-            foreach ($categories as $category) {
-                $counts[$category->term_id] = $category->count;
-            }
-            
-            $category_data = array(
-                'categories' => $categories,
-                'counts' => $counts
-            );
-            wp_cache_set($cache_key, $category_data, 'sarai_chinwag_footer', 0); // 0 = never expire (cleared when content changes)
-        } else {
-            $categories = $category_data['categories'];
-            $counts = $category_data['counts'];
-        }
-
-        // Get min and max post counts for scaling
-        if (empty($counts)) {
-            $min_count = 0;
-            $max_count = 0;
-        } else {
-            $min_count = min($counts);
-            $max_count = max($counts);
-        }
-        $min_font_size = 16; // Minimum font size
-        $max_font_size = 34; // Maximum font size
-
-        foreach ($categories as $category) {
-            $post_count = $counts[$category->term_id];
-
-            // Scale the font size based on the normalized count
-            if ($post_count > 3) {
-                if ($max_count == $min_count) {
-                    // Avoid division by zero if all counts are the same
-                    $font_size = ($max_font_size + $min_font_size) / 2;
-                } else {
-                    $normalized = ($post_count - $min_count) / ($max_count - $min_count);
-                    $font_size = $min_font_size + $normalized * ($max_font_size - $min_font_size);
-                }
-
-                echo '<a href="' . esc_url(get_category_link($category->term_id)) . '" class="category-cloud-link" style="--cloud-size: ' . round($font_size) . 'px;">' . esc_html($category->name) . ' (' . intval($post_count) . ')</a> ';
-            }
-        }
-        ?>
-    </div>
-
-    <!-- Tag Cloud -->
-    <div class="footer-tag-cloud">
-        <h2><?php _e('Tags', 'sarai-chinwag'); ?></h2>
-        <?php
-        // Get tags with indefinite caching (clears when content changes)
-        $tag_cache_key = 'footer_tags_' . md5($cache_version);
-        $tags = wp_cache_get($tag_cache_key, 'sarai_chinwag_footer');
-        if ( false === $tags ) {
-            $tags = get_tags(array(
-                'orderby' => 'name',
-                'order' => 'ASC',
-                'hide_empty' => true, // Only get tags with posts
-                'number' => 50, // Limit to prevent memory issues
-            ));
-            wp_cache_set($tag_cache_key, $tags, 'sarai_chinwag_footer', 0); // 0 = never expire (cleared when content changes)
-        }
-
-        $tag_counts = wp_list_pluck($tags, 'count');
-        
-        // Check if we have any tags before using min/max
-        if (empty($tag_counts)) {
-            $min_tag_count = 0;
-            $max_tag_count = 0;
-        } else {
-            $min_tag_count = min($tag_counts);
-            $max_tag_count = max($tag_counts);
-        }
-
-        foreach ($tags as $tag) {
-            $post_count = $tag->count;
-
-            // Scale the font size for tags similarly
-            if ($post_count > 3) {
-                if ($max_tag_count == $min_tag_count) {
-                    $font_size = ($max_font_size + $min_font_size) / 2;
-                } else {
-                    $normalized = ($post_count - $min_tag_count) / ($max_tag_count - $min_tag_count);
-                    $font_size = $min_font_size + $normalized * ($max_font_size - $min_font_size);
-                }
-
-                echo '<a href="' . esc_url(get_tag_link($tag->term_id)) . '" class="tag-cloud-link" style="--cloud-size: ' . round($font_size) . 'px;">' . esc_html($tag->name) . ' (' . intval($post_count) . ')</a> ';
-            }
-        }
-        ?>
-    </div>
-</div><!-- .footer-clouds -->
 
     <?php
     // Display the footer menu if it's set

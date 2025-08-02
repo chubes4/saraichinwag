@@ -124,20 +124,6 @@ function sarai_chinwag_recipes_disabled() {
     return apply_filters('sarai_chinwag_recipes_disabled', $disabled);
 }
 
-/**
- * Clear footer cache when content changes
- * Cache is indefinite until content is modified
- */
-function sarai_chinwag_clear_footer_cache() {
-    wp_cache_flush_group('sarai_chinwag_footer');
-}
-
-// Clear footer cache when posts or terms are modified
-add_action('save_post', 'sarai_chinwag_clear_footer_cache');
-add_action('delete_post', 'sarai_chinwag_clear_footer_cache');
-add_action('wp_update_term', 'sarai_chinwag_clear_footer_cache');
-add_action('created_term', 'sarai_chinwag_clear_footer_cache');
-add_action('delete_term', 'sarai_chinwag_clear_footer_cache');
 
 /**
  * Get cached random post ID for high-performance random post selection

@@ -269,6 +269,136 @@ function sarai_chinwag_enqueue_google_fonts() {
 add_action('wp_enqueue_scripts', 'sarai_chinwag_enqueue_google_fonts');
 
 /**
+ * Enqueue Google Fonts for WordPress editors (Block Editor and Classic Editor)
+ * Ensures consistent font experience between editing and frontend display
+ */
+function sarai_chinwag_enqueue_editor_fonts() {
+    // Get only the 2 font settings (same as frontend)
+    $fonts_to_check = array(
+        get_theme_mod('sarai_chinwag_heading_font', 'Gluten'),
+        get_theme_mod('sarai_chinwag_body_font', 'System Fonts')
+    );
+    
+    $fonts_to_load = array();
+    
+    // Check each font and add to load list if it's a Google Font
+    foreach ($fonts_to_check as $font) {
+        if ($font !== 'System Fonts' && !in_array($font, $fonts_to_load)) {
+            $fonts_to_load[] = $font;
+        }
+    }
+    
+    // Enqueue Google Fonts if any are selected
+    if (!empty($fonts_to_load)) {
+        $fonts_url = 'https://fonts.googleapis.com/css2?';
+        foreach ($fonts_to_load as $font) {
+            $fonts_url .= 'family=' . str_replace(' ', '+', $font) . ':wght@400;500;600;700&';
+        }
+        $fonts_url .= 'display=swap';
+        
+        wp_enqueue_style('sarai-chinwag-editor-fonts', $fonts_url, array(), null);
+    }
+    
+    // Generate and enqueue editor-specific CSS
+    sarai_chinwag_enqueue_editor_css();
+}
+
+/**
+ * Generate and enqueue CSS specifically for WordPress editors
+ * Uses proper editor selectors for Block Editor and Classic Editor compatibility
+ */
+function sarai_chinwag_enqueue_editor_css() {
+    // Get font settings
+    $heading_font = get_theme_mod('sarai_chinwag_heading_font', 'Gluten');
+    $body_font = get_theme_mod('sarai_chinwag_body_font', 'System Fonts');
+    $heading_font_size = get_theme_mod('sarai_chinwag_heading_font_size', 50);
+    $body_font_size = get_theme_mod('sarai_chinwag_body_font_size', 50);
+    
+    // Generate font family values
+    $heading_font_family = sarai_chinwag_get_font_family($heading_font);
+    $body_font_family = sarai_chinwag_get_font_family($body_font);
+    
+    // Convert percentage to scale (50% = 1.0, 100% = 2.0, 1% = 0.02)
+    $heading_scale = $heading_font_size / 50;
+    $body_scale = $body_font_size / 50;
+    
+    $editor_css = "
+    /* Editor-specific CSS with proper selectors for WordPress compatibility */
+    .editor-styles-wrapper,
+    .wp-block-editor,
+    .wp-block {
+        --font-heading: {$heading_font_family};
+        --font-body: {$body_font_family};
+        --font-heading-scale: {$heading_scale};
+        --font-body-scale: {$body_scale};
+    }
+    
+    /* Body font for editor content */
+    .editor-styles-wrapper,
+    .wp-block-editor,
+    .wp-block-paragraph,
+    .wp-block-list,
+    .wp-block-quote {
+        font-family: var(--font-body);
+        font-size: calc(20px * var(--font-body-scale));
+    }
+    
+    /* Heading fonts for editor content */
+    .editor-styles-wrapper h1,
+    .wp-block-heading h1,
+    .editor-post-title__input {
+        font-family: var(--font-heading);
+        font-size: calc(1.75em * var(--font-heading-scale));
+    }
+    
+    .editor-styles-wrapper h2,
+    .wp-block-heading h2 {
+        font-family: var(--font-heading);
+        font-size: calc(1.38em * var(--font-heading-scale));
+    }
+    
+    .editor-styles-wrapper h3,
+    .wp-block-heading h3 {
+        font-family: var(--font-heading);
+        font-size: calc(1.2em * var(--font-heading-scale));
+    }
+    
+    .editor-styles-wrapper h4,
+    .wp-block-heading h4 {
+        font-family: var(--font-heading);
+        font-size: calc(1.1em * var(--font-heading-scale));
+    }
+    
+    .editor-styles-wrapper h5,
+    .wp-block-heading h5 {
+        font-family: var(--font-heading);
+        font-size: calc(1.05em * var(--font-heading-scale));
+    }
+    
+    .editor-styles-wrapper h6,
+    .wp-block-heading h6 {
+        font-family: var(--font-heading);
+        font-size: calc(1em * var(--font-heading-scale));
+    }
+    ";
+    
+    // Add inline CSS for editor
+    wp_add_inline_style('sarai-chinwag-editor-fonts', $editor_css);
+}
+
+// Hook for Block Editor (Gutenberg)
+add_action('enqueue_block_editor_assets', 'sarai_chinwag_enqueue_editor_fonts');
+
+// Hook for Classic Editor (admin pages)
+function sarai_chinwag_enqueue_classic_editor_fonts($hook) {
+    // Only load on post edit pages
+    if ('post.php' === $hook || 'post-new.php' === $hook) {
+        sarai_chinwag_enqueue_editor_fonts();
+    }
+}
+add_action('admin_enqueue_scripts', 'sarai_chinwag_enqueue_classic_editor_fonts');
+
+/**
  * Generate custom CSS from customizer values
  */
 function sarai_chinwag_customizer_css() {
