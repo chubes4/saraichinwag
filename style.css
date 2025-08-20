@@ -221,17 +221,20 @@ p.site-title {
     flex-direction: column;
     position: fixed;
     width: 100%;
+    left: 0;
     background-color: var(--color-header-footer-bg);
     z-index: 90;
     transition: transform 0.3s ease-out;
     transform: translateY(-100%);
     padding: 20px; /* Adjust padding as needed */
+    justify-content: center;
+    align-items: center;
 }
 .header-search div {
     display: flex;
     justify-content: center;
+    width: 100%;
     max-width: 90%;
-    margin: 0 auto;
   }
 
 .header-search.active {
@@ -849,6 +852,12 @@ button:focus, a:focus {
     /* Reduce header padding on mobile */
     .site-header {
         padding: 0 15px;
+    }
+    
+    /* Fix search bar mobile gap */
+    .header-search {
+        margin: 0;
+        padding: 20px;
     }
     
     .home .post-grid,
