@@ -1,5 +1,5 @@
 <?php
-function extra_chill_redirect_to_random_post() {
+function sarai_chinwag_redirect_to_random_post() {
     if (is_page('random-post')) {
         // Use cached random post ID for high performance (replaces expensive orderby => 'rand')
         $random_post_id = sarai_chinwag_get_cached_random_post_id('post');
@@ -17,9 +17,9 @@ function extra_chill_redirect_to_random_post() {
         exit;
     }
 }
-add_action('template_redirect', 'extra_chill_redirect_to_random_post');
+add_action('template_redirect', 'sarai_chinwag_redirect_to_random_post');
 
-function extra_chill_redirect_to_random_recipe() {
+function sarai_chinwag_redirect_to_random_recipe() {
     // Skip if recipes are disabled
     if (sarai_chinwag_recipes_disabled()) {
         // Redirect to random post instead
@@ -44,9 +44,9 @@ function extra_chill_redirect_to_random_recipe() {
         exit;
     }
 }
-add_action('template_redirect', 'extra_chill_redirect_to_random_recipe');
+add_action('template_redirect', 'sarai_chinwag_redirect_to_random_recipe');
 
-function extra_chill_redirect_to_random_all() {
+function sarai_chinwag_redirect_to_random_all() {
     if (is_page('random-all')) {
         // Build array of possible post types
         $post_types = array('post');
@@ -71,4 +71,5 @@ function extra_chill_redirect_to_random_all() {
         exit;
     }
 }
-add_action('template_redirect', 'extra_chill_redirect_to_random_all');
+add_action('template_redirect', 'sarai_chinwag_redirect_to_random_all');
+

@@ -24,10 +24,10 @@ function sarai_chinwag_random_discovery() {
         $post_types[] = 'recipe';
     }
     
-    // Get 3 random posts using simple, fast query
+    // Get 6 random posts using simple, fast query
     $args = array(
         'post_type' => $post_types,
-        'posts_per_page' => 3,
+        'posts_per_page' => 6,
         'post__not_in' => array($current_post_id),
         'orderby' => 'rand',
         'post_status' => 'publish'

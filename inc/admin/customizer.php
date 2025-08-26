@@ -204,12 +204,12 @@ function sarai_chinwag_fetch_google_fonts_by_category($category = '') {
 }
 
 /**
- * Get fonts for customizer dropdowns with fallback options
+ * Get fonts for customizer dropdowns
  */
 function sarai_chinwag_get_google_fonts($type = '') {
     $fonts = array();
     
-    // Add theme fallback fonts first
+     // Add theme default fonts first
     $fallback_fonts = array(
         'Gluten' => 'Gluten (Google)',
         'System Fonts' => 'System Fonts'
@@ -227,7 +227,7 @@ function sarai_chinwag_get_google_fonts($type = '') {
         $api_fonts = array();
     }
     
-    // If API call failed, return just fallback fonts
+    // If API call failed, return just default fonts
     if (empty($api_fonts)) {
         return $fallback_fonts;
     }
@@ -269,8 +269,8 @@ function sarai_chinwag_enqueue_google_fonts() {
 add_action('wp_enqueue_scripts', 'sarai_chinwag_enqueue_google_fonts');
 
 /**
- * Enqueue Google Fonts for WordPress editors (Block Editor and Classic Editor)
- * Ensures consistent font experience between editing and frontend display
+ * Enqueue Google Fonts for the Block Editor
+ * Ensures consistent font experience between editor and frontend display
  */
 function sarai_chinwag_enqueue_editor_fonts() {
     // Get only the 2 font settings (same as frontend)
@@ -304,8 +304,7 @@ function sarai_chinwag_enqueue_editor_fonts() {
 }
 
 /**
- * Generate and enqueue CSS specifically for WordPress editors
- * Uses proper editor selectors for Block Editor and Classic Editor compatibility
+ * Generate and enqueue CSS specifically for the Block Editor
  */
 function sarai_chinwag_enqueue_editor_css() {
     // Get font settings
@@ -323,7 +322,7 @@ function sarai_chinwag_enqueue_editor_css() {
     $body_scale = $body_font_size / 50;
     
     $editor_css = "
-    /* Editor-specific CSS with proper selectors for WordPress compatibility */
+    /* Editor-specific CSS for the Block Editor */
     .editor-styles-wrapper,
     .wp-block-editor,
     .wp-block {
@@ -389,14 +388,7 @@ function sarai_chinwag_enqueue_editor_css() {
 // Hook for Block Editor (Gutenberg)
 add_action('enqueue_block_editor_assets', 'sarai_chinwag_enqueue_editor_fonts');
 
-// Hook for Classic Editor (admin pages)
-function sarai_chinwag_enqueue_classic_editor_fonts($hook) {
-    // Only load on post edit pages
-    if ('post.php' === $hook || 'post-new.php' === $hook) {
-        sarai_chinwag_enqueue_editor_fonts();
-    }
-}
-add_action('admin_enqueue_scripts', 'sarai_chinwag_enqueue_classic_editor_fonts');
+// Classic Editor support removed
 
 /**
  * Generate custom CSS from customizer values

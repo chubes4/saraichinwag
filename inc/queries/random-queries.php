@@ -4,7 +4,7 @@
  * Replaces expensive orderby => 'rand' with cached post ID system
  */
 function sarai_chinwag_random_home_archive_search_query( $query ) {
-    if ( ! is_admin() && $query->is_main_query() && ! $query->is_feed() && ( $query->is_home() || $query->is_archive() ) ) {
+    if ( ! is_admin() && $query->is_main_query() && ! $query->is_feed() && ( $query->is_home() || $query->is_archive() || $query->is_search() ) ) {
         // Build post types array
         $post_types = array( 'post' );
         if ( !sarai_chinwag_recipes_disabled() ) {
@@ -34,10 +34,10 @@ function sarai_chinwag_random_home_archive_search_query( $query ) {
             
             $query->set( 'posts_per_page', $posts_per_page );
         } 
-        // For archive pages, use simple random order to respect category/tag filtering
-        elseif ( $query->is_archive() ) {
+        // For archive and search pages, use simple random order to respect filtering
+        elseif ( $query->is_archive() || $query->is_search() ) {
             $query->set( 'orderby', 'rand' );
-            // Don't override post__in here - let WordPress handle category/tag filtering
+            // Don't override post__in here - let WordPress handle category/tag/search filtering
         }
     }
 }

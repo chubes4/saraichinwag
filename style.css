@@ -26,7 +26,7 @@ Requires PHP: 7.4
     
     /* Base Font Sizes (50% = baseline) */
     --font-size-base: 1.25rem; /* 20px base */
-    --font-size-h1: 1.75em;
+    --font-size-h1: 1.575em;
     --font-size-h2: 1.38em;
     --font-size-h3: 1.2em;
     --font-size-small: 0.85em;
@@ -406,13 +406,23 @@ fill: #fff;
     text-decoration-color: var(--color-primary);
 }
 .load-more-container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
     text-align: center;
+    width: 100%;
+    clear: both;
+    margin: 2rem auto 0;
+    -webkit-column-break-inside: avoid;
+    break-inside: avoid;
+    column-span: all;
+}
 
+.load-more-container #load-more {
+    margin-left: auto;
+    margin-right: auto;
 }
-/* Legacy post type filters (deprecated) */
-.post-type-filters {
-    display: none; /* Hidden - now handled by advanced filter bar */
-}
+
 
 #footer-menu {
     display: flex;
@@ -631,15 +641,6 @@ button:hover {
 
 /* 5. Mobile Touch Targets */
 
-/* 6. Loading State for AJAX Rating */
-.recipe-rating.loading {
-    opacity: 0.6;
-    pointer-events: none;
-}
-.recipe-rating.loading:after {
-    content: " Loading...";
-    font-size: 0.8em;
-}
 
 /* 7. Smooth Font Transitions */
 body, h1, h2, h3, h4, h5, h6 {
@@ -907,7 +908,6 @@ button:focus, a:focus {
     
     .load-more-container {
         text-align: center;
-        padding: 0 15px;
     }
 }
 
@@ -1008,6 +1008,7 @@ button:focus, a:focus {
     color: white;
 }
 
+
 /* Secondary color for type filter buttons */
 .type-btn {
     border-color: var(--color-secondary);
@@ -1027,27 +1028,11 @@ button:focus, a:focus {
 }
 
 
-.filter-loading {
-    text-align: center;
-    padding: 20px;
-    margin: 10px 0;
+.filter-data {
+    display: none;
 }
 
-.loading-spinner {
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border: 3px solid #f3f3f3;
-    border-top: 3px solid var(--color-primary);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin-right: 10px;
-}
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
 
 /* Mobile responsiveness for filter bar */
 @media (max-width: 768px) {
@@ -1078,6 +1063,7 @@ button:focus, a:focus {
         align-items: center;
         justify-content: center;
     }
+    
     
     /* Consolidated mobile touch targets */
     #random_posts a, #random_recipes a {
@@ -1163,5 +1149,166 @@ button:focus, a:focus {
     .pinterest-follow-btn {
         padding: 10px 20px;
         font-size: 14px;
+    }
+}
+
+/* Image Gallery - Pinterest Style Masonry Layout */
+/* Base layout uses CSS columns as a fallback; JS converts to fixed columns to avoid reshuffling */
+.image-gallery {
+    column-count: 4;
+    column-gap: 1rem;
+    margin: 2rem 0;
+}
+
+/* When JS initializes masonry, we replace CSS columns with flex containers for stable appends */
+.image-gallery.masonry {
+    column-count: initial;
+    column-gap: 0;
+    display: flex;
+    gap: .5rem;
+}
+
+.image-gallery.masonry .gallery-col {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+}
+
+.image-gallery.masonry .gallery-item {
+    margin-bottom: 0;
+}
+
+.gallery-item {
+    position: relative;
+    display: block;
+    width: 100%;
+    margin-bottom: 1rem;
+    break-inside: avoid;
+    background: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.gallery-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+}
+
+.gallery-image {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+.gallery-item-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.7));
+    padding: 1rem;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.gallery-item:hover .gallery-item-overlay {
+    opacity: 1;
+}
+
+.source-post-link {
+    color: white;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+}
+
+.source-post-link:hover {
+    color: #fff;
+    text-decoration: none;
+}
+
+.image-gallery-header {
+    margin-bottom: 2rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.gallery-stats p {
+    margin: 0.5rem 0;
+    color: #666;
+}
+
+.back-to-posts a {
+    color: #0073aa;
+    text-decoration: none;
+}
+
+.back-to-posts a:hover {
+    text-decoration: underline;
+}
+
+.no-images-found {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #666;
+}
+
+.no-images-found a {
+    color: #0073aa;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.no-images-found a:hover {
+    text-decoration: underline;
+}
+
+.load-more-gallery {
+    text-align: center;
+    margin: 2rem 0;
+    padding: 1rem;
+    background: #f8f9fa;
+    border-radius: 6px;
+    color: #666;
+    column-span: all;
+}
+
+/* Image Gallery Responsive Design */
+@media (max-width: 1200px) {
+    .image-gallery:not(.masonry) { column-count: 3; }
+}
+
+@media (max-width: 768px) {
+    .image-gallery:not(.masonry) {
+        column-count: 3; /* Tablet range handled up to 1200; keep 3 here as well */
+        column-gap: 0.75rem;
+    }
+    
+    .gallery-item {
+        margin-bottom: 1rem;
+        border-radius: 8px;
+    }
+    
+    .gallery-item-overlay {
+        padding: 0.75rem;
+    }
+    
+    .source-post-link {
+        font-size: 0.8rem;
+    }
+}
+
+@media (max-width: 450px) {
+    .image-gallery:not(.masonry) {
+        column-count: 1;
+        column-gap: 0;
+    }
+    
+    .gallery-item {
+        margin-bottom: 1rem;
     }
 }

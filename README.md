@@ -8,6 +8,7 @@ A versatile WordPress theme with advanced filtering, randomized content discover
 - **Multiple Sort Options**: Random (default), Most Popular (by view count), Most Recent, Oldest
 - **Content Type Filtering**: Filter between Posts, Recipes, or All content seamlessly
 - **AJAX-Powered**: Real-time filtering without page reloads, preserves state across Load More
+- **Load More Integration**: Seamless infinite scroll that maintains filter state
 - **Mobile Optimized**: Touch-friendly interface with collapsible design
 
 ### Full-Width Layout System
@@ -39,10 +40,11 @@ A versatile WordPress theme with advanced filtering, randomized content discover
 - **Responsive Design**: All font sizes scale across breakpoints
 
 ### Performance & Security
-- **Transient Caching**: 24-hour font list caching for optimal performance
+- **Object Caching**: wp_cache_* functions with specialized cache groups for optimal performance
 - **Dynamic Asset Versioning**: Automatic cache busting using `filemtime()`
 - **Secure API Integration**: Proper sanitization and escaping throughout
 - **Optimized Loading**: Only loads selected Google Fonts with `font-display: swap`
+- **Image Gallery Optimization**: Specialized templates for gallery content with enhanced loading
 
 ### Admin Features
 - **Theme Settings Panel**: Configure API keys and toggle functionality
@@ -73,24 +75,21 @@ Toggle recipe functionality in **Settings → Theme Settings**:
 ### File Structure
 ```
 saraichinwag/
-├── php/                          # Modular PHP components
-│   ├── filter-bar.php           # Advanced filter interface
-│   ├── view-counter.php         # View tracking system
-│   ├── sorting-archives.php     # AJAX filtering backend
-│   ├── customizer.php           # Font customization system
-│   ├── recipes.php              # Recipe post type
-│   ├── ratings.php              # AJAX rating system
-│   ├── related-posts.php        # Random discovery section
-│   └── admin-settings.php       # Theme settings panel
-├── js/                          # JavaScript files
-│   ├── advanced-filters.js      # Filter system frontend
+├── inc/                          # PHP module directory (organized functionality)
+├── js/                           # JavaScript files
+│   ├── filter-bar.js            # Advanced filter system frontend
+│   ├── load-more.js             # AJAX Load More functionality
+│   ├── pinterest.js             # Pinterest save button integration
 │   ├── customizer.js            # Live preview functionality
 │   ├── rating.js                # Recipe rating interactions
 │   └── nav.js                   # Navigation enhancements
 ├── template-parts/              # Reusable template components
 │   ├── content-recipe.php       # Recipe display templates
 │   ├── content-single.php       # Single post template
-│   └── content.php              # Standard post template
+│   ├── content.php              # Standard post template
+│   ├── content-image-gallery.php # Image gallery post template
+│   ├── filter-bar.php           # Filter interface component
+│   └── gallery-item.php         # Individual gallery item
 └── fonts/                       # Local theme fonts
 ```
 
@@ -133,12 +132,21 @@ This theme is designed for personal use and white-labeling. Commercial distribut
 
 ---
 
-**Version**: 2.1  
+**Version**: 2.2  
 **Author**: Chris Huber  
 **Website**: [chubes.net](https://chubes.net)  
 **Theme URI**: [saraichinwag.com](https://saraichinwag.com)
 
 ## Changelog
+
+### v2.2 - WordPress Editor Integration & Footer Simplification
+- **NEW**: WordPress Editor Font Integration - consistent fonts between editors and frontend
+- **NEW**: Image Gallery System - specialized templates for gallery posts with optimized display
+- **NEW**: Load More Integration - AJAX infinite scroll that preserves filter state
+- **NEW**: Enhanced Pinterest Integration - improved social functionality with js/pinterest.js
+- **IMPROVED**: Footer Architecture Simplification - removed category/tag clouds for better UX/SEO
+- **IMPROVED**: Object Caching Evolution - wp_cache_* functions with specialized cache groups
+- **PERFORMANCE**: Enhanced caching strategies with proper cache group segregation
 
 ### v2.1 - Advanced Filter & Layout System
 - **NEW**: Advanced filter bar with multiple sort options (Random, Popular, Recent, Oldest)

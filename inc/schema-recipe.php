@@ -223,7 +223,7 @@ add_filter('the_content', 'sarai_chinwag_wrap_recipe_schema');
 
 
 
-function extra_chill_recipe_schema() {
+function sarai_chinwag_recipe_schema() {
     // Skip schema markup if recipes are disabled
     if (sarai_chinwag_recipes_disabled()) {
         return '';

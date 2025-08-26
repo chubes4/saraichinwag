@@ -79,17 +79,16 @@
 
 
     /**
-     * Get CSS font family value with simple fallback strategy
+     * Get CSS font family value
      */
     function getFontFamily(fontName) {
         switch (fontName) {
             case 'Gluten':
-                return "'Gluten', serif";
+                return "'Gluten', 'Helvetica', Arial, sans-serif";
             case 'System Fonts':
                 return "'Helvetica', Arial, sans-serif";
             default:
-                // Simple fallback: Google Font → Gluten → System
-                return "'" + fontName + "', 'Gluten', 'Helvetica', Arial, sans-serif";
+                return "'" + fontName + "', 'Helvetica', Arial, sans-serif";
         }
     }
 

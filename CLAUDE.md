@@ -15,44 +15,40 @@ The theme includes an admin settings page accessible via **Settings → Theme Se
 ## Theme Architecture
 
 ### Core Structure
-- **functions.php**: Main theme setup, enqueues styles/scripts with dynamic versioning using `filemtime()`, autoloads PHP modules from `/php` directory
+- **functions.php**: Main theme setup, enqueues styles/scripts with dynamic versioning using `filemtime()`, manually loads PHP modules from `/inc` directory
 - **style.css**: Primary stylesheet with custom font declarations and theme styles  
 - **Template hierarchy**: Standard WordPress templates (single.php, archive.php, home.php, search.php, page.php, etc.)
 - **page.php**: Standard page template using `template-parts/content-single.php` with sidebar support
 
 ### Custom Post Types
-- **Recipe post type**: Registered via `php/recipes.php` with full labels and Schema.org markup support
+- **Recipe post type**: Registered via functions in functions.php with full labels and Schema.org markup support
 - **Main query modification**: Includes both 'post' and 'recipe' post types in home, category, tag, and search queries
 
 ### PHP Module System
-The theme uses an autoload system in functions.php that includes all PHP files from the `/php` directory:
-- `admin-settings.php`: Theme settings page with API key management
-- `bing-index-now.php`: Bing indexing integration
-- `customizer.php`: Dynamic Google Fonts system with API integration, percentage-based scaling, and WordPress editor font integration
-- `filter-bar.php`: Advanced filter bar interface for home/archive pages
-- `image-counts.php`: Image handling utilities
-- `random-post.php` & `random-queries.php`: Random content functionality (anti-chronological design)
-- `ratings.php`: AJAX-based recipe rating system with nonce security
-- `recipes.php`: Custom post type registration
-- `related-posts.php`: Random discovery functionality (replaces complex related logic)
-- `schema-recipe.php`: Schema.org structured data for recipes
-- `sorting-archives.php`: Advanced AJAX filtering and sorting system
-- `view-counter.php`: Simple post view tracking for popularity sorting
-- `yoast-stuff.php`: Yoast SEO customizations
+The theme uses manual loading of PHP modules from the `/inc` directory in functions.php:
+- **Core functionality**: All theme features consolidated into functions.php for simplified architecture
+- **Modular organization**: Functions logically grouped within functions.php rather than separate files
+- **Streamlined approach**: Reduced file complexity while maintaining full functionality
 
 ### JavaScript Structure
 - **js/nav.js**: Header search functionality with position adjustment for admin bar
 - **js/customizer.js**: Live preview functionality for font changes and size scaling in WordPress Customizer
-- **js/advanced-filters.js**: Advanced AJAX filtering system with sort options and Load More integration
-- **js/filters.js**: Legacy filtering functionality (maintained for compatibility)
+- **js/filter-bar.js**: Advanced AJAX filtering system with sort options and post type filtering
+- **js/load-more.js**: AJAX Load More functionality that preserves filter state
+- **js/pinterest.js**: Pinterest save button integration and social functionality
 - **js/rating.js**: AJAX rating system with localStorage persistence, nonce security, and dual-state management (user + server average)
 
 ### Template Parts
 - `template-parts/content-recipe.php`: Recipe display with Schema.org microdata
 - `template-parts/content.php` & `template-parts/content-single.php`: Standard post templates
+- `template-parts/content-image-gallery.php`: Specialized template for image gallery posts
+- `template-parts/filter-bar.php`: Advanced filter interface for archives and home page
+- `template-parts/gallery-item.php`: Individual gallery item display component
 
 ### Key Features
 - **Advanced Filter System**: Full-width filter bar with sort options (Random, Most Popular, Recent, Oldest) and post type filtering
+- **Image Gallery System**: Specialized gallery post template with lightbox functionality and optimized display
+- **Load More Integration**: AJAX-powered infinite scroll that preserves filter state and enhances user experience
 - **Full-Width Layout**: Home and archive pages display 4-column responsive grid (sidebar removed for maximum content visibility)
 - **View Counter System**: Simple post meta tracking for popularity sorting (`_post_views` field)
 - **Randomized content discovery**: Anti-chronological design with randomization as default behavior
@@ -63,7 +59,7 @@ The theme uses an autoload system in functions.php that includes all PHP files f
 - **Recipe functionality**: Complete recipe post type with ratings, schema markup, and specialized templates (when enabled)
 - **WordPress Customizer integration**: Live preview for font changes and size scaling with custom CSS properties
 - **WordPress Editor Font Integration**: Consistent font experience between Block Editor, Classic Editor, and frontend display
-- **Pinterest integration**: Footer follow button + automatic Pinterest save buttons with `data-pin-url` attributes
+- **Pinterest integration**: Footer follow button + automatic Pinterest save buttons with enhanced social functionality
 - **Badge-breadcrumb system**: Category/tag badges on single posts for navigation, traditional breadcrumbs on archives
 - **Random discovery section**: 3-post random grid replaces complex related posts logic
 - **Dynamic asset versioning**: Uses `filemtime()` for cache busting on CSS and JS files
@@ -118,7 +114,7 @@ The theme provides seamless font integration between WordPress editors and front
 ## Dynamic Google Fonts Architecture
 
 ### Font System Components
-- **API Integration**: `php/customizer.php` handles Google Fonts API calls with `sarai_chinwag_fetch_google_fonts_by_category()`
+- **API Integration**: functions.php handles Google Fonts API calls with `sarai_chinwag_fetch_google_fonts_by_category()`
 - **Customizer Controls**: Two font dropdowns (Header/Body) + two size sliders (1-100%) accessible via **Appearance → Customize → Typography**
 - **CSS Scaling System**: Uses CSS custom properties (`--font-heading-scale`, `--font-body-scale`) for proportional scaling
 - **Live Preview**: `js/customizer.js` provides real-time font and size changes in WordPress Customizer
@@ -140,7 +136,7 @@ The theme provides seamless font integration between WordPress editors and front
 ## Randomization System Architecture
 
 ### Anti-Chronological Design
-- **Main Query Modification**: `php/random-queries.php` modifies home and archive queries to use `orderby: rand`
+- **Main Query Modification**: functions.php modifies home and archive queries to use `orderby: rand`
 - **Post Type Integration**: Includes both 'post' and 'recipe' post types in randomized queries
 - **Performance Optimizations**: Cached random ID arrays replace expensive `orderby => 'rand'` queries with rotation system and limited datasets (max 500 posts)
 
@@ -158,7 +154,13 @@ The theme provides seamless font integration between WordPress editors and front
 - **Content Types**: All | Posts | Recipes (only shown when both post types exist)
 - **AJAX Integration**: Real-time filtering without page reload, preserves filter state across Load More
 - **Mobile Responsive**: Collapsible interface with touch-friendly buttons (44px minimum height)
-- **Legacy Compatibility**: Old checkbox system deprecated in favor of cleaner button interface
+- **Load More Integration**: Seamless infinite scroll that respects active filters and maintains user context
+
+### Image Gallery Integration
+- **Specialized Template**: `template-parts/content-image-gallery.php` handles gallery post display
+- **Gallery Items**: Individual gallery components via `template-parts/gallery-item.php`
+- **Filter Compatibility**: Gallery posts integrate seamlessly with the advanced filtering system
+- **Responsive Design**: Gallery layout adapts to 4-column grid system with optimized image sizing
 
 ### View Counter System
 - **Storage**: Simple post meta (`_post_views`) incremented on each post view
@@ -208,7 +210,7 @@ No build process required - this is a direct-edit WordPress theme:
 - Always call `wp_reset_postdata()` after custom post queries using `setup_postdata()`
 - Sanitize all `$_POST` data with appropriate WordPress functions (`sanitize_text_field()`, etc.)
 - Use wp_cache_* functions with appropriate cache groups for expensive queries (1 hour for random posts, 24 hours for Google Fonts, view counter caching)
-- Use modular PHP file organization in `/php` directory with descriptive naming
+- Use consolidated PHP organization in functions.php with logical function grouping
 - JavaScript should use WordPress i18n (`wp.i18n`) for user-facing messages
 
 ## Footer Architecture
@@ -231,6 +233,7 @@ The footer has been streamlined for better user experience and SEO performance:
 **Technical Implementation:**
 - Dynamic Pinterest username from admin settings (`sarai_chinwag_pinterest_username`)
 - Clean Bootstrap Icons SVG for Pinterest logo (16x16 viewBox)
+- Enhanced Pinterest save button functionality via `js/pinterest.js`
 - Proper `rel="noopener noreferrer"` attributes for external links
 - Translation-ready text with `translate="no"` attributes for proper names
 

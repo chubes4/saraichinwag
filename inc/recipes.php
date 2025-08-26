@@ -1,9 +1,14 @@
 <?php
 /**
- * Register a custom post type called "Recipe".
+ * Recipe post type registration and functionality
+ *
+ * @package Sarai_Chinwag
  */
-function extra_chill_register_recipe_post_type() {
-    // Skip recipe registration if recipes are disabled
+
+/**
+ * Register Recipe custom post type
+ */
+function sarai_chinwag_register_recipe_post_type() {
     if (sarai_chinwag_recipes_disabled()) {
         return;
     }
@@ -54,12 +59,12 @@ function extra_chill_register_recipe_post_type() {
     register_post_type( 'recipe', $args );
 }
 
-add_action( 'init', 'extra_chill_register_recipe_post_type' );
+add_action( 'init', 'sarai_chinwag_register_recipe_post_type' );
 
 /**
  * Include "recipe" post type in all RSS feeds.
  */
-function extra_chill_add_recipe_to_rss_feed( $query ) {
+function sarai_chinwag_add_recipe_to_rss_feed( $query ) {
     // Skip if recipes are disabled
     if (sarai_chinwag_recipes_disabled()) {
         return;
@@ -88,5 +93,5 @@ function extra_chill_add_recipe_to_rss_feed( $query ) {
     }
 }
 
-add_action( 'pre_get_posts', 'extra_chill_add_recipe_to_rss_feed' );
+add_action( 'pre_get_posts', 'sarai_chinwag_add_recipe_to_rss_feed' );
 

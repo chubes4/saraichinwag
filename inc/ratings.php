@@ -2,7 +2,7 @@
 /**
  * Handle recipe rating via AJAX.
  */
-function extra_chill_rate_recipe() {
+function sarai_chinwag_rate_recipe() {
     // Skip if recipes are disabled
     if (sarai_chinwag_recipes_disabled()) {
         wp_send_json_error(['message' => 'Recipe functionality is disabled.']);
@@ -52,13 +52,13 @@ function extra_chill_rate_recipe() {
     ]);
 }
 
-add_action('wp_ajax_rate_recipe', 'extra_chill_rate_recipe');
-add_action('wp_ajax_nopriv_rate_recipe', 'extra_chill_rate_recipe');
+add_action('wp_ajax_rate_recipe', 'sarai_chinwag_rate_recipe');
+add_action('wp_ajax_nopriv_rate_recipe', 'sarai_chinwag_rate_recipe');
 
 /**
  * Enqueue scripts and localize AJAX URL.
  */
-function extra_chill_enqueue_rating_script() {
+function sarai_chinwag_enqueue_rating_script() {
     // Skip if recipes are disabled
     if (sarai_chinwag_recipes_disabled()) {
         return;
@@ -75,4 +75,4 @@ function extra_chill_enqueue_rating_script() {
         ));
     }
 }
-add_action('wp_enqueue_scripts', 'extra_chill_enqueue_rating_script');
+add_action('wp_enqueue_scripts', 'sarai_chinwag_enqueue_rating_script');

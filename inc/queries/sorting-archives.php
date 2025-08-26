@@ -1,31 +1,39 @@
 <?php
+/**
+ * Archive sorting and filtering functionality
+ *
+ * @package Sarai_Chinwag
+ */
 
+/**
+ * Enqueue filter and load-more scripts for archive pages
+ */
 function sarai_chinwag_enqueue_filter_scripts() {
-    if (is_home() || is_archive() || is_search()) {
-        wp_enqueue_script('sarai-chinwag-advanced-filters', get_template_directory_uri() . '/js/advanced-filters.js', array(), filemtime(get_template_directory() . '/js/advanced-filters.js'), true);
-        wp_localize_script('sarai-chinwag-advanced-filters', 'sarai_chinwag_ajax', array(
+    $has_images_var = get_query_var('images') !== false;
+    $url_has_images = strpos($_SERVER['REQUEST_URI'], '/images/') !== false || strpos($_SERVER['REQUEST_URI'], '/images') !== false;
+    $is_image_gallery = $has_images_var && $url_has_images;
+    
+    if (is_home() || is_archive() || is_search() || $is_image_gallery) {
+        wp_enqueue_script('sarai-chinwag-filter-bar', get_template_directory_uri() . '/js/filter-bar.js', array(), filemtime(get_template_directory() . '/js/filter-bar.js'), true);
+        wp_localize_script('sarai-chinwag-filter-bar', 'sarai_chinwag_ajax', array(
             'ajaxurl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('filter_posts_nonce'),
             'posts_per_page' => get_option('posts_per_page', 10)
         ));
+
+        wp_enqueue_script('sarai-chinwag-load-more', get_template_directory_uri() . '/js/load-more.js', array('sarai-chinwag-filter-bar'), filemtime(get_template_directory() . '/js/load-more.js'), true);
     }
 }
 add_action('wp_enqueue_scripts', 'sarai_chinwag_enqueue_filter_scripts');
 
-
-function sarai_chinwag_display_post_type_filters() {
-    // Legacy function - post type filtering now handled by advanced filter bar
-    // Kept for backwards compatibility but no longer outputs anything
-    return;
-}
-
+/**
+ * Check if site has both posts and recipes in current query context
+ */
 function sarai_chinwag_has_both_posts_and_recipes() {
-    // If recipes are disabled, no need to show filters
     if (sarai_chinwag_recipes_disabled()) {
         return false;
     }
     
-    // For homepage, check if both post types exist on the site
     if (is_home()) {
         $has_posts = get_posts(array(
             'post_type' => 'post',
@@ -44,18 +52,15 @@ function sarai_chinwag_has_both_posts_and_recipes() {
         return !empty($has_posts) && !empty($has_recipes);
     }
     
-    // For archives and search, check within current query context
     if (is_archive() || is_search()) {
         global $wp_query;
 
-        // Clone the original query
         $post_query_args = $wp_query->query_vars;
         $post_query_args['post_type'] = 'post';
         $post_query_args['posts_per_page'] = 1;
         $post_query = new WP_Query($post_query_args);
         $has_posts = $post_query->have_posts();
 
-        // Clone the original query
         $recipe_query_args = $wp_query->query_vars;
         $recipe_query_args['post_type'] = 'recipe';
         $recipe_query_args['posts_per_page'] = 1;
@@ -69,8 +74,6 @@ function sarai_chinwag_has_both_posts_and_recipes() {
 
     return false;
 }
-
-add_action('before_post_grid', 'sarai_chinwag_display_post_type_filters');
 function sarai_chinwag_filter_posts() {
     check_ajax_referer('filter_posts_nonce', 'nonce');
 
@@ -80,36 +83,16 @@ function sarai_chinwag_filter_posts() {
     // Get post type filters
     $post_type_filter = isset($_POST['post_type_filter']) ? sanitize_text_field($_POST['post_type_filter']) : 'all';
     
-    // Legacy support for existing checkbox system
-    $filter_blog_posts = isset($_POST['filter_blog_posts']) ? sanitize_text_field($_POST['filter_blog_posts']) : '';
-    $filter_recipes = isset($_POST['filter_recipes']) ? sanitize_text_field($_POST['filter_recipes']) : '';
-    
     // Determine post types to query
     $post_types = array();
     if ($post_type_filter === 'posts') {
         $post_types = array('post');
     } elseif ($post_type_filter === 'recipes') {
         $post_types = array('recipe');
-    } elseif ($post_type_filter === 'all') {
+    } else { // default and "all"
         $post_types = array('post');
         if (!sarai_chinwag_recipes_disabled()) {
             $post_types[] = 'recipe';
-        }
-    } else {
-        // Legacy checkbox system
-        if ($filter_blog_posts === 'true') {
-            $post_types[] = 'post';
-        }
-        if ($filter_recipes === 'true') {
-            $post_types[] = 'recipe';
-        }
-        
-        // Default to all if none specified
-        if (empty($post_types)) {
-            $post_types = array('post');
-            if (!sarai_chinwag_recipes_disabled()) {
-                $post_types[] = 'recipe';
-            }
         }
     }
 
@@ -188,3 +171,61 @@ function sarai_chinwag_filter_posts() {
 }
 add_action('wp_ajax_filter_posts', 'sarai_chinwag_filter_posts');
 add_action('wp_ajax_nopriv_filter_posts', 'sarai_chinwag_filter_posts');
+
+function sarai_chinwag_filter_images() {
+    check_ajax_referer('filter_posts_nonce', 'nonce');
+
+    // Get sort parameter
+    $sort_by = isset($_POST['sort_by']) ? sanitize_text_field($_POST['sort_by']) : 'random';
+    
+    // Get post type filters
+    $post_type_filter = isset($_POST['post_type_filter']) ? sanitize_text_field($_POST['post_type_filter']) : 'all';
+    
+    $loaded_images = isset($_POST['loadedImages']) ? json_decode(stripslashes($_POST['loadedImages']), true) : array();
+    $category = isset($_POST['category']) ? sanitize_text_field($_POST['category']) : '';
+    $tag = isset($_POST['tag']) ? sanitize_text_field($_POST['tag']) : '';
+    $search = isset($_POST['search']) ? sanitize_text_field($_POST['search']) : '';
+
+    // Retrieve the posts per page setting from the admin (batch size)
+    $posts_per_page = get_option('posts_per_page', 10);
+
+    // Check if this is a site-wide image gallery request
+    $is_all_site = isset($_POST['all_site']) && $_POST['all_site'] === 'true';
+    
+    if ($is_all_site) {
+        // Site-wide image gallery
+    $images = sarai_chinwag_get_filtered_all_site_images($sort_by, $post_type_filter, $loaded_images, $posts_per_page);
+    } else {
+        // Get current term information
+        $term = null;
+        $term_type = '';
+        
+        if ($category) {
+            $term = get_term_by('slug', $category, 'category');
+            $term_type = 'category';
+        } elseif ($tag) {
+            $term = get_term_by('slug', $tag, 'post_tag');
+            $term_type = 'post_tag';
+        }
+        
+        if (!$term) {
+            echo '<p>' . esc_html__('No images found.', 'sarai-chinwag') . '</p>';
+            wp_die();
+        }
+        
+        // Get images from the term with sorting
+    $images = sarai_chinwag_get_filtered_term_images($term->term_id, $term_type, $sort_by, $post_type_filter, $loaded_images, $posts_per_page);
+    }
+    
+    if (empty($images)) {
+        echo '<p>' . esc_html__('No more images found.', 'sarai-chinwag') . '</p>';
+    } else {
+        foreach ($images as $index => $image) {
+            include(get_template_directory() . '/template-parts/gallery-item.php');
+        }
+    }
+
+    wp_die();
+}
+add_action('wp_ajax_filter_images', 'sarai_chinwag_filter_images');
+add_action('wp_ajax_nopriv_filter_images', 'sarai_chinwag_filter_images');
