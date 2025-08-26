@@ -19,7 +19,7 @@ function sarai_chinwag_load_image_gallery_template() {
     $url_has_images = strpos($_SERVER['REQUEST_URI'], '/images/') !== false || strpos($_SERVER['REQUEST_URI'], '/images') !== false;
     $is_images_endpoint = $has_images_var && $url_has_images;
     
-    if ($is_images_endpoint && ((is_category() || is_tag()) || is_home())) {
+    if ($is_images_endpoint && ((is_category() || is_tag()) || is_home() || is_search())) {
         // Load our custom template for all image gallery types
         sarai_chinwag_display_image_gallery();
         exit;
@@ -48,6 +48,12 @@ function sarai_chinwag_display_image_gallery() {
         $term_type = 'post_tag';
         $header_title = sprintf(__('%s Digital Wallpapers & High-Res Artwork', 'sarai-chinwag'), $term->name);
         $header_description = sprintf(__('Discover premium %s digital wallpapers, AI artwork & high resolution backgrounds. Download stunning images for phone wallpapers, social media & wall art', 'sarai-chinwag'), strtolower($term->name));
+    } elseif (is_search()) {
+        $search_query = get_search_query();
+        $term = null;
+        $term_type = 'search';
+        $header_title = sprintf(__('"%s" Digital Wallpapers & High-Res Artwork', 'sarai-chinwag'), $search_query);
+        $header_description = sprintf(__('Discover premium digital wallpapers and AI artwork matching "%s". Download stunning images for phone wallpapers, social media & wall art', 'sarai-chinwag'), $search_query);
     } elseif (is_home() && (strpos($_SERVER['REQUEST_URI'], '/images/') !== false || strpos($_SERVER['REQUEST_URI'], '/images') !== false)) {
         // Homepage image gallery - all site images
         $term = null;
@@ -93,6 +99,14 @@ function sarai_chinwag_get_term_images($term_id, $term_type, $limit = 30) {
         return sarai_chinwag_get_all_site_images($limit);
     }
     
+    // Handle search image gallery
+    if ($term_type === 'search') {
+        if (!function_exists('sarai_chinwag_extract_images_from_search')) {
+            return array();
+        }
+        return sarai_chinwag_extract_images_from_search($term_id, $limit);
+    }
+    
     // Get the extractor function for term-specific galleries
     if (!function_exists('sarai_chinwag_extract_images_from_term')) {
         return array();
@@ -110,7 +124,7 @@ function sarai_chinwag_activate_smi_on_gallery($should_load) {
     $url_has_images = strpos($_SERVER['REQUEST_URI'], '/images/') !== false || strpos($_SERVER['REQUEST_URI'], '/images') !== false;
     $is_images_endpoint = $has_images_var && $url_has_images;
     
-    if ($is_images_endpoint && ((is_category() || is_tag()) || is_home())) {
+    if ($is_images_endpoint && ((is_category() || is_tag()) || is_home() || is_search())) {
         return true;
     }
     return $should_load;

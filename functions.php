@@ -15,8 +15,7 @@
 /**
  * Theme setup
  */
-if ( ! function_exists( 'sarai_chinwag_setup' ) ) :
-    function sarai_chinwag_setup() {
+function sarai_chinwag_setup() {
         load_theme_textdomain( 'sarai-chinwag', get_template_directory() . '/languages' );
         
         add_theme_support( 'title-tag' );
@@ -38,8 +37,7 @@ if ( ! function_exists( 'sarai_chinwag_setup' ) ) :
             'primary' => __( 'Primary Menu', 'sarai-chinwag' ),
             'footer'  => __( 'Footer Menu', 'sarai-chinwag' ),
         ) );
-    }
-endif;
+}
 add_action( 'after_setup_theme', 'sarai_chinwag_setup' );
 
 /**
@@ -51,6 +49,9 @@ function sarai_chinwag_scripts() {
 
     $nav_version = filemtime( get_template_directory() . '/js/nav.js' );
     wp_enqueue_script( 'sarai-chinwag-nav', get_template_directory_uri() . '/js/nav.js', array(), $nav_version, true );
+
+    $gallery_utils_version = filemtime( get_template_directory() . '/js/gallery-utils.js' );
+    wp_enqueue_script( 'sarai-chinwag-gallery-utils', get_template_directory_uri() . '/js/gallery-utils.js', array(), $gallery_utils_version, true );
 
     $pinterest_version = filemtime( get_template_directory() . '/js/pinterest.js' );
     wp_enqueue_script( 'sarai-chinwag-pinterest', get_template_directory_uri() . '/js/pinterest.js', array(), $pinterest_version, true );
@@ -96,6 +97,7 @@ require_once get_template_directory() . '/inc/yoast-stuff.php';
 require_once $queries_dir . '/image-mode/image-extractor.php';
 require_once $queries_dir . '/image-mode/image-archives.php';
 require_once $queries_dir . '/image-mode/rewrite-rules.php';
+require_once $queries_dir . '/image-mode/search-images.php';
 
 /**
  * Check if recipe functionality is disabled
@@ -325,5 +327,31 @@ function sarai_chinwag_archive_breadcrumbs() {
         echo '</nav>';
     }
 }
+
+/**
+ * AJAX endpoint for loading template parts
+ */
+function sarai_chinwag_load_template() {
+    if (!wp_verify_nonce($_POST['nonce'], 'filter_posts_nonce')) {
+        wp_die('Security check failed');
+    }
+    
+    $template = sanitize_text_field($_POST['template']);
+    $args = isset($_POST['args']) ? (array) $_POST['args'] : array();
+    
+    // Sanitize args
+    if (isset($args['content_type'])) {
+        $args['content_type'] = sanitize_text_field($args['content_type']);
+    }
+    
+    ob_start();
+    get_template_part('template-parts/' . $template, null, $args);
+    $content = ob_get_clean();
+    
+    echo $content;
+    wp_die();
+}
+add_action('wp_ajax_load_template', 'sarai_chinwag_load_template');
+add_action('wp_ajax_nopriv_load_template', 'sarai_chinwag_load_template');
 
 ?>

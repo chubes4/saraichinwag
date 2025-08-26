@@ -14,7 +14,7 @@ function sarai_chinwag_enqueue_filter_scripts() {
     $is_image_gallery = $has_images_var && $url_has_images;
     
     if (is_home() || is_archive() || is_search() || $is_image_gallery) {
-        wp_enqueue_script('sarai-chinwag-filter-bar', get_template_directory_uri() . '/js/filter-bar.js', array(), filemtime(get_template_directory() . '/js/filter-bar.js'), true);
+        wp_enqueue_script('sarai-chinwag-filter-bar', get_template_directory_uri() . '/js/filter-bar.js', array('sarai-chinwag-gallery-utils'), filemtime(get_template_directory() . '/js/filter-bar.js'), true);
         wp_localize_script('sarai-chinwag-filter-bar', 'sarai_chinwag_ajax', array(
             'ajaxurl' => admin_url('admin-ajax.php'),
             'nonce' => wp_create_nonce('filter_posts_nonce'),
@@ -194,7 +194,10 @@ function sarai_chinwag_filter_images() {
     
     if ($is_all_site) {
         // Site-wide image gallery
-    $images = sarai_chinwag_get_filtered_all_site_images($sort_by, $post_type_filter, $loaded_images, $posts_per_page);
+        $images = sarai_chinwag_get_filtered_all_site_images($sort_by, $post_type_filter, $loaded_images, $posts_per_page);
+    } elseif ($search) {
+        // Search image gallery
+        $images = sarai_chinwag_get_filtered_search_images($search, $sort_by, $post_type_filter, $loaded_images, $posts_per_page);
     } else {
         // Get current term information
         $term = null;
@@ -214,7 +217,7 @@ function sarai_chinwag_filter_images() {
         }
         
         // Get images from the term with sorting
-    $images = sarai_chinwag_get_filtered_term_images($term->term_id, $term_type, $sort_by, $post_type_filter, $loaded_images, $posts_per_page);
+        $images = sarai_chinwag_get_filtered_term_images($term->term_id, $term_type, $sort_by, $post_type_filter, $loaded_images, $posts_per_page);
     }
     
     if (empty($images)) {

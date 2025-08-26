@@ -19,6 +19,9 @@ if ($is_site_wide) {
 } elseif (is_tag()) {
     $term_type = 'post_tag';
     $term_id = $term->term_id;
+} elseif (is_search() && $url_has_images) {
+    $term_type = 'search';
+    $term_id = get_search_query();
 } else {
     echo '<p>' . esc_html__('Unable to load gallery.', 'sarai-chinwag') . '</p>';
     return;
@@ -84,6 +87,7 @@ if (empty($images)) {
 <?php if (count($images) >= $posts_per_page) : 
     $category = (!$is_site_wide && is_category()) ? get_queried_object()->slug : '';
     $tag = (!$is_site_wide && is_tag()) ? get_queried_object()->slug : '';
+    $search_query = (is_search() && $url_has_images) ? get_search_query() : '';
     $is_all_site = $is_site_wide ? 'true' : 'false';
 ?>
     <div class="load-more-container">
@@ -91,6 +95,7 @@ if (empty($images)) {
                 data-page="1"
                 <?php echo $category ? 'data-category="' . esc_attr($category) . '"' : ''; ?>
                 <?php echo $tag ? 'data-tag="' . esc_attr($tag) . '"' : ''; ?>
+                <?php echo $search_query ? 'data-search="' . esc_attr($search_query) . '"' : ''; ?>
                 data-all-site="<?php echo esc_attr($is_all_site); ?>"
         >
             <?php esc_html_e('Load More', 'sarai-chinwag'); ?>

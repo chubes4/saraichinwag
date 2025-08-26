@@ -15,28 +15,16 @@ document.addEventListener('DOMContentLoaded', function () {
     let galleryColumns = isImageGallery ? Array.from(postGrid.querySelectorAll('.gallery-col')) : [];
 
     function desiredColCount() {
-        if (window.innerWidth < 450) return 1; // mobile
-        if (window.innerWidth <= 1200) return 3; // tablet
-        return 4; // desktop
+        return SaraiGalleryUtils.getColumnCount();
     }
 
     function reflowColumnsTo(count) {
         if (!isImageGallery) return;
-        // Collect all existing figures
         const figs = Array.from(postGrid.querySelectorAll('figure.gallery-item'));
-        // Clear and rebuild columns
         postGrid.innerHTML = '';
-        const cols = [];
-        for (let i = 0; i < count; i++) {
-            const col = document.createElement('div');
-            col.className = 'gallery-col';
-            postGrid.appendChild(col);
-            cols.push(col);
-        }
-        // Distribute figures round-robin
-        figs.forEach((fig, i) => {
-            cols[i % count].appendChild(fig);
-        });
+        const cols = SaraiGalleryUtils.createColumns(count);
+        cols.forEach(col => postGrid.appendChild(col));
+        SaraiGalleryUtils.distributeFigures(figs, cols);
         galleryColumns = cols;
     }
 
@@ -63,15 +51,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function getShortestColumn() {
         if (!isImageGallery || galleryColumns.length === 0) return null;
-        return galleryColumns.reduce((shortest, col) => (
-            (shortest.offsetHeight <= col.offsetHeight) ? shortest : col
-        ));
-    }
-
-    // Strict round-robin distribution across existing columns
-    function getTotalFiguresInColumns() {
-        if (!isImageGallery || galleryColumns.length === 0) return 0;
-        return galleryColumns.reduce((sum, col) => sum + col.children.length, 0);
+        return SaraiGalleryUtils.getShortestColumn(galleryColumns);
     }
 
     let rrIndex = 0; // round-robin fallback index across batches
@@ -85,39 +65,17 @@ document.addEventListener('DOMContentLoaded', function () {
         if (galleryColumns.length === 0) {
             const want = desiredColCount();
             const existingFigs = Array.from(postGrid.querySelectorAll('figure.gallery-item'));
-            // Clear and rebuild columns
             postGrid.innerHTML = '';
-            for (let i = 0; i < want; i++) {
-                const col = document.createElement('div');
-                col.className = 'gallery-col';
-                postGrid.appendChild(col);
-            }
-            galleryColumns = Array.from(postGrid.querySelectorAll('.gallery-col'));
-            // Seed existing figures round-robin so heights start even
-            existingFigs.forEach((fig, i) => {
-                galleryColumns[i % galleryColumns.length].appendChild(fig);
-            });
+            const cols = SaraiGalleryUtils.createColumns(want);
+            cols.forEach(col => postGrid.appendChild(col));
+            galleryColumns = cols;
+            SaraiGalleryUtils.distributeFigures(existingFigs, galleryColumns);
             rrIndex = existingFigs.length % galleryColumns.length;
         }
 
-        figs.forEach((fig) => {
-            // Decide target column: prefer shortest; if all equal, round-robin
-            const heights = galleryColumns.map(c => c.offsetHeight || 0);
-            const minH = Math.min.apply(null, heights);
-            const maxH = Math.max.apply(null, heights);
-            let targetCol;
-            if (maxH - minH < 2) {
-                targetCol = galleryColumns[rrIndex % galleryColumns.length];
-                rrIndex++;
-            } else {
-                targetCol = getShortestColumn() || galleryColumns[0];
-            }
-            targetCol.appendChild(fig);
-        });
+        SaraiGalleryUtils.distributeFigures(figs, galleryColumns);
         return true;
     }
-
-    // JS no longer wraps/rebuilds columns; server renders columns to avoid FOUC
 
     function collectLoadedIds() {
         if (isImageGallery) {
@@ -133,7 +91,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function sendLoadRequest() {
         loadMoreButton.disabled = true;
-        loadMoreButton.textContent = 'Loading...'; // No change here, keeping for context
+        loadMoreButton.textContent = 'Loading...';
 
         const loaded = collectLoadedIds();
         const xhr = new XMLHttpRequest();
@@ -168,6 +126,12 @@ document.addEventListener('DOMContentLoaded', function () {
             if (categoryEl && categoryEl.value) data.append('category', categoryEl.value);
             if (tagEl && tagEl.value) data.append('tag', tagEl.value);
             if (searchEl && searchEl.value) data.append('search', searchEl.value);
+            
+            // Include search query from load more button data attribute
+            const loadMoreBtn = document.getElementById('load-more');
+            if (loadMoreBtn && loadMoreBtn.getAttribute('data-search')) {
+                data.append('search', loadMoreBtn.getAttribute('data-search'));
+            }
         } else {
             data.append('action', 'filter_posts');
             data.append('loadedPosts', JSON.stringify(loaded));

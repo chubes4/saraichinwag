@@ -18,19 +18,15 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     const isAllSiteImages = isImageGallery && (path === '/images/' || path === '/images');
 
-    // Determine default type based on page context
-    function getDefaultType() {
-        if (isImageGallery) return 'images';
-        const hasAll = !!document.querySelector('.type-btn[data-type="all"]');
-        return hasAll ? 'all' : 'posts';
-    }
-
+    // Determine initial type based on page context
     function determineInitialType() {
         const activeBtn = document.querySelector('.type-btn.active');
-        if (activeBtn && activeBtn.dataset && activeBtn.dataset.type) {
+        if (activeBtn?.dataset?.type) {
             return activeBtn.dataset.type;
         }
-        return getDefaultType();
+        
+        if (isImageGallery) return 'images';
+        return document.querySelector('.type-btn[data-type="all"]') ? 'all' : 'posts';
     }
 
     // Filter state
@@ -43,18 +39,18 @@ document.addEventListener('DOMContentLoaded', function () {
     };
     
     let currentPage = 1;
-    let loadedPosts = [];
-    let loadedImages = [];
+    let loadedPostIds = [];
+    let loadedImageIds = [];
 
     // Initialize loaded posts/images from existing grid
-    function initializeLoadedPosts() {
+    function initializeLoadedContent() {
         if (isImageGallery) {
-            loadedImages = Array.from(postGrid.querySelectorAll('.gallery-item img')).map(img => {
+            loadedImageIds = Array.from(postGrid.querySelectorAll('.gallery-item img')).map(img => {
                 const match = img.className.match(/wp-image-(\d+)/);
                 return match ? match[1] : '';
             }).filter(id => id !== '');
         } else {
-            loadedPosts = Array.from(postGrid.querySelectorAll('article')).map(post => post.id.replace('post-', ''));
+            loadedPostIds = Array.from(postGrid.querySelectorAll('article')).map(post => post.id.replace('post-', ''));
         }
     }
     
@@ -98,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
         
         // Send appropriate loaded items based on mode
         if (isImageGallery) {
-            data.append('loadedImages', JSON.stringify(append ? loadedImages : []));
+            data.append('loadedImages', JSON.stringify(append ? loadedImageIds : []));
             
             // Check if this is a site-wide image gallery (even when Load More is absent)
             const loadMoreBtn = document.getElementById('load-more');
@@ -107,7 +103,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 data.append('all_site', 'true');
             }
         } else {
-            data.append('loadedPosts', JSON.stringify(append ? loadedPosts : []));
+            data.append('loadedPosts', JSON.stringify(append ? loadedPostIds : []));
         }
 
         // Add context parameters
@@ -141,13 +137,21 @@ document.addEventListener('DOMContentLoaded', function () {
                             loadMoreButton.disabled = true;
                         }
                     } else {
-                        const noContentMsg = isImageGallery ? 
-                            '<p>No images found.</p>' : 
-                            '<p>No posts found.</p>';
-                        postGrid.innerHTML = noContentMsg;
-                        if (loadMoreButton) {
-                            loadMoreButton.style.display = 'none';
-                        }
+                        // Load no-content message template
+                        const contentType = isImageGallery ? 'images' : 'posts';
+                        SaraiGalleryUtils.getNoContentMessage(contentType).then(template => {
+                            postGrid.innerHTML = template;
+                            if (loadMoreButton) {
+                                loadMoreButton.style.display = 'none';
+                            }
+                        }).catch(() => {
+                            // Fallback to simple message if template fails
+                            const fallback = isImageGallery ? 'No images found.' : 'No posts found.';
+                            postGrid.innerHTML = `<p class="no-content-message">${fallback}</p>`;
+                            if (loadMoreButton) {
+                                loadMoreButton.style.display = 'none';
+                            }
+                        });
                     }
                 } else {
                     if (isImageGallery) {
@@ -158,16 +162,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         // Ensure columns exist on replace
                         if (!append) {
-                            // Build 4 columns container
                             postGrid.innerHTML = '';
-                            let colCount = 4;
-                            if (window.innerWidth < 450) colCount = 1; // mobile
-                            else if (window.innerWidth <= 1200) colCount = 3; // tablet
-                            for (let i = 0; i < colCount; i++) {
-                                const col = document.createElement('div');
-                                col.className = 'gallery-col';
-                                postGrid.appendChild(col);
-                            }
+                            const colCount = SaraiGalleryUtils.getColumnCount();
+                            const columns = SaraiGalleryUtils.createColumns(colCount);
+                            columns.forEach(col => postGrid.appendChild(col));
+                            
                             currentPage = 1;
                             if (loadMoreButton) {
                                 loadMoreButton.style.display = 'block';
@@ -177,29 +176,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         }
 
                         const cols = Array.from(postGrid.querySelectorAll('.gallery-col'));
-                        if (!append) {
-                            // On full replace, columns start equal; use round-robin
-                            newFigs.forEach((fig, i) => {
-                                cols[i % cols.length].appendChild(fig);
-                            });
-                        } else {
-                            // On append, prefer shortest; if equal heights, round-robin
-                            let rr = 0;
-                            const getShortest = () => cols.reduce((s, c) => (s.offsetHeight <= c.offsetHeight ? s : c));
-                            newFigs.forEach((fig) => {
-                                const heights = cols.map(c => c.offsetHeight || 0);
-                                const minH = Math.min.apply(null, heights);
-                                const maxH = Math.max.apply(null, heights);
-                                let target;
-                                if (maxH - minH < 2) {
-                                    target = cols[rr % cols.length];
-                                    rr++;
-                                } else {
-                                    target = getShortest();
-                                }
-                                target.appendChild(fig);
-                            });
-                        }
+                        SaraiGalleryUtils.distributeFigures(newFigs, cols);
                     } else {
                         if (append) {
                             // Append new post articles
@@ -219,7 +196,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     // Update loaded items array
                     if (isImageGallery) {
                         const newImages = postGrid.querySelectorAll('.gallery-item img');
-                        loadedImages = Array.from(newImages).map(img => {
+                        loadedImageIds = Array.from(newImages).map(img => {
                             const match = img.className.match(/wp-image-(\d+)/);
                             return match ? match[1] : '';
                         }).filter(id => id !== '');
@@ -232,7 +209,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         }
                     } else {
                         const newPosts = postGrid.querySelectorAll('article');
-                        loadedPosts = Array.from(newPosts).map(post => post.id.replace('post-', ''));
+                        loadedPostIds = Array.from(newPosts).map(post => post.id.replace('post-', ''));
                         
                         // Check if we should disable load more
                         const loadedPostsCount = (response.match(/<article/g) || []).length;
@@ -274,89 +251,47 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
     
+    // Helper functions for navigation
+    function navigateToImages() {
+        const currentUrl = window.location.pathname;
+        if (currentUrl.includes('/images')) return; // Already on images page
+        
+        const imageUrl = (currentUrl === '/' || currentUrl.match(/^\/$/)) 
+            ? '/images/' 
+            : currentUrl.replace(/\/$/, '') + '/images/';
+        window.location.href = imageUrl;
+    }
+    
+    function navigateFromImages() {
+        const currentUrl = window.location.pathname;
+        if (!currentUrl.includes('/images')) return false; // Not on images page
+        
+        const postUrl = (currentUrl === '/images/' || currentUrl.match(/^\/images\/$/))
+            ? '/'
+            : currentUrl.replace('/images/', '/').replace('/images', '/');
+        window.location.href = postUrl;
+        return true; // Navigation handled
+    }
+    
+    function handleFilterOrNavigate(typeValue) {
+        if (navigateFromImages()) return; // Navigation handled
+        
+        if (currentFilters.post_type_filter !== typeValue) {
+            currentFilters.post_type_filter = typeValue;
+            applyFilters();
+        }
+    }
+
     // Type filter button event listeners
     document.querySelectorAll('.type-btn').forEach(button => {
         button.addEventListener('click', function(e) {
             e.preventDefault();
             const typeValue = this.dataset.type;
             
-            // Handle Images type - navigate to /images/ URL
             if (typeValue === 'images') {
-                const currentUrl = window.location.pathname;
-                
-                // Don't navigate if already on images page
-                if (currentUrl.includes('/images')) {
-                    return;
-                }
-                
-                // For homepage, navigate to site-wide images gallery
-                if (currentUrl === '/' || currentUrl.match(/^\/$/)) {
-                    window.location.href = '/images/';
-                    return;
-                }
-                
-                // For category/tag pages, append /images/
-                const imageUrl = currentUrl.replace(/\/$/, '') + '/images/';
-                window.location.href = imageUrl;
-                return;
-            }
-            
-            // Handle Posts button click - navigate back from images or handle filtering
-            if (typeValue === 'posts') {
-                const currentUrl = window.location.pathname;
-                
-                // If on any images page, navigate back to posts view
-                if (currentUrl.includes('/images')) {
-                    // If on site-wide image gallery (/images/), go to homepage
-                    if (currentUrl === '/images/' || currentUrl.match(/^\/images\/$/)) {
-                        window.location.href = '/';
-                        return;
-                    }
-                    
-                    // For category/tag image galleries, remove /images/
-                    const postUrl = currentUrl.replace('/images/', '/').replace('/images', '/');
-                    window.location.href = postUrl;
-                    return;
-                }
-                
-                // If not on images page, handle normal filtering
-                if (currentFilters.post_type_filter !== typeValue) {
-                    currentFilters.post_type_filter = typeValue;
-                    applyFilters();
-                }
-                return;
-            }
-            
-            // Handle other types (All, Recipes) - navigate back from images or filter
-            if (typeValue === 'all' || typeValue === 'recipes') {
-                const currentUrl = window.location.pathname;
-                
-                // If on any images page, navigate back to posts view
-                if (currentUrl.includes('/images')) {
-                    // If on site-wide image gallery (/images/), go to homepage
-                    if (currentUrl === '/images/' || currentUrl.match(/^\/images\/$/)) {
-                        window.location.href = '/';
-                        return;
-                    }
-                    
-                    // For category/tag image galleries, remove /images/
-                    const postUrl = currentUrl.replace('/images/', '/').replace('/images', '/');
-                    window.location.href = postUrl;
-                    return;
-                }
-                
-                // If not on images page, handle normal filtering
-                if (currentFilters.post_type_filter !== typeValue) {
-                    currentFilters.post_type_filter = typeValue;
-                    applyFilters();
-                }
-                return;
-            }
-            
-            // Regular filter handling for non-image types on post pages
-            if (currentFilters.post_type_filter !== typeValue) {
-                currentFilters.post_type_filter = typeValue;
-                applyFilters();
+                navigateToImages();
+            } else {
+                handleFilterOrNavigate(typeValue);
             }
         });
     });
@@ -364,7 +299,7 @@ document.addEventListener('DOMContentLoaded', function () {
     // Load-more handling in separate js/load-more.js file
     
     // Initialize
-    initializeLoadedPosts();
+    initializeLoadedContent();
     updateFilterStates();
     
 });

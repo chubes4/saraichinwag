@@ -307,91 +307,40 @@ function sarai_chinwag_enqueue_editor_fonts() {
  * Generate and enqueue CSS specifically for the Block Editor
  */
 function sarai_chinwag_enqueue_editor_css() {
-    // Get font settings
+    // Enqueue editor stylesheet
+    wp_enqueue_style(
+        'sarai-chinwag-editor-css', 
+        get_template_directory_uri() . '/css/editor.css', 
+        array(), 
+        filemtime(get_template_directory() . '/css/editor.css')
+    );
+    
+    // Get customizer settings for CSS variables
     $heading_font = get_theme_mod('sarai_chinwag_heading_font', 'Gluten');
     $body_font = get_theme_mod('sarai_chinwag_body_font', 'System Fonts');
     $heading_font_size = get_theme_mod('sarai_chinwag_heading_font_size', 50);
     $body_font_size = get_theme_mod('sarai_chinwag_body_font_size', 50);
     
-    // Generate font family values
     $heading_font_family = sarai_chinwag_get_font_family($heading_font);
     $body_font_family = sarai_chinwag_get_font_family($body_font);
-    
-    // Convert percentage to scale (50% = 1.0, 100% = 2.0, 1% = 0.02)
     $heading_scale = $heading_font_size / 50;
     $body_scale = $body_font_size / 50;
     
-    $editor_css = "
-    /* Editor-specific CSS for the Block Editor */
-    .editor-styles-wrapper,
-    .wp-block-editor,
-    .wp-block {
+    $editor_vars = ":root {
         --font-heading: {$heading_font_family};
         --font-body: {$body_font_family};
         --font-heading-scale: {$heading_scale};
         --font-body-scale: {$body_scale};
-    }
+    }";
     
-    /* Body font for editor content */
-    .editor-styles-wrapper,
-    .wp-block-editor,
-    .wp-block-paragraph,
-    .wp-block-list,
-    .wp-block-quote {
-        font-family: var(--font-body);
-        font-size: calc(20px * var(--font-body-scale));
-    }
-    
-    /* Heading fonts for editor content */
-    .editor-styles-wrapper h1,
-    .wp-block-heading h1,
-    .editor-post-title__input {
-        font-family: var(--font-heading);
-        font-size: calc(1.75em * var(--font-heading-scale));
-    }
-    
-    .editor-styles-wrapper h2,
-    .wp-block-heading h2 {
-        font-family: var(--font-heading);
-        font-size: calc(1.38em * var(--font-heading-scale));
-    }
-    
-    .editor-styles-wrapper h3,
-    .wp-block-heading h3 {
-        font-family: var(--font-heading);
-        font-size: calc(1.2em * var(--font-heading-scale));
-    }
-    
-    .editor-styles-wrapper h4,
-    .wp-block-heading h4 {
-        font-family: var(--font-heading);
-        font-size: calc(1.1em * var(--font-heading-scale));
-    }
-    
-    .editor-styles-wrapper h5,
-    .wp-block-heading h5 {
-        font-family: var(--font-heading);
-        font-size: calc(1.05em * var(--font-heading-scale));
-    }
-    
-    .editor-styles-wrapper h6,
-    .wp-block-heading h6 {
-        font-family: var(--font-heading);
-        font-size: calc(1em * var(--font-heading-scale));
-    }
-    ";
-    
-    // Add inline CSS for editor
-    wp_add_inline_style('sarai-chinwag-editor-fonts', $editor_css);
+    wp_add_inline_style('sarai-chinwag-editor-css', $editor_vars);
 }
 
 // Hook for Block Editor (Gutenberg)
 add_action('enqueue_block_editor_assets', 'sarai_chinwag_enqueue_editor_fonts');
 
-// Classic Editor support removed
-
 /**
- * Generate custom CSS from customizer values
+ * Generate custom CSS variables from customizer values
  */
 function sarai_chinwag_customizer_css() {
     $heading_font = get_theme_mod('sarai_chinwag_heading_font', 'Gluten');
@@ -404,16 +353,12 @@ function sarai_chinwag_customizer_css() {
     $background_color = get_theme_mod('sarai_chinwag_background_color', '#ffffff');
     $header_footer_bg_color = get_theme_mod('sarai_chinwag_header_footer_bg_color', '#000000');
     
-    // Generate font family values
     $heading_font_family = sarai_chinwag_get_font_family($heading_font);
     $body_font_family = sarai_chinwag_get_font_family($body_font);
-    
-    // Convert percentage to scale (50% = 1.0, 100% = 2.0, 1% = 0.02)
     $heading_scale = $heading_font_size / 50;
     $body_scale = $body_font_size / 50;
     
-    $css = "
-    :root {
+    return ":root {
         --font-heading: {$heading_font_family};
         --font-body: {$body_font_family};
         --font-heading-scale: {$heading_scale};
@@ -423,57 +368,7 @@ function sarai_chinwag_customizer_css() {
         --color-text: {$text_color};
         --color-background: {$background_color};
         --color-header-footer-bg: {$header_footer_bg_color};
-    }
-    
-    /* Scale body font size with fluid clamp (18px-20px) */
-    body {
-        font-size: calc(clamp(18px, 2.5vw, 20px) * var(--font-body-scale));
-    }
-    
-    /* Scale heading sizes while maintaining hierarchy with fluid scaling */
-    h1.entry-title {
-        font-size: calc(clamp(1.45em, 3vw, 1.75em) * var(--font-heading-scale));
-    }
-    h2 {
-        font-size: calc(clamp(1.15em, 2.5vw, 1.38em) * var(--font-heading-scale));
-    }
-    
-    /* Scale responsive heading sizes */
-    @media (max-width: 768px) {
-        h1.entry-title {
-            font-size: calc(1.45em * var(--font-heading-scale));
-        }
-        h2.entry-title, .related-item h4 {
-            font-size: calc(1.1em * var(--font-heading-scale));
-        }
-        h1.page-title {
-            font-size: calc(22px * var(--font-heading-scale));
-        }
-    }
-    
-    @media (max-width: 600px) {
-        body {
-            font-size: calc(20px * var(--font-body-scale));
-        }
-        h1.page-title {
-            font-size: calc(22px * var(--font-heading-scale));
-        }
-    }
-    
-    @media (max-width: 480px) {
-        body {
-            font-size: calc(18px * var(--font-body-scale));
-        }
-        h1.page-title {
-            font-size: calc(20px * var(--font-heading-scale));
-        }
-        h2.entry-title {
-            font-size: calc(1.15em * var(--font-heading-scale));
-        }
-    }
-    ";
-    
-    return $css;
+    }";
 }
 
 /**
@@ -495,7 +390,13 @@ function sarai_chinwag_get_font_family($font_name) {
  * Output customizer CSS
  */
 function sarai_chinwag_output_customizer_css() {
-    wp_add_inline_style('sarai-chinwag-style', sarai_chinwag_customizer_css());
+    wp_enqueue_style(
+        'sarai-chinwag-customizer-css',
+        get_template_directory_uri() . '/css/customizer.css',
+        array('sarai-chinwag-style'),
+        filemtime(get_template_directory() . '/css/customizer.css')
+    );
+    wp_add_inline_style('sarai-chinwag-customizer-css', sarai_chinwag_customizer_css());
 }
 add_action('wp_enqueue_scripts', 'sarai_chinwag_output_customizer_css');
 

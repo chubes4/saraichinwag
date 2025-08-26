@@ -10,9 +10,9 @@
  * Register WordPress native rewrite endpoint for image archives
  */
 function sarai_chinwag_add_image_archive_endpoint() {
-    // Add /images/ endpoint to categories, tags, and homepage
+    // Add /images/ endpoint to categories, tags, homepage, and search
     // This automatically handles nested categories via WordPress core
-    add_rewrite_endpoint('images', EP_CATEGORIES | EP_TAGS | EP_ROOT);
+    add_rewrite_endpoint('images', EP_CATEGORIES | EP_TAGS | EP_ROOT | EP_SEARCH);
 }
 add_action('init', 'sarai_chinwag_add_image_archive_endpoint');
 
