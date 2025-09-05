@@ -1,0 +1,33 @@
+/* Centralized CSS Variables - Updated dynamically by theme functions */
+:root {
+    /* Typography */
+    --font-heading: 'Gluten', 'Helvetica', Arial, sans-serif;
+    --font-body: 'Helvetica', Arial, sans-serif;
+    
+    /* Font Scaling - Default to 100% (1.0) */
+    --font-heading-scale: 1.0;
+    --font-body-scale: 1.0;
+    
+    /* Base Font Sizes (50% = baseline) */
+    --font-size-base: 1.25rem; /* 20px base */
+    --font-size-h1: 1.575em;
+    --font-size-h2: 1.38em;
+    --font-size-h3: 1.2em;
+    --font-size-small: 0.85em;
+    
+    /* Spacing Scale */
+    --space-xs: 5px;
+    --space-sm: 10px;
+    --space-md: 15px;
+    --space-lg: 20px;
+    --space-xl: 30px;
+    
+    /* Colors */
+    --color-primary: #1fc5e2;
+    --color-secondary: #ff6eb1;
+    --color-text: #000;
+    --color-background: #fff;
+    --color-header-footer-bg: #000;
+    --color-text-light: #666;
+    --color-border: #ddd;
+}
