@@ -41,6 +41,7 @@ add_filter('wpseo_sitemap_urlimages', 'filter_yoast_sitemap_images', 10, 2);
  * - /images/ (site-wide gallery)
  * - /category/{slug}/images/
  * - /tag/{slug}/images/
+ * - /?s={query}/images/ (search gallery)
  *
  * @return string|false Title to use, or false when not on an image gallery route
  */
@@ -51,13 +52,19 @@ function sarai_chinwag_image_gallery_meta_title() {
     $url_has_images = strpos($_SERVER['REQUEST_URI'], '/images/') !== false || strpos($_SERVER['REQUEST_URI'], '/images') !== false;
     $is_images_endpoint = $has_images_var && $url_has_images;
     
-    if (!$is_images_endpoint || !(is_category() || is_tag() || is_home())) {
+    if (!$is_images_endpoint || !(is_category() || is_tag() || is_home() || is_search())) {
         return false;
     }
 
     // Site-wide images page (/images)
     if (is_home() && $url_has_images) {
         return __('Digital Wallpapers & High-Res Artwork', 'sarai-chinwag');
+    }
+
+    // Search gallery (/search/{query}/images or /?s={query}/images)
+    if (is_search()) {
+        $search_query = get_search_query();
+        return sprintf(__('"%s" Digital Wallpapers & High-Res Artwork', 'sarai-chinwag'), $search_query);
     }
 
     // Category gallery (/category/{slug}/images)
@@ -86,6 +93,7 @@ function sarai_chinwag_image_gallery_meta_title() {
  * - /images/ (site-wide gallery)
  * - /category/{slug}/images/
  * - /tag/{slug}/images/
+ * - /?s={query}/images/ (search gallery)
  *
  * @return string|false Description to use, or false when not on an image gallery route
  */
@@ -96,13 +104,19 @@ function sarai_chinwag_image_gallery_meta_description() {
     $url_has_images = strpos($_SERVER['REQUEST_URI'], '/images/') !== false || strpos($_SERVER['REQUEST_URI'], '/images') !== false;
     $is_images_endpoint = $has_images_var && $url_has_images;
     
-    if (!$is_images_endpoint || !(is_category() || is_tag() || is_home())) {
+    if (!$is_images_endpoint || !(is_category() || is_tag() || is_home() || is_search())) {
         return false;
     }
 
     // Site-wide images page (/images)
     if (is_home() && $url_has_images) {
         return __('Discover premium digital wallpapers, AI artwork & high resolution backgrounds. Download stunning images for phone wallpapers, social media & wall art', 'sarai-chinwag');
+    }
+
+    // Search gallery (/search/{query}/images or /?s={query}/images)
+    if (is_search()) {
+        $search_query = get_search_query();
+        return sprintf(__('Discover premium digital wallpapers and AI artwork matching "%s". Download stunning images for phone wallpapers, social media & wall art', 'sarai-chinwag'), $search_query);
     }
 
     // Category gallery (/category/{slug}/images)
@@ -158,3 +172,28 @@ function sarai_chinwag_filter_wpseo_metadesc_for_images($current) {
 add_filter('wpseo_metadesc', 'sarai_chinwag_filter_wpseo_metadesc_for_images', 99);
 add_filter('wpseo_opengraph_desc', 'sarai_chinwag_filter_wpseo_metadesc_for_images', 99);
 add_filter('wpseo_twitter_description', 'sarai_chinwag_filter_wpseo_metadesc_for_images', 99);
+
+/**
+ * Add custom image gallery URLs to Yoast sitemap index
+ */
+function sarai_chinwag_add_image_galleries_to_sitemap($sitemap_index) {
+    // Add site-wide image gallery
+    $sitemap_index .= '<sitemap><loc>' . home_url('/images/') . '</loc></sitemap>' . "\n";
+    
+    // Get all public categories with posts
+    $categories = get_categories(array('hide_empty' => true));
+    foreach ($categories as $category) {
+        $category_images_url = get_category_link($category->term_id) . 'images/';
+        $sitemap_index .= '<sitemap><loc>' . esc_url($category_images_url) . '</loc></sitemap>' . "\n";
+    }
+    
+    // Get all public tags with posts
+    $tags = get_tags(array('hide_empty' => true));
+    foreach ($tags as $tag) {
+        $tag_images_url = get_tag_link($tag->term_id) . 'images/';
+        $sitemap_index .= '<sitemap><loc>' . esc_url($tag_images_url) . '</loc></sitemap>' . "\n";
+    }
+    
+    return $sitemap_index;
+}
+add_filter('wpseo_sitemap_index', 'sarai_chinwag_add_image_galleries_to_sitemap');

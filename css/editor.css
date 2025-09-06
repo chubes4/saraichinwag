@@ -1,12 +1,5 @@
 /* Editor-specific CSS for the Block Editor */
-.editor-styles-wrapper,
-.wp-block-editor,
-.wp-block {
-    --font-heading: var(--font-heading, 'Gluten', 'Helvetica', Arial, sans-serif);
-    --font-body: var(--font-body, 'Helvetica', Arial, sans-serif);
-    --font-heading-scale: var(--font-heading-scale, 1);
-    --font-body-scale: var(--font-body-scale, 1);
-}
+/* CSS variables are now centralized in css/root.css */
 
 /* Body font for editor content */
 .editor-styles-wrapper,
@@ -21,37 +14,39 @@
 /* Heading fonts for editor content */
 .editor-styles-wrapper h1,
 .wp-block-heading h1,
-.editor-post-title__input {
-    font-family: var(--font-heading);
+.wp-block-post-title h1,
+.editor-post-title__input,
+.editor-post-title textarea {
+    font-family: var(--font-heading) !important;
     font-size: calc(1.75em * var(--font-heading-scale));
 }
 
 .editor-styles-wrapper h2,
 .wp-block-heading h2 {
-    font-family: var(--font-heading);
+    font-family: var(--font-heading) !important;
     font-size: calc(1.38em * var(--font-heading-scale));
 }
 
 .editor-styles-wrapper h3,
 .wp-block-heading h3 {
-    font-family: var(--font-heading);
+    font-family: var(--font-heading) !important;
     font-size: calc(1.2em * var(--font-heading-scale));
 }
 
 .editor-styles-wrapper h4,
 .wp-block-heading h4 {
-    font-family: var(--font-heading);
+    font-family: var(--font-heading) !important;
     font-size: calc(1.1em * var(--font-heading-scale));
 }
 
 .editor-styles-wrapper h5,
 .wp-block-heading h5 {
-    font-family: var(--font-heading);
+    font-family: var(--font-heading) !important;
     font-size: calc(1.05em * var(--font-heading-scale));
 }
 
 .editor-styles-wrapper h6,
 .wp-block-heading h6 {
-    font-family: var(--font-heading);
+    font-family: var(--font-heading) !important;
     font-size: calc(1em * var(--font-heading-scale));
 }

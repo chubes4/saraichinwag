@@ -28,6 +28,8 @@ get_header();
             <button id="load-more" data-page="1"><?php esc_html_e( 'Load More', 'sarai-chinwag' ); ?></button>
         </div>
 
+        <?php get_template_part( 'template-parts/archive-image-mode-link' ); ?>
+
     <?php else : ?>
 
         <p><?php esc_html_e( 'No posts found.', 'sarai-chinwag' ); ?></p>

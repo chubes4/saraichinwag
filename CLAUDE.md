@@ -15,8 +15,11 @@ The theme includes an admin settings page accessible via **Settings → Theme Se
 ## Theme Architecture
 
 ### Core Structure
-- **functions.php**: Main theme setup, enqueues styles/scripts with dynamic versioning using `filemtime()`, manually loads PHP modules from `/inc` directory
-- **style.css**: Primary stylesheet with custom font declarations and theme styles  
+- **functions.php**: Main theme setup, enqueues styles/scripts with dynamic versioning using `filemtime()`, loads PHP modules from `/inc` directory
+- **style.css**: Primary stylesheet with theme styles (CSS variables centralized in `css/root.css`)
+- **css/root.css**: Centralized CSS custom properties and variables
+- **css/editor.css**: WordPress Block Editor and Classic Editor font integration  
+- **css/customizer.css**: Live preview styling for WordPress Customizer
 - **Template hierarchy**: Standard WordPress templates (single.php, archive.php, home.php, search.php, page.php, etc.)
 - **page.php**: Standard page template using `template-parts/content-single.php` with sidebar support
 
@@ -25,17 +28,20 @@ The theme includes an admin settings page accessible via **Settings → Theme Se
 - **Main query modification**: Includes both 'post' and 'recipe' post types in home, category, tag, and search queries
 
 ### PHP Module System
-The theme uses manual loading of PHP modules from the `/inc` directory in functions.php:
-- **Core functionality**: All theme features consolidated into functions.php for simplified architecture
-- **Modular organization**: Functions logically grouped within functions.php rather than separate files
-- **Streamlined approach**: Reduced file complexity while maintaining full functionality
+The theme uses organized PHP modules in the `/inc` directory loaded via functions.php:
+- **inc/admin/**: Admin interface components (settings, customizer, notices)
+- **inc/queries/**: Query modification and content retrieval systems
+- **inc/queries/image-mode/**: Complete image gallery and extraction system
+- **Core modules**: recipes.php, ratings.php, schema-recipe.php for recipe functionality
+- **Integration modules**: bing-index-now.php, yoast-stuff.php for third-party compatibility
 
 ### JavaScript Structure
 - **js/nav.js**: Header search functionality with position adjustment for admin bar
 - **js/customizer.js**: Live preview functionality for font changes and size scaling in WordPress Customizer
 - **js/filter-bar.js**: Advanced AJAX filtering system with sort options and post type filtering
 - **js/load-more.js**: AJAX Load More functionality that preserves filter state
-- **js/pinterest.js**: Pinterest save button integration and social functionality
+- **js/gallery-utils.js**: Image gallery navigation, lightbox functionality, and gallery-specific interactions
+- **js/pinterest.js**: Pinterest save button integration and enhanced social functionality
 - **js/rating.js**: AJAX rating system with localStorage persistence, nonce security, and dual-state management (user + server average)
 
 ### Template Parts
@@ -47,7 +53,8 @@ The theme uses manual loading of PHP modules from the `/inc` directory in functi
 
 ### Key Features
 - **Advanced Filter System**: Full-width filter bar with sort options (Random, Most Popular, Recent, Oldest) and post type filtering
-- **Image Gallery System**: Specialized gallery post template with lightbox functionality and optimized display
+- **Complete Image Gallery System**: Advanced image extraction, gallery archives, and specialized display templates with lightbox functionality
+- **Image Search & Discovery**: Comprehensive image search system with category/tag-based filtering and extraction
 - **Load More Integration**: AJAX-powered infinite scroll that preserves filter state and enhances user experience
 - **Full-Width Layout**: Home and archive pages display 4-column responsive grid (sidebar removed for maximum content visibility)
 - **View Counter System**: Simple post meta tracking for popularity sorting (`_post_views` field)
@@ -65,8 +72,39 @@ The theme uses manual loading of PHP modules from the `/inc` directory in functi
 - **Dynamic asset versioning**: Uses `filemtime()` for cache busting on CSS and JS files
 - **Rating system**: AJAX-powered recipe ratings with localStorage persistence, nonce security, and dual-state management
 - **Schema.org markup**: Full structured data implementation for recipes
-- **Performance optimizations**: Object caching with wp_cache_* functions, indefinite footer caching, cache groups, and limited query results
+- **Performance optimizations**: Object caching with wp_cache_* functions, specialized cache groups, and limited query results
 - **Security enhancements**: All output properly escaped, input sanitized, secure API key storage
+
+## Complete Image Gallery System
+
+### Image Gallery Architecture
+The theme includes a comprehensive image gallery system for enhanced content discovery and visual browsing:
+
+**Core Components:**
+- **Image Extractor** (`inc/queries/image-mode/image-extractor.php`): Extracts all images from posts within specific categories/tags
+- **Image Archives** (`inc/queries/image-mode/image-archives.php`): Creates image-focused archive pages showing extracted images
+- **Image Search** (`inc/queries/image-mode/search-images.php`): Specialized search functionality for image content
+- **Rewrite Rules** (`inc/queries/image-mode/rewrite-rules.php`): Custom URL structures for image archives
+- **Gallery Templates** (`template-parts/content-image-gallery.php`, `template-parts/gallery-item.php`): Specialized display templates
+
+**Gallery Features:**
+- **Automatic Image Extraction**: Extracts featured images, gallery images, and content images from posts
+- **Category/Tag Image Archives**: View all images from specific categories or tags in gallery format
+- **Image Search Integration**: Search specifically within image content with gallery display
+- **Lightbox Functionality**: Enhanced image viewing with navigation via `js/gallery-utils.js`
+- **Performance Caching**: wp_cache_* with `sarai_chinwag_images` cache group for fast image retrieval
+- **Responsive Gallery Grid**: Adapts to 4-column grid system with optimized image sizing
+
+**URL Structure:**
+- Standard archives: `/category/food/` (traditional post listings)
+- Image archives: `/category/food/images/` (gallery view of all images from food category)
+- Image search: `/search/query/?images=1` (search results in gallery format)
+
+**Technical Implementation:**
+- **sarai_chinwag_extract_images_from_term()**: Main extraction function with caching
+- **sarai_chinwag_get_image_search_results()**: Image-specific search queries
+- **sarai_chinwag_image_archive_query()**: Modifies main query for image archive pages
+- **Performance**: Limited results (30 images default), cached for 2 hours, optimized queries
 
 ## Image Optimization Strategy
 
@@ -194,10 +232,19 @@ No build process required - this is a direct-edit WordPress theme:
 3. For PHP changes, reload the page to see updates
 4. No package.json, composer.json, or build tools configured
 
-### Testing
+### Testing & Debugging
 - Test functionality directly in WordPress environment
 - Use WordPress debugging (`WP_DEBUG`) for PHP errors
 - Browser developer tools for JavaScript debugging
+- AJAX debugging: Check Network tab for `/wp-admin/admin-ajax.php` requests
+- Cache debugging: Clear object cache if changes don't appear (`wp_cache_flush()`)
+
+### Common Development Tasks
+- **Clear caches**: Delete all wp_cache_* entries when developing cached functionality
+- **Test random functionality**: Use `/random-post`, `/random-recipe`, `/random-all` URLs
+- **Image gallery testing**: Test category/tag image archives with `/category/name/images/` URLs
+- **AJAX testing**: Verify nonce generation and validation for rating system and filter bar
+- **Recipe toggle testing**: Enable/disable recipes in Settings → Theme Settings to test universal theme functionality
 
 ## Code Conventions
 
@@ -241,7 +288,7 @@ The footer has been streamlined for better user experience and SEO performance:
 
 **Object Caching Architecture:**
 - **wp_cache_* functions** replace transients throughout theme for better performance
-- **Cache Groups**: `sarai_chinwag_random`, `sarai_chinwag_related`, `sarai_chinwag_fonts`, `sarai_chinwag_views`, `sarai_chinwag_sidebar`
+- **Cache Groups**: `sarai_chinwag_random`, `sarai_chinwag_related`, `sarai_chinwag_fonts`, `sarai_chinwag_views`, `sarai_chinwag_sidebar`, `sarai_chinwag_images`
 - **Dynamic cache versioning** using `wp_cache_get_last_changed()` for content-dependent caches
 - **Limited query results** (max 500 posts) to prevent memory issues in large sites
 
@@ -252,6 +299,7 @@ The footer has been streamlined for better user experience and SEO performance:
 - Editor font integration with conditional loading based on customizer selections
 - View counter system uses efficient wp_cache with `sarai_chinwag_views` cache group
 - Sidebar widgets cached for 15 minutes
+- Image gallery system cached for 2 hours with `sarai_chinwag_images` cache group
 - CSS uses custom properties for dynamic styling instead of inline styles
 - All queries use proper WordPress functions and avoid direct database access
 
@@ -282,6 +330,14 @@ if (!sarai_chinwag_recipes_disabled()) {
     // Recipe-specific code here
 }
 ```
+
+### Key Function Reference
+- `sarai_chinwag_recipes_disabled()`: Check if recipes are disabled
+- `sarai_chinwag_track_post_view($post_id)`: Increment view counter
+- `sarai_chinwag_get_post_views($post_id)`: Get view count
+- `sarai_chinwag_extract_images_from_term($term, $taxonomy)`: Extract images from term
+- `sarai_chinwag_post_badges()`: Display category/tag badges
+- `sarai_chinwag_archive_breadcrumbs()`: Generate breadcrumb navigation
 
 ## Internationalization & Browser Compatibility
 

@@ -64,6 +64,8 @@ get_header();
 
         <?php endif; ?>
 
+        <?php get_template_part( 'template-parts/archive-image-mode-link' ); ?>
+
     <?php else : ?>
 
         <p><?php esc_html_e( 'No posts found.', 'sarai-chinwag' ); ?></p>

@@ -41,6 +41,9 @@ function sarai_chinwag_random_discovery() {
         return;
     }
 
+    // Display gallery discovery badges before "Keep Exploring" section
+    sarai_chinwag_gallery_discovery_badges();
+
     echo '<aside class="random-discovery">';
     echo '<h2 class="widget-title">' . __('Keep Exploring', 'sarai-chinwag') . '</h2>';
     echo '<div class="post-grid discovery-grid">';

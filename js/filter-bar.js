@@ -254,7 +254,15 @@ document.addEventListener('DOMContentLoaded', function () {
     // Helper functions for navigation
     function navigateToImages() {
         const currentUrl = window.location.pathname;
+        const currentSearch = window.location.search;
+        
         if (currentUrl.includes('/images')) return; // Already on images page
+        
+        // Handle search pages - preserve search query parameters
+        if (currentSearch && currentSearch.includes('s=')) {
+            window.location.href = currentUrl + 'images/' + currentSearch;
+            return;
+        }
         
         const imageUrl = (currentUrl === '/' || currentUrl.match(/^\/$/)) 
             ? '/images/' 
@@ -264,7 +272,16 @@ document.addEventListener('DOMContentLoaded', function () {
     
     function navigateFromImages() {
         const currentUrl = window.location.pathname;
+        const currentSearch = window.location.search;
+        
         if (!currentUrl.includes('/images')) return false; // Not on images page
+        
+        // Handle search pages - preserve search query parameters
+        if (currentSearch && currentSearch.includes('s=')) {
+            const postUrl = currentUrl.replace('/images/', '/').replace('/images', '/');
+            window.location.href = postUrl + currentSearch;
+            return true;
+        }
         
         const postUrl = (currentUrl === '/images/' || currentUrl.match(/^\/images\/$/))
             ? '/'

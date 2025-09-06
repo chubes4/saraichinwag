@@ -1,15 +1,5 @@
 /* Customizer dynamic styles */
-:root {
-    --font-heading: var(--font-heading, 'Gluten', 'Helvetica', Arial, sans-serif);
-    --font-body: var(--font-body, 'Helvetica', Arial, sans-serif);
-    --font-heading-scale: var(--font-heading-scale, 1);
-    --font-body-scale: var(--font-body-scale, 1);
-    --color-primary: var(--color-primary, #1fc5e2);
-    --color-secondary: var(--color-secondary, #ff6eb1);
-    --color-text: var(--color-text, #000000);
-    --color-background: var(--color-background, #ffffff);
-    --color-header-footer-bg: var(--color-header-footer-bg, #000000);
-}
+/* CSS variables are now centralized in css/root.css */
 
 /* Scale body font size with fluid clamp (18px-20px) */
 body {

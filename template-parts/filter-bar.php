@@ -37,7 +37,7 @@ $search_term = is_search() ? get_search_query() : '';
     <?php 
     // Determine what buttons to show
     $has_both_post_types = !sarai_chinwag_recipes_disabled() && sarai_chinwag_has_both_posts_and_recipes();
-    $can_show_mode_toggle = is_category() || is_tag() || is_home() || $is_image_gallery;
+    $can_show_mode_toggle = is_category() || is_tag() || is_home() || is_search() || $is_image_gallery;
     
     // Show type filters if we have multiple post types OR can show mode toggle
     $show_type_filters = $has_both_post_types || $can_show_mode_toggle;

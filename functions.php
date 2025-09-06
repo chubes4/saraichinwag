@@ -24,6 +24,7 @@ function sarai_chinwag_setup() {
         add_theme_support( 'menus' );
         add_theme_support( 'editor-styles' );
         add_editor_style( 'style.css' );
+        add_editor_style( 'css/editor.css' );
         
         // Remove unused WordPress image sizes to optimize performance
         remove_image_size('thumbnail');
@@ -45,7 +46,7 @@ add_action( 'after_setup_theme', 'sarai_chinwag_setup' );
  */
 function sarai_chinwag_scripts() {
     $style_version = filemtime( get_template_directory() . '/style.css' );
-    wp_enqueue_style( 'sarai-chinwag-style', get_stylesheet_uri(), array(), $style_version );
+    wp_enqueue_style( 'sarai-chinwag-style', get_stylesheet_uri(), array('sarai-chinwag-root-css'), $style_version );
 
     $nav_version = filemtime( get_template_directory() . '/js/nav.js' );
     wp_enqueue_script( 'sarai-chinwag-nav', get_template_directory_uri() . '/js/nav.js', array(), $nav_version, true );
@@ -326,6 +327,177 @@ function sarai_chinwag_archive_breadcrumbs() {
         echo implode($separator, $breadcrumbs);
         echo '</nav>';
     }
+}
+
+/**
+ * Display gallery discovery badges above "Keep Exploring" section
+ * Shows badge-style links to image galleries for taxonomies assigned to current post
+ */
+function sarai_chinwag_gallery_discovery_badges() {
+    // Only show on single posts and recipes
+    if (!is_singular(array('post', 'recipe'))) {
+        return;
+    }
+    
+    global $post;
+    $post_id = $post->ID;
+    
+    // Check cache first - gallery badges cached for 15 minutes
+    $cache_key = "gallery_badges_{$post_id}";
+    $cached_badges = wp_cache_get($cache_key, 'sarai_chinwag_related');
+    
+    if (false !== $cached_badges) {
+        echo $cached_badges;
+        return;
+    }
+    
+    // Start output buffering to cache the result
+    ob_start();
+    
+    $gallery_badges = array();
+    
+    // Get categories for this post
+    $categories = get_the_category($post_id);
+    if (!empty($categories)) {
+        foreach ($categories as $category) {
+            // Check if category has images and get accurate count
+            $image_count = sarai_chinwag_get_accurate_term_image_count($category->term_id, 'category');
+            if ($image_count > 0) {
+                $category_url = get_category_link($category->term_id);
+                $gallery_url = trailingslashit($category_url) . 'images/';
+                $gallery_badges[] = array(
+                    'url' => $gallery_url,
+                    'name' => $category->name,
+                    'type' => 'category',
+                    'count' => $image_count
+                );
+            }
+        }
+    }
+    
+    // Get tags for this post
+    $tags = get_the_tags($post_id);
+    if (!empty($tags)) {
+        foreach ($tags as $tag) {
+            // Check if tag has images and get accurate count
+            $image_count = sarai_chinwag_get_accurate_term_image_count($tag->term_id, 'post_tag');
+            if ($image_count > 0) {
+                $tag_url = get_tag_link($tag->term_id);
+                $gallery_url = trailingslashit($tag_url) . 'images/';
+                $gallery_badges[] = array(
+                    'url' => $gallery_url,
+                    'name' => $tag->name,
+                    'type' => 'tag',
+                    'count' => $image_count
+                );
+            }
+        }
+    }
+    
+    // Only display if we have gallery badges to show
+    if (!empty($gallery_badges)) {
+        echo '<aside class="gallery-discovery-badges">';
+        echo '<h3 class="gallery-badges-title">' . __('Browse Image Galleries', 'sarai-chinwag') . '</h3>';
+        echo '<p class="gallery-badges-description">' . __('View and download high-resolution images from these collections:', 'sarai-chinwag') . '</p>';
+        echo '<nav class="gallery-badges-nav" aria-label="' . esc_attr__('Image gallery navigation', 'sarai-chinwag') . '">';
+        
+        foreach ($gallery_badges as $badge) {
+            echo '<a href="' . esc_url($badge['url']) . '" class="gallery-badge badge-' . esc_attr($badge['type']) . '">';
+            echo '<span class="badge-text">' . esc_html($badge['name']) . ' Images</span>';
+            echo '<span class="badge-count">(' . absint($badge['count']) . ')</span>';
+            echo '</a>';
+        }
+        
+        echo '</nav>';
+        echo '</aside>';
+    }
+    
+    // Cache the output for 15 minutes
+    $output = ob_get_contents();
+    wp_cache_set($cache_key, $output, 'sarai_chinwag_related', 15 * MINUTE_IN_SECONDS);
+    
+    ob_end_flush();
+}
+
+/**
+ * Helper function to get accurate image count for a specific term
+ * Uses the existing image extractor function - no fallbacks
+ */
+function sarai_chinwag_get_accurate_term_image_count($term_id, $taxonomy) {
+    $cache_key = "term_image_count_{$term_id}_{$taxonomy}";
+    $cached_count = wp_cache_get($cache_key, 'sarai_chinwag_images');
+    
+    if (false !== $cached_count) {
+        return $cached_count;
+    }
+    
+    // Use the existing image extractor function for accurate counts only
+    if (function_exists('sarai_chinwag_extract_images_from_term')) {
+        $images = sarai_chinwag_extract_images_from_term($term_id, $taxonomy, 999);
+        $count = count($images);
+        
+        // Cache for 2 hours
+        wp_cache_set($cache_key, $count, 'sarai_chinwag_images', 2 * HOUR_IN_SECONDS);
+        
+        return $count;
+    }
+    
+    // If image extractor function doesn't exist, return 0
+    return 0;
+}
+
+/**
+ * Helper function to get accurate site-wide image count
+ * Uses the existing site-wide image extractor function
+ */
+function sarai_chinwag_get_site_wide_image_count() {
+    $cache_key = "site_wide_image_count";
+    $cached_count = wp_cache_get($cache_key, 'sarai_chinwag_images');
+    
+    if (false !== $cached_count) {
+        return $cached_count;
+    }
+    
+    // Use the existing site-wide image extractor function for accurate counts
+    if (function_exists('sarai_chinwag_get_all_site_images')) {
+        $images = sarai_chinwag_get_all_site_images(999);
+        $count = count($images);
+        
+        // Cache for 2 hours
+        wp_cache_set($cache_key, $count, 'sarai_chinwag_images', 2 * HOUR_IN_SECONDS);
+        
+        return $count;
+    }
+    
+    // If site images function doesn't exist, return 0
+    return 0;
+}
+
+/**
+ * Helper function to get accurate search image count
+ * Uses the existing search image extractor function
+ */
+function sarai_chinwag_get_search_image_count($search_query) {
+    $cache_key = "search_image_count_" . md5($search_query);
+    $cached_count = wp_cache_get($cache_key, 'sarai_chinwag_images');
+    
+    if (false !== $cached_count) {
+        return $cached_count;
+    }
+    
+    // Use the existing search image extractor function for accurate counts
+    if (function_exists('sarai_chinwag_extract_images_from_search')) {
+        $images = sarai_chinwag_extract_images_from_search($search_query, 999);
+        $count = count($images);
+        
+        // Cache for 2 hours
+        wp_cache_set($cache_key, $count, 'sarai_chinwag_images', 2 * HOUR_IN_SECONDS);
+        
+        return $count;
+    }
+    
+    // If search images function doesn't exist, return 0
+    return 0;
 }
 
 /**

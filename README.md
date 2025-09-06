@@ -44,7 +44,7 @@ A versatile WordPress theme with advanced filtering, randomized content discover
 - **Dynamic Asset Versioning**: Automatic cache busting using `filemtime()`
 - **Secure API Integration**: Proper sanitization and escaping throughout
 - **Optimized Loading**: Only loads selected Google Fonts with `font-display: swap`
-- **Image Gallery Optimization**: Specialized templates for gallery content with enhanced loading
+- **Complete Image Gallery System**: Advanced image extraction, gallery archives, and specialized display templates
 
 ### Admin Features
 - **Theme Settings Panel**: Configure API keys and toggle functionality
@@ -79,6 +79,7 @@ saraichinwag/
 ├── js/                           # JavaScript files
 │   ├── filter-bar.js            # Advanced filter system frontend
 │   ├── load-more.js             # AJAX Load More functionality
+│   ├── gallery-utils.js         # Image gallery and lightbox functionality
 │   ├── pinterest.js             # Pinterest save button integration
 │   ├── customizer.js            # Live preview functionality
 │   ├── rating.js                # Recipe rating interactions
@@ -98,7 +99,7 @@ saraichinwag/
 - All output properly escaped with `esc_html()`, `esc_url()`, etc.
 - Input sanitization with WordPress functions
 - Uses `wp_remote_get()` instead of cURL
-- Transient caching for expensive operations
+- Object caching with wp_cache_* functions for expensive operations
 
 ## Customization
 
@@ -139,13 +140,14 @@ This theme is designed for personal use and white-labeling. Commercial distribut
 
 ## Changelog
 
-### v2.2 - WordPress Editor Integration & Footer Simplification
+### v2.2 - WordPress Editor Integration & Complete Image Gallery System
 - **NEW**: WordPress Editor Font Integration - consistent fonts between editors and frontend
-- **NEW**: Image Gallery System - specialized templates for gallery posts with optimized display
+- **NEW**: Complete Image Gallery System - advanced image extraction, gallery archives, and specialized display templates
+- **NEW**: Image Search & Discovery - comprehensive image search with category/tag-based filtering  
 - **NEW**: Load More Integration - AJAX infinite scroll that preserves filter state
 - **NEW**: Enhanced Pinterest Integration - improved social functionality with js/pinterest.js
 - **IMPROVED**: Footer Architecture Simplification - removed category/tag clouds for better UX/SEO
-- **IMPROVED**: Object Caching Evolution - wp_cache_* functions with specialized cache groups
+- **IMPROVED**: Object Caching Evolution - wp_cache_* functions with specialized cache groups including images
 - **PERFORMANCE**: Enhanced caching strategies with proper cache group segregation
 
 ### v2.1 - Advanced Filter & Layout System

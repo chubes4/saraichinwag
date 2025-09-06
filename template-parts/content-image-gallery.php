@@ -32,10 +32,25 @@ $images = sarai_chinwag_get_term_images($term_id, $term_type, $posts_per_page);
 
 if (empty($images)) {
     echo '<div class="no-images-found">';
-    echo '<p>' . esc_html__('No images found in this category/tag.', 'sarai-chinwag') . '</p>';
-    echo '<p><a href="' . esc_url(get_term_link($term)) . '">' . 
-         sprintf(esc_html__('← Back to %s posts', 'sarai-chinwag'), esc_html($term->name)) . 
-         '</a></p>';
+    
+    if ($term_type === 'search') {
+        $search_query = get_search_query();
+        echo '<p>' . sprintf(esc_html__('No images found for "%s".', 'sarai-chinwag'), esc_html($search_query)) . '</p>';
+        echo '<p><a href="' . esc_url(home_url('/?s=' . urlencode($search_query))) . '">' . 
+             sprintf(esc_html__('← Back to "%s" search results', 'sarai-chinwag'), esc_html($search_query)) . 
+             '</a></p>';
+    } elseif ($is_site_wide) {
+        echo '<p>' . esc_html__('No images found on this site.', 'sarai-chinwag') . '</p>';
+        echo '<p><a href="' . esc_url(home_url('/')) . '">' . 
+             esc_html__('← Back to homepage', 'sarai-chinwag') . 
+             '</a></p>';
+    } else {
+        echo '<p>' . esc_html__('No images found in this category/tag.', 'sarai-chinwag') . '</p>';
+        echo '<p><a href="' . esc_url(get_term_link($term)) . '">' . 
+             sprintf(esc_html__('← Back to %s posts', 'sarai-chinwag'), esc_html($term->name)) . 
+             '</a></p>';
+    }
+    
     echo '</div>';
     return;
 }

@@ -57,6 +57,8 @@ get_header();
 
         <?php endif; ?>
 
+        <?php get_template_part( 'template-parts/archive-image-mode-link' ); ?>
+
         <?php else : ?>
 
             <p>
