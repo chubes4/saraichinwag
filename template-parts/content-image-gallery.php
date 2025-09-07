@@ -5,7 +5,6 @@
  * @package Sarai_Chinwag
  */
 
-// Get current term or check for site-wide gallery
 $term = get_queried_object();
 $url_has_images = strpos($_SERVER['REQUEST_URI'], '/images/') !== false || strpos($_SERVER['REQUEST_URI'], '/images') !== false;
 $is_site_wide = is_home() && $url_has_images;
@@ -58,7 +57,6 @@ if (empty($images)) {
 
 <div class="image-gallery masonry" id="post-grid">
     <?php
-    // Build 4 columns server-side
     $col_count = 4;
     $cols = array_fill(0, $col_count, '');
     foreach ($images as $index => $image) {

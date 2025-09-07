@@ -1,12 +1,9 @@
 /* Customizer dynamic styles */
-/* CSS variables are now centralized in css/root.css */
 
-/* Scale body font size with fluid clamp (18px-20px) */
 body {
     font-size: calc(clamp(18px, 2.5vw, 20px) * var(--font-body-scale));
 }
 
-/* Scale heading sizes while maintaining hierarchy with fluid scaling */
 h1.entry-title {
     font-size: calc(clamp(1.45em, 3vw, 1.75em) * var(--font-heading-scale));
 }
@@ -15,7 +12,6 @@ h2 {
     font-size: calc(clamp(1.15em, 2.5vw, 1.38em) * var(--font-heading-scale));
 }
 
-/* Scale responsive heading sizes */
 @media (max-width: 768px) {
     h1.entry-title {
         font-size: calc(1.45em * var(--font-heading-scale));

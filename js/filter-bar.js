@@ -1,7 +1,5 @@
 /**
  * Advanced Filter Bar System with AJAX
- * 
- * @since 2.0.0
  */
 document.addEventListener('DOMContentLoaded', function () {
     const loadMoreButton = document.getElementById('load-more');
@@ -12,7 +10,6 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
-    // Detect image gallery mode
     let isImageGallery = document.getElementById('filter-image-gallery') ? 
         document.getElementById('filter-image-gallery').value === '1' : false;
     const path = window.location.pathname;
@@ -37,7 +34,6 @@ document.addEventListener('DOMContentLoaded', function () {
         return document.querySelector('.type-btn[data-type="all"]') ? 'all' : 'posts';
     }
 
-    // Filter state
     let currentFilters = {
         sort_by: 'random',
         post_type_filter: determineInitialType(),

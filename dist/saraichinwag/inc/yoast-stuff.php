@@ -1,6 +1,17 @@
 <?php
 /**
- * Remove duplicate images from Yoast sitemap.
+ * Yoast SEO integration and sitemap enhancements
+ * 
+ * Provides duplicate image filtering for Yoast sitemaps, custom meta titles
+ * and descriptions for image gallery routes, and integration with the
+ * image mode rewrite system for SEO optimization.
+ * 
+ * @package Sarai_Chinwag
+ * @since 1.0.0
+ */
+
+/**
+ * Remove duplicate images from Yoast sitemap
  *
  * @param array  $images       Array of images to include in sitemap.
  * @param string $post_id      Post ID.

@@ -50,7 +50,7 @@ The theme uses organized PHP modules in the `/inc` directory loaded via function
 - `template-parts/content-image-gallery.php`: Specialized template for image gallery posts
 - `template-parts/filter-bar.php`: Advanced filter interface for archives and home page
 - `template-parts/gallery-item.php`: Individual gallery item display component
-- `template-parts/archive-image-mode-link.php`: "Try Image Mode" link for switching to gallery view with accurate image counts
+- `template-parts/archive-image-mode-link.php`: "Try Image Mode" link for seamless switching to gallery view with accurate image counts and context-aware functionality
 
 ### Key Features
 - **Advanced Filter System**: Full-width filter bar with sort options (Random, Most Popular, Recent, Oldest) and post type filtering
@@ -106,6 +106,27 @@ The theme includes a comprehensive image gallery system for enhanced content dis
 - **sarai_chinwag_get_image_search_results()**: Image-specific search queries
 - **sarai_chinwag_image_archive_query()**: Modifies main query for image archive pages
 - **Performance**: Limited results (30 images default), cached for 2 hours, optimized queries
+
+### Archive Image Mode Link System
+The theme includes an intelligent "Try Image Mode" link system that appears on archives to encourage gallery exploration:
+
+**Context-Aware Display:**
+- **Homepage**: Links to site-wide image gallery (`/images/`) showing all site images
+- **Category Archives**: Links to category-specific image gallery (`/category/name/images/`)
+- **Tag Archives**: Links to tag-specific image gallery (`/tag/name/images/`)
+- **Search Results**: Links to image search results (`/search/query/?images=1`)
+
+**Smart Functionality:**
+- **Accurate Image Counts**: Uses `sarai_chinwag_get_accurate_term_image_count()` and related functions for precise counts
+- **Conditional Display**: Only shows when images are available for the context (minimum 1 image)
+- **Gallery Detection**: Automatically hides when already viewing image gallery mode
+- **Visual Design**: Matches gallery discovery badge system used on single posts for consistency
+
+**Technical Implementation:**
+- Template: `template-parts/archive-image-mode-link.php`
+- Functions: `sarai_chinwag_get_site_wide_image_count()`, `sarai_chinwag_get_search_image_count()`
+- Performance: Leverages existing image caching system with `sarai_chinwag_images` cache group
+- Integration: Seamlessly works with existing rewrite rules and image archive system
 
 ## Image Optimization Strategy
 
@@ -356,6 +377,9 @@ if (!sarai_chinwag_recipes_disabled()) {
 - `sarai_chinwag_track_post_view($post_id)`: Increment view counter
 - `sarai_chinwag_get_post_views($post_id)`: Get view count
 - `sarai_chinwag_extract_images_from_term($term, $taxonomy)`: Extract images from term
+- `sarai_chinwag_get_accurate_term_image_count($term_id, $taxonomy)`: Get precise image counts for archive image mode links
+- `sarai_chinwag_get_site_wide_image_count()`: Count all images across site for homepage image mode link
+- `sarai_chinwag_get_search_image_count($search_query)`: Count images for search result image mode link
 - `sarai_chinwag_post_badges()`: Display category/tag badges
 - `sarai_chinwag_archive_breadcrumbs()`: Generate breadcrumb navigation
 

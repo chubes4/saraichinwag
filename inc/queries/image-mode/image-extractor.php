@@ -1,11 +1,10 @@
 <?php
 /**
  * Image Extractor System
- * 
+ *
  * Extracts images from post content for gallery archives with caching.
  *
  * @package Sarai_Chinwag
- * @since 2.0.0
  */
 
 /**
@@ -17,7 +16,6 @@
  * @return array Array of image data
  */
 function sarai_chinwag_extract_images_from_term($term_id, $term_type, $limit = 30) {
-    // Check cache first
     $cache_key = "sarai_chinwag_term_images_{$term_id}_{$term_type}";
     $cached_images = wp_cache_get($cache_key, 'sarai_chinwag_images');
     
@@ -25,7 +23,6 @@ function sarai_chinwag_extract_images_from_term($term_id, $term_type, $limit = 3
         return array_slice($cached_images, 0, $limit);
     }
     
-    // Get posts from the term
     $posts = get_posts(array(
         'post_type' => array('post', 'recipe'),
         'post_status' => 'publish',
@@ -57,10 +54,8 @@ function sarai_chinwag_extract_images_from_term($term_id, $term_type, $limit = 3
     foreach ($posts as $post) {
         setup_postdata($post);
         
-        // Extract images from this post
         $post_images = sarai_chinwag_extract_images_from_post($post->ID);
         
-        // Add to collection
         foreach ($post_images as $image) {
             $attachment_id = $image['attachment_id'];
             if (!in_array($attachment_id, $seen_attachments)) {
@@ -69,7 +64,6 @@ function sarai_chinwag_extract_images_from_term($term_id, $term_type, $limit = 3
             }
         }
         
-        // Stop when enough images found
         if (count($all_images) >= $limit * 2) {
             break;
         }
@@ -77,7 +71,6 @@ function sarai_chinwag_extract_images_from_term($term_id, $term_type, $limit = 3
     
     wp_reset_postdata();
     
-    // Shuffle images for randomization
     shuffle($all_images);
     
     wp_cache_set($cache_key, $all_images, 'sarai_chinwag_images', 3600);
@@ -94,7 +87,6 @@ function sarai_chinwag_extract_images_from_term($term_id, $term_type, $limit = 3
 function sarai_chinwag_extract_images_from_post($post_id) {
     $images = array();
     
-    // Featured image
     $featured_image_id = get_post_thumbnail_id($post_id);
     if ($featured_image_id) {
         $image_data = sarai_chinwag_get_image_data($featured_image_id, $post_id, 'featured');
@@ -103,7 +95,6 @@ function sarai_chinwag_extract_images_from_post($post_id) {
         }
     }
     
-    // Extract from post content
     $post = get_post($post_id);
     if (!$post) {
         return $images;
@@ -111,7 +102,6 @@ function sarai_chinwag_extract_images_from_post($post_id) {
     
     $content = $post->post_content;
     
-    // Parse Gutenberg blocks
     if (has_blocks($content)) {
         $blocks = parse_blocks($content);
         $block_images = sarai_chinwag_extract_images_from_blocks($blocks, $post_id);
@@ -132,7 +122,6 @@ function sarai_chinwag_extract_images_from_blocks($blocks, $post_id) {
     $images = array();
     
     foreach ($blocks as $block) {
-        // Image block
         if ($block['blockName'] === 'core/image' && isset($block['attrs']['id'])) {
             $attachment_id = $block['attrs']['id'];
             $image_data = sarai_chinwag_get_image_data($attachment_id, $post_id, 'content');
@@ -141,7 +130,6 @@ function sarai_chinwag_extract_images_from_blocks($blocks, $post_id) {
             }
         }
         
-        // Gallery block
         if ($block['blockName'] === 'core/gallery' && isset($block['attrs']['ids'])) {
             foreach ($block['attrs']['ids'] as $attachment_id) {
                 $image_data = sarai_chinwag_get_image_data($attachment_id, $post_id, 'gallery');
@@ -151,7 +139,6 @@ function sarai_chinwag_extract_images_from_blocks($blocks, $post_id) {
             }
         }
         
-        // Media & text block
         if ($block['blockName'] === 'core/media-text' && isset($block['attrs']['mediaId'])) {
             $attachment_id = $block['attrs']['mediaId'];
             $image_data = sarai_chinwag_get_image_data($attachment_id, $post_id, 'media-text');
@@ -160,7 +147,6 @@ function sarai_chinwag_extract_images_from_blocks($blocks, $post_id) {
             }
         }
         
-        // Recursive check for nested blocks
         if (!empty($block['innerBlocks'])) {
             $nested_images = sarai_chinwag_extract_images_from_blocks($block['innerBlocks'], $post_id);
             $images = array_merge($images, $nested_images);
@@ -184,18 +170,15 @@ function sarai_chinwag_get_image_data($attachment_id, $post_id, $source = 'conte
         return false;
     }
     
-    // Get image metadata
     $image_meta = wp_get_attachment_metadata($attachment_id);
     if (!$image_meta) {
         return false;
     }
     
-    // Get URLs
     $full_url = wp_get_attachment_url($attachment_id);
     $thumb_url = wp_get_attachment_image_url($attachment_id, 'grid-thumb');
     $medium_url = wp_get_attachment_image_url($attachment_id, 'medium_large');
     
-    // Get source post data
     $source_post = get_post($post_id);
     
     return array(
@@ -219,16 +202,13 @@ function sarai_chinwag_get_image_data($attachment_id, $post_id, $source = 'conte
 
 /**
  * Clear image cache when posts are updated
- * 
- * @param int $post_id The post ID being modified
- * @since 2.0.0
+ *
+ * @param int $post_id Post ID being modified
  */
 function sarai_chinwag_clear_image_cache_on_post_update($post_id) {
-    // Get all terms for this post
     $categories = get_the_category($post_id);
     $tags = get_the_tags($post_id);
     
-    // Clear category caches
     if ($categories) {
         foreach ($categories as $category) {
             $cache_key = "sarai_chinwag_term_images_{$category->term_id}_category";
@@ -236,7 +216,6 @@ function sarai_chinwag_clear_image_cache_on_post_update($post_id) {
         }
     }
     
-    // Clear tag caches
     if ($tags) {
         foreach ($tags as $tag) {
             $cache_key = "sarai_chinwag_term_images_{$tag->term_id}_post_tag";
@@ -248,19 +227,17 @@ add_action('save_post', 'sarai_chinwag_clear_image_cache_on_post_update');
 add_action('delete_post', 'sarai_chinwag_clear_image_cache_on_post_update');
 
 /**
- * Get filtered and sorted images from posts in a specific term
- * Used for AJAX filtering on image gallery pages
+ * Get filtered and sorted images from term posts for AJAX
  *
- * @param int $term_id The term ID
- * @param string $term_type The taxonomy (category, post_tag)
- * @param string $sort_by Sort method (random, recent, oldest, popular)
+ * @param int    $term_id         Term ID
+ * @param string $term_type       Taxonomy (category, post_tag)
+ * @param string $sort_by         Sort method (random, recent, oldest, popular)
  * @param string $post_type_filter Filter by post type (all, posts, recipes)
- * @param array $loaded_images Already loaded image attachment IDs
- * @param int $limit Maximum number of images to return
+ * @param array  $loaded_images   Already loaded attachment IDs
+ * @param int    $limit           Maximum images to return
  * @return array Array of image data
  */
 function sarai_chinwag_get_filtered_term_images($term_id, $term_type, $sort_by = 'random', $post_type_filter = 'all', $loaded_images = array(), $limit = 30) {
-    // Determine post types to include
     $post_types = array('post');
     if (!sarai_chinwag_recipes_disabled()) {
         if ($post_type_filter === 'recipes') {
@@ -270,7 +247,6 @@ function sarai_chinwag_get_filtered_term_images($term_id, $term_type, $sort_by =
         }
     }
     
-    // Get posts from the term with appropriate sorting
     $post_args = array(
         'post_type' => $post_types,
         'post_status' => 'publish',
@@ -284,7 +260,6 @@ function sarai_chinwag_get_filtered_term_images($term_id, $term_type, $sort_by =
         )
     );
     
-    // Apply sorting to posts
     switch ($sort_by) {
         case 'popular':
             $post_args['meta_key'] = '_post_views';
@@ -319,7 +294,6 @@ function sarai_chinwag_get_filtered_term_images($term_id, $term_type, $sort_by =
     $all_images = array();
     $seen_attachments = array();
     
-    // Include already loaded images in seen list
     $seen_attachments = array_merge($seen_attachments, $loaded_images);
     
     foreach ($posts as $post) {
@@ -345,7 +319,6 @@ function sarai_chinwag_get_filtered_term_images($term_id, $term_type, $sort_by =
     
     wp_reset_postdata();
     
-    // If sorting by random, shuffle the final image collection
     if ($sort_by === 'random') {
         shuffle($all_images);
     }
@@ -354,14 +327,12 @@ function sarai_chinwag_get_filtered_term_images($term_id, $term_type, $sort_by =
 }
 
 /**
- * Get all images from posts across the entire site
- * Used for site-wide image gallery at /images/
+ * Get all images from site posts for /images/ gallery
  *
- * @param int $limit Maximum number of images to return
+ * @param int $limit Maximum images to return
  * @return array Array of image data
  */
 function sarai_chinwag_get_all_site_images($limit = 30) {
-    // Check cache first
     $cache_key = "sarai_chinwag_all_site_images";
     $cached_images = wp_cache_get($cache_key, 'sarai_chinwag_images');
     
@@ -369,7 +340,6 @@ function sarai_chinwag_get_all_site_images($limit = 30) {
         return array_slice($cached_images, 0, $limit);
     }
     
-    // Query media library directly for attached images
     $args = array(
         'post_type' => 'attachment',
         'post_status' => 'inherit',
@@ -388,7 +358,6 @@ function sarai_chinwag_get_all_site_images($limit = 30) {
     
     $images = array();
     foreach ($attachments as $attachment) {
-        // Get parent post for context
         $parent_post = get_post($attachment->post_parent);
         if (!$parent_post || $parent_post->post_status !== 'publish') {
             continue;
@@ -398,19 +367,16 @@ function sarai_chinwag_get_all_site_images($limit = 30) {
             continue;
         }
         
-        // Build image data using existing helper function
         $image_data = sarai_chinwag_get_image_data($attachment->ID, $parent_post->ID, 'attached');
         if ($image_data) {
             $images[] = $image_data;
         }
         
-        // Stop when enough images found
         if (count($images) >= $limit) {
             break;
         }
     }
     
-    // Shuffle for randomization
     shuffle($images);
     
     wp_cache_set($cache_key, $images, 'sarai_chinwag_images', 3600);
@@ -419,13 +385,12 @@ function sarai_chinwag_get_all_site_images($limit = 30) {
 }
 
 /**
- * Get filtered and sorted images from all posts on the site
- * Used for AJAX filtering on site-wide image gallery
+ * Get filtered images from all site posts for AJAX
  *
- * @param string $sort_by Sort method (random, recent, oldest, popular)
+ * @param string $sort_by         Sort method (random, recent, oldest, popular)
  * @param string $post_type_filter Filter by post type (all, posts, recipes)
- * @param array $loaded_images Already loaded image attachment IDs
- * @param int $limit Maximum number of images to return
+ * @param array  $loaded_images   Already loaded attachment IDs
+ * @param int    $limit           Maximum images to return
  * @return array Array of image data
  */
 function sarai_chinwag_get_filtered_all_site_images($sort_by = 'random', $post_type_filter = 'all', $loaded_images = array(), $limit = 30) {
@@ -439,13 +404,12 @@ function sarai_chinwag_get_filtered_all_site_images($sort_by = 'random', $post_t
         }
     }
     
-    // Query media library directly with filtering
     $args = array(
         'post_type' => 'attachment',
         'post_status' => 'inherit',
         'post_mime_type' => 'image',
         'posts_per_page' => $limit * 3, // Get extra to account for filtering
-        'post__not_in' => $loaded_images, // Exclude already loaded images
+        'post__not_in' => $loaded_images,
         'meta_query' => array(
             array(
                 'key' => '_wp_attached_file',
@@ -454,7 +418,6 @@ function sarai_chinwag_get_filtered_all_site_images($sort_by = 'random', $post_t
         )
     );
     
-    // Apply sorting to attachments
     switch ($sort_by) {
         case 'recent':
             $args['orderby'] = 'date';
@@ -467,8 +430,6 @@ function sarai_chinwag_get_filtered_all_site_images($sort_by = 'random', $post_t
             break;
             
         case 'popular':
-            // For popular, we'll need to sort by parent post views
-            // Fall back to random for now since attachment popularity is complex
             $args['orderby'] = 'rand';
             break;
             
@@ -482,24 +443,20 @@ function sarai_chinwag_get_filtered_all_site_images($sort_by = 'random', $post_t
     
     $images = array();
     foreach ($attachments as $attachment) {
-        // Get parent post for context and filtering
         $parent_post = get_post($attachment->post_parent);
         if (!$parent_post || $parent_post->post_status !== 'publish') {
             continue;
         }
         
-        // Filter by post type
         if (!in_array($parent_post->post_type, $post_types)) {
             continue;
         }
         
-        // Build image data using existing helper function
         $image_data = sarai_chinwag_get_image_data($attachment->ID, $parent_post->ID, 'attached');
         if ($image_data) {
             $images[] = $image_data;
         }
         
-        // Stop when enough images found
         if (count($images) >= $limit) {
             break;
         }

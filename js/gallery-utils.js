@@ -7,9 +7,9 @@ window.SaraiGalleryUtils = (function() {
      * Determine responsive column count based on viewport
      */
     function getColumnCount() {
-        if (window.innerWidth < 450) return 1; // mobile
-        if (window.innerWidth <= 1200) return 3; // tablet
-        return 4; // desktop
+        if (window.innerWidth < 450) return 1;
+        if (window.innerWidth <= 1200) return 3;
+        return 4;
     }
     
     /**
@@ -84,11 +84,9 @@ window.SaraiGalleryUtils = (function() {
             
             let targetCol;
             if (maxH - minH < 2) {
-                // Heights are roughly equal, use round-robin
                 targetCol = columns[rrIndex % columns.length];
                 rrIndex++;
             } else {
-                // Use shortest column
                 targetCol = getShortestColumn(columns);
             }
             targetCol.appendChild(fig);

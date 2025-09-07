@@ -29,6 +29,7 @@ This documentation is organized by functional components:
 - **Image Extraction** - Automated image discovery from posts and categories
 - **Gallery Archives** - Category and tag-based image galleries
 - **Gallery Navigation** - Lightbox functionality and responsive layouts
+- **Archive Image Mode Links** - Intelligent "Try Image Mode" switching with accurate image counts
 
 ### [Navigation & Discovery](navigation/)
 - **Filter System** - Advanced filtering with sort options and post type filtering

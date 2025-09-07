@@ -2,10 +2,10 @@
 /**
  * Image Extractor System
  * 
- * Extracts all images from posts within a specific category or tag
- * for display in image gallery archives.
+ * Extracts images from post content for gallery archives with caching.
  *
  * @package Sarai_Chinwag
+ * @since 2.0.0
  */
 
 /**
@@ -29,7 +29,7 @@ function sarai_chinwag_extract_images_from_term($term_id, $term_type, $limit = 3
     $posts = get_posts(array(
         'post_type' => array('post', 'recipe'),
         'post_status' => 'publish',
-        'numberposts' => 500, // Limit posts to prevent memory issues
+        'numberposts' => 500,
         'orderby' => 'rand',
         'tax_query' => array(
             array(
@@ -52,7 +52,7 @@ function sarai_chinwag_extract_images_from_term($term_id, $term_type, $limit = 3
     ));
     
     $all_images = array();
-    $seen_attachments = array(); // Prevent duplicates
+    $seen_attachments = array();
     
     foreach ($posts as $post) {
         setup_postdata($post);
@@ -60,7 +60,7 @@ function sarai_chinwag_extract_images_from_term($term_id, $term_type, $limit = 3
         // Extract images from this post
         $post_images = sarai_chinwag_extract_images_from_post($post->ID);
         
-        // Add to collection, avoiding duplicates
+        // Add to collection
         foreach ($post_images as $image) {
             $attachment_id = $image['attachment_id'];
             if (!in_array($attachment_id, $seen_attachments)) {
@@ -69,7 +69,7 @@ function sarai_chinwag_extract_images_from_term($term_id, $term_type, $limit = 3
             }
         }
         
-        // Stop if we've found enough images
+        // Stop when enough images found
         if (count($all_images) >= $limit * 2) {
             break;
         }
@@ -77,11 +77,9 @@ function sarai_chinwag_extract_images_from_term($term_id, $term_type, $limit = 3
     
     wp_reset_postdata();
     
-    // Shuffle images for true randomization at the image level (not just random posts)
-    // This aligns initial page load behavior with AJAX filter randomization
+    // Shuffle images for randomization
     shuffle($all_images);
     
-    // Cache the results for 1 hour
     wp_cache_set($cache_key, $all_images, 'sarai_chinwag_images', 3600);
     
     return array_slice($all_images, 0, $limit);
@@ -96,7 +94,7 @@ function sarai_chinwag_extract_images_from_term($term_id, $term_type, $limit = 3
 function sarai_chinwag_extract_images_from_post($post_id) {
     $images = array();
     
-    // 1. Featured image (highest priority)
+    // Featured image
     $featured_image_id = get_post_thumbnail_id($post_id);
     if ($featured_image_id) {
         $image_data = sarai_chinwag_get_image_data($featured_image_id, $post_id, 'featured');
@@ -105,7 +103,7 @@ function sarai_chinwag_extract_images_from_post($post_id) {
         }
     }
     
-    // 2. Extract from post content
+    // Extract from post content
     $post = get_post($post_id);
     if (!$post) {
         return $images;
@@ -113,14 +111,12 @@ function sarai_chinwag_extract_images_from_post($post_id) {
     
     $content = $post->post_content;
     
-    // 3. Parse Gutenberg blocks
+    // Parse Gutenberg blocks
     if (has_blocks($content)) {
         $blocks = parse_blocks($content);
         $block_images = sarai_chinwag_extract_images_from_blocks($blocks, $post_id);
         $images = array_merge($images, $block_images);
     }
-    
-    // Classic editor parsing removed
     
     return $images;
 }
@@ -174,8 +170,6 @@ function sarai_chinwag_extract_images_from_blocks($blocks, $post_id) {
     return $images;
 }
 
-// Classic editor regex extraction removed
-
 /**
  * Get formatted image data for gallery display
  *
@@ -225,6 +219,9 @@ function sarai_chinwag_get_image_data($attachment_id, $post_id, $source = 'conte
 
 /**
  * Clear image cache when posts are updated
+ * 
+ * @param int $post_id The post ID being modified
+ * @since 2.0.0
  */
 function sarai_chinwag_clear_image_cache_on_post_update($post_id) {
     // Get all terms for this post
@@ -287,7 +284,7 @@ function sarai_chinwag_get_filtered_term_images($term_id, $term_type, $sort_by =
         )
     );
     
-    // Apply sorting to posts (this affects the order of image extraction)
+    // Apply sorting to posts
     switch ($sort_by) {
         case 'popular':
             $post_args['meta_key'] = '_post_views';
@@ -320,7 +317,7 @@ function sarai_chinwag_get_filtered_term_images($term_id, $term_type, $sort_by =
     $posts = get_posts($post_args);
     
     $all_images = array();
-    $seen_attachments = array(); // Prevent duplicates
+    $seen_attachments = array();
     
     // Include already loaded images in seen list
     $seen_attachments = array_merge($seen_attachments, $loaded_images);
@@ -331,7 +328,7 @@ function sarai_chinwag_get_filtered_term_images($term_id, $term_type, $sort_by =
         // Extract images from this post
         $post_images = sarai_chinwag_extract_images_from_post($post->ID);
         
-        // Add to collection, avoiding duplicates and loaded images
+        // Add to collection and loaded images
         foreach ($post_images as $image) {
             $attachment_id = $image['attachment_id'];
             if (!in_array($attachment_id, $seen_attachments)) {
@@ -340,7 +337,7 @@ function sarai_chinwag_get_filtered_term_images($term_id, $term_type, $sort_by =
             }
         }
         
-        // Stop if we've found enough images
+        // Stop when enough images found
         if (count($all_images) >= $limit * 2) {
             break;
         }
@@ -349,7 +346,6 @@ function sarai_chinwag_get_filtered_term_images($term_id, $term_type, $sort_by =
     wp_reset_postdata();
     
     // If sorting by random, shuffle the final image collection
-    // This ensures truly random images rather than random posts with sequential images
     if ($sort_by === 'random') {
         shuffle($all_images);
     }
@@ -378,7 +374,7 @@ function sarai_chinwag_get_all_site_images($limit = 30) {
         'post_type' => 'attachment',
         'post_status' => 'inherit',
         'post_mime_type' => 'image',
-        'posts_per_page' => $limit * 2, // Get extra to account for filtering
+        'posts_per_page' => $limit * 2,
         'orderby' => 'rand',
         'meta_query' => array(
             array(
@@ -395,10 +391,9 @@ function sarai_chinwag_get_all_site_images($limit = 30) {
         // Get parent post for context
         $parent_post = get_post($attachment->post_parent);
         if (!$parent_post || $parent_post->post_status !== 'publish') {
-            continue; // Skip orphaned or unpublished parent posts
+            continue;
         }
         
-        // Only include posts and recipes
         if (!in_array($parent_post->post_type, array('post', 'recipe'))) {
             continue;
         }
@@ -409,17 +404,15 @@ function sarai_chinwag_get_all_site_images($limit = 30) {
             $images[] = $image_data;
         }
         
-        // Stop when we have enough images
+        // Stop when enough images found
         if (count($images) >= $limit) {
             break;
         }
     }
     
-    // Shuffle images for true randomization at the image level
-    // This ensures site-wide gallery has consistent random behavior with taxonomy galleries
+    // Shuffle for randomization
     shuffle($images);
     
-    // Cache the results for 1 hour
     wp_cache_set($cache_key, $images, 'sarai_chinwag_images', 3600);
     
     return $images;
@@ -492,7 +485,7 @@ function sarai_chinwag_get_filtered_all_site_images($sort_by = 'random', $post_t
         // Get parent post for context and filtering
         $parent_post = get_post($attachment->post_parent);
         if (!$parent_post || $parent_post->post_status !== 'publish') {
-            continue; // Skip orphaned or unpublished parent posts
+            continue;
         }
         
         // Filter by post type
@@ -506,7 +499,7 @@ function sarai_chinwag_get_filtered_all_site_images($sort_by = 'random', $post_t
             $images[] = $image_data;
         }
         
-        // Stop when we have enough images
+        // Stop when enough images found
         if (count($images) >= $limit) {
             break;
         }

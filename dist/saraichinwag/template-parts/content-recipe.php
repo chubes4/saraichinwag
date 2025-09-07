@@ -8,7 +8,6 @@
 
 <header class="entry-header">
     <?php
-    // Show badge-breadcrumbs for single recipes
     if ( is_singular() ) {
         sarai_chinwag_post_badges();
     }
@@ -27,7 +26,6 @@
         the_title( '<h2 class="entry-title p-name"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark" itemprop="name">', '</a></h2>' );
     }
 
-    // Display rating and review count only on single recipe page
     if ( is_singular() ) {
         $rating_value = get_post_meta(get_the_ID(), 'rating_value', true);
         $review_count = get_post_meta(get_the_ID(), 'review_count', true);
@@ -38,12 +36,11 @@
         <div class="recipe-rating">
             <div class="stars">
                 <?php
-                // Display stars based on average rating
                 for ($i = 1; $i <= 5; $i++) {
                     if ($i <= $average_rating) {
-                        echo '<span class="star">&#9733;</span>'; // filled star
+                        echo '<span class="star">&#9733;</span>';
                     } else {
-                        echo '<span class="star">&#9734;</span>'; // empty star
+                        echo '<span class="star">&#9734;</span>';
                     }
                 }
                 ?>
@@ -54,12 +51,11 @@
     <?php } ?>
 </header><!-- .entry-header -->
 
-<div class="entry-content" lang="<?php echo get_locale() === 'en_US' ? 'en' : substr(get_locale(), 0, 2); ?>" itemprop="mainEntity">
+<div class="entry-content" lang="<?php echo get_locale() === 'en_US' ? 'en' : substr(get_locale(), 0, 2); ?>">
     <?php
     if ( is_singular() ) {
         the_content();
     } else {
-        // the_excerpt();
     }
     ?>
 </div><!-- .entry-content -->

@@ -1,12 +1,23 @@
 <?php
 /**
  * Archive sorting and filtering functionality
+ * 
+ * Provides AJAX filtering system for posts and images with sort options,
+ * content type filtering, and context-aware filtering for categories,
+ * tags, and search results. Includes script enqueueing and helper functions.
  *
  * @package Sarai_Chinwag
+ * @since 2.0.0
  */
 
 /**
  * Enqueue filter and load-more scripts for archive pages
+ * 
+ * Conditionally loads filtering JavaScript with AJAX localization
+ * on home, archive, search, and image gallery pages with proper
+ * script dependencies and dynamic versioning.
+ * 
+ * @since 2.0.0
  */
 function sarai_chinwag_enqueue_filter_scripts() {
     $has_images_var = get_query_var('images') !== false;
@@ -28,6 +39,13 @@ add_action('wp_enqueue_scripts', 'sarai_chinwag_enqueue_filter_scripts');
 
 /**
  * Check if site has both posts and recipes in current query context
+ * 
+ * Determines whether both post types exist for the current page context
+ * to control display of content type filter buttons. Respects recipe
+ * disable toggle and provides context-aware checking for different pages.
+ * 
+ * @return bool True if both posts and recipes exist in current context
+ * @since 2.0.0
  */
 function sarai_chinwag_has_both_posts_and_recipes() {
     if (sarai_chinwag_recipes_disabled()) {
@@ -74,6 +92,17 @@ function sarai_chinwag_has_both_posts_and_recipes() {
 
     return false;
 }
+
+/**
+ * AJAX handler for filtering posts
+ * 
+ * Handles AJAX requests for filtering posts with sort options (random,
+ * popular, recent, oldest) and content type filtering. Includes security
+ * verification, input sanitization, and context-aware filtering for
+ * categories, tags, and search results.
+ * 
+ * @since 2.0.0
+ */
 function sarai_chinwag_filter_posts() {
     check_ajax_referer('filter_posts_nonce', 'nonce');
 
@@ -172,6 +201,16 @@ function sarai_chinwag_filter_posts() {
 add_action('wp_ajax_filter_posts', 'sarai_chinwag_filter_posts');
 add_action('wp_ajax_nopriv_filter_posts', 'sarai_chinwag_filter_posts');
 
+/**
+ * AJAX handler for filtering images
+ * 
+ * Handles AJAX requests for filtering images in gallery mode with sort
+ * options and content type filtering. Works with site-wide galleries,
+ * category/tag galleries, and search galleries. Includes deduplication
+ * logic and proper template inclusion.
+ * 
+ * @since 2.0.0
+ */
 function sarai_chinwag_filter_images() {
     check_ajax_referer('filter_posts_nonce', 'nonce');
 

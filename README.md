@@ -45,6 +45,7 @@ A versatile WordPress theme with advanced filtering, randomized content discover
 - **Secure API Integration**: Proper sanitization and escaping throughout
 - **Optimized Loading**: Only loads selected Google Fonts with `font-display: swap`
 - **Complete Image Gallery System**: Advanced image extraction, gallery archives, and specialized display templates
+- **Archive Image Mode Links**: Intelligent "Try Image Mode" links for seamless switching between standard and gallery views
 
 ### Admin Features
 - **Theme Settings Panel**: Configure API keys and toggle functionality
@@ -172,6 +173,7 @@ This theme is designed for personal use and white-labeling. Commercial distribut
 ### v2.2 - WordPress Editor Integration & Complete Image Gallery System
 - **NEW**: WordPress Editor Font Integration - consistent fonts between editors and frontend
 - **NEW**: Complete Image Gallery System - advanced image extraction, gallery archives, and specialized display templates
+- **NEW**: Archive Image Mode Links - intelligent "Try Image Mode" links with accurate image counts for seamless gallery switching
 - **NEW**: Image Search & Discovery - comprehensive image search with category/tag-based filtering  
 - **NEW**: Load More Integration - AJAX infinite scroll that preserves filter state
 - **NEW**: Enhanced Pinterest Integration - improved social functionality with js/pinterest.js

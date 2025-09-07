@@ -1,3 +1,12 @@
+/**
+ * AJAX Load More functionality for posts and images
+ * 
+ * Handles infinite scroll loading for both standard post archives
+ * and image gallery mode with responsive column management and
+ * balanced image distribution across viewport-adaptive columns.
+ * 
+ * @since 2.0.0
+ */
 document.addEventListener('DOMContentLoaded', function () {
     const loadMoreButton = document.getElementById('load-more');
     const postGrid = document.getElementById('post-grid');
@@ -104,8 +113,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (isImageGallery) {
             data.append('action', 'filter_images');
             data.append('loadedImages', JSON.stringify(loaded));
-            const loadMoreBtn = document.getElementById('load-more');
-            if (loadMoreBtn && loadMoreBtn.getAttribute('data-all-site') === 'true') {
+            if (loadMoreButton && loadMoreButton.getAttribute('data-all-site') === 'true') {
                 data.append('all_site', 'true');
             }
 
@@ -128,9 +136,8 @@ document.addEventListener('DOMContentLoaded', function () {
             if (searchEl && searchEl.value) data.append('search', searchEl.value);
             
             // Include search query from load more button data attribute
-            const loadMoreBtn = document.getElementById('load-more');
-            if (loadMoreBtn && loadMoreBtn.getAttribute('data-search')) {
-                data.append('search', loadMoreBtn.getAttribute('data-search'));
+            if (loadMoreButton && loadMoreButton.getAttribute('data-search')) {
+                data.append('search', loadMoreButton.getAttribute('data-search'));
             }
         } else {
             data.append('action', 'filter_posts');

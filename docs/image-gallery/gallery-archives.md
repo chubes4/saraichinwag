@@ -134,6 +134,32 @@ The Sarai Chinwag theme provides specialized image gallery archives that display
 - Cached image collections
 - Memory-conscious loading
 
+## Archive Image Mode Link System
+
+### Intelligent Gallery Switching
+
+The theme includes an intelligent "Try Image Mode" link system that appears on standard archive pages to encourage gallery exploration.
+
+**Context-Aware Display**:
+- **Homepage**: Links to site-wide image gallery (`/images/`) with total site image count
+- **Category Archives**: Links to category-specific gallery (`/category/name/images/`) with accurate category image count
+- **Tag Archives**: Links to tag-specific gallery (`/tag/name/images/`) with precise tag image count  
+- **Search Results**: Links to search image gallery (`/search/query/?images=1`) with search-specific image count
+
+**Smart Features**:
+- **Accurate Counts**: Shows precise number of images available for each context
+- **Conditional Display**: Only appears when images are available (minimum 1 image)
+- **Gallery Detection**: Automatically hides when already viewing image gallery mode
+- **Visual Consistency**: Matches gallery discovery badge design used throughout theme
+
+**Template**: `template-parts/archive-image-mode-link.php`
+**Functions**: 
+- `sarai_chinwag_get_site_wide_image_count()` - Homepage image count
+- `sarai_chinwag_get_accurate_term_image_count($term_id, $taxonomy)` - Category/tag counts
+- `sarai_chinwag_get_search_image_count($search_query)` - Search result counts
+
+**Performance**: Leverages existing image caching system with `sarai_chinwag_images` cache group for fast count retrieval.
+
 ## Archive Context Detection
 
 ### Gallery Mode Detection
