@@ -183,14 +183,14 @@ function sarai_chinwag_add_image_galleries_to_sitemap($sitemap_index) {
     // Get all public categories with posts
     $categories = get_categories(array('hide_empty' => true));
     foreach ($categories as $category) {
-        $category_images_url = get_category_link($category->term_id) . 'images/';
+        $category_images_url = trailingslashit(get_category_link($category->term_id)) . 'images/';
         $sitemap_index .= '<sitemap><loc>' . esc_url($category_images_url) . '</loc></sitemap>' . "\n";
     }
     
     // Get all public tags with posts
     $tags = get_tags(array('hide_empty' => true));
     foreach ($tags as $tag) {
-        $tag_images_url = get_tag_link($tag->term_id) . 'images/';
+        $tag_images_url = trailingslashit(get_tag_link($tag->term_id)) . 'images/';
         $sitemap_index .= '<sitemap><loc>' . esc_url($tag_images_url) . '</loc></sitemap>' . "\n";
     }
     

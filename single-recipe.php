@@ -23,17 +23,6 @@ get_header(); ?>
         echo '<article id="post-' . get_the_ID() . '" class="' . join(' ', get_post_class()) . '" itemscope itemtype="http://schema.org/Recipe">';
 
         get_template_part( 'template-parts/content', 'recipe' );
-
-        // Add schema data if not already included
-        if ( ! did_action('sarai_chinwag_recipe_schema') ) {
-            $schema_data = sarai_chinwag_recipe_schema();
-            $schema_output = $schema_data['output'];
-            $rating_display = $schema_data['rating_display'];
-            if (!empty($schema_output)) {
-                echo $schema_output;
-                do_action('sarai_chinwag_recipe_schema');
-            }
-        }
     ?>
 
     <footer class="entry-footer">
@@ -48,15 +37,21 @@ get_header(); ?>
             <span class="star" data-value="4">&#9734;</span>
             <span class="star" data-value="5">&#9734;</span>
         </div>
+        <?php 
+        // Get rating display
+        $rating_value = get_post_meta(get_the_ID(), 'rating_value', true);
+        $review_count = get_post_meta(get_the_ID(), 'review_count', true);
+        $review_count = $review_count ? intval($review_count) : 0;
+        $rating_display = $review_count > 0 ? "(" . round(floatval($rating_value), 2) . "/5 based on " . $review_count . " reviews)" : "(Not yet rated)";
+        ?>
         <span id="average-rating"><?php echo esc_html($rating_display); ?></span>
         <span id="user-rating"></span>
     </div>
         <?php
-        // Categories with schema markup
+        // Categories
         $categories = get_the_category();
         if ( ! empty( $categories ) ) {
             $categories_list = '';
-            $categories_text = [];
             foreach ( $categories as $category ) {
                 $category_link = sprintf(
                     '<a href="%1$s" rel="category tag">%2$s</a>',
@@ -64,18 +59,15 @@ get_header(); ?>
                     esc_html( $category->name )
                 );
                 $categories_list .= $category_link . ', ';
-                $categories_text[] = $category->name;
             }
             $categories_list = rtrim( $categories_list, ', ' );
             printf( '<strong>%s</strong> %s<br>', esc_html__( 'Categories: ', 'sarai-chinwag' ), $categories_list );
-            echo '<meta itemprop="recipeCategory" content="' . esc_attr( implode( ', ', $categories_text ) ) . '">';
         }
 
-        // Tags with schema markup
+        // Tags
         $tags = get_the_tags();
         if ( ! empty( $tags ) ) {
             $tags_list = '';
-            $tags_text = [];
             foreach ( $tags as $tag ) {
                 $tag_link = sprintf(
                     '<a href="%1$s" rel="tag">%2$s</a>',
@@ -83,11 +75,9 @@ get_header(); ?>
                     esc_html( $tag->name )
                 );
                 $tags_list .= $tag_link . ', ';
-                $tags_text[] = $tag->name;
             }
             $tags_list = rtrim( $tags_list, ', ' );
             printf( '<strong>%s</strong> %s<br>', esc_html__( 'Tags: ', 'sarai-chinwag' ), $tags_list );
-            echo '<meta itemprop="keywords" content="' . esc_attr( implode( ', ', $tags_text ) ) . '">';
         }
         ?>
     </footer><!-- .entry-footer -->

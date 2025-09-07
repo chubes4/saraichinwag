@@ -81,7 +81,6 @@ require_once get_template_directory() . '/inc/admin/customizer.php';
 
 require_once get_template_directory() . '/inc/recipes.php';
 require_once get_template_directory() . '/inc/ratings.php';
-require_once get_template_directory() . '/inc/schema-recipe.php';
 
 $queries_dir = get_template_directory() . '/inc/queries';
 require_once $queries_dir . '/view-counter.php';

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Development Environment
 
-This is a WordPress theme for "Sarai Chinwag" with no build process. All files are directly edited and changes are immediately reflected. No package.json, composer.json, or build tools are configured.
+This is a WordPress theme for "Sarai Chinwag" with a production build system. Files can be directly edited for development, with changes immediately reflected. The theme includes build.sh for creating optimized production packages.
 
 ### Admin Settings
 The theme includes an admin settings page accessible via **Settings → Theme Settings** in the WordPress admin. This page allows configuration of:
@@ -32,7 +32,7 @@ The theme uses organized PHP modules in the `/inc` directory loaded via function
 - **inc/admin/**: Admin interface components (settings, customizer, notices)
 - **inc/queries/**: Query modification and content retrieval systems
 - **inc/queries/image-mode/**: Complete image gallery and extraction system
-- **Core modules**: recipes.php, ratings.php, schema-recipe.php for recipe functionality
+- **Core modules**: recipes.php, ratings.php for recipe functionality
 - **Integration modules**: bing-index-now.php, yoast-stuff.php for third-party compatibility
 
 ### JavaScript Structure
@@ -45,11 +45,12 @@ The theme uses organized PHP modules in the `/inc` directory loaded via function
 - **js/rating.js**: AJAX rating system with localStorage persistence, nonce security, and dual-state management (user + server average)
 
 ### Template Parts
-- `template-parts/content-recipe.php`: Recipe display with Schema.org microdata
+- `template-parts/content-recipe.php`: Recipe display with embedded Schema.org markup
 - `template-parts/content.php` & `template-parts/content-single.php`: Standard post templates
 - `template-parts/content-image-gallery.php`: Specialized template for image gallery posts
 - `template-parts/filter-bar.php`: Advanced filter interface for archives and home page
 - `template-parts/gallery-item.php`: Individual gallery item display component
+- `template-parts/archive-image-mode-link.php`: "Try Image Mode" link for switching to gallery view with accurate image counts
 
 ### Key Features
 - **Advanced Filter System**: Full-width filter bar with sort options (Random, Most Popular, Recent, Oldest) and post type filtering
@@ -63,7 +64,7 @@ The theme uses organized PHP modules in the `/inc` directory loaded via function
 - **Dynamic Google Fonts system**: API integration with category filtering (display fonts for headings, sans-serif + serif for body)
 - **Percentage-based font scaling**: 1-100% size control with 50% = current theme baseline, maintains heading hierarchy
 - **Universal theme design**: Can function as recipe site or standard blog via admin toggle
-- **Recipe functionality**: Complete recipe post type with ratings, schema markup, and specialized templates (when enabled)
+- **Recipe functionality**: Complete recipe post type with ratings, embedded Schema.org markup, and specialized templates (when enabled)
 - **WordPress Customizer integration**: Live preview for font changes and size scaling with custom CSS properties
 - **WordPress Editor Font Integration**: Consistent font experience between Block Editor, Classic Editor, and frontend display
 - **Pinterest integration**: Footer follow button + automatic Pinterest save buttons with enhanced social functionality
@@ -71,7 +72,7 @@ The theme uses organized PHP modules in the `/inc` directory loaded via function
 - **Random discovery section**: 3-post random grid replaces complex related posts logic
 - **Dynamic asset versioning**: Uses `filemtime()` for cache busting on CSS and JS files
 - **Rating system**: AJAX-powered recipe ratings with localStorage persistence, nonce security, and dual-state management
-- **Schema.org markup**: Full structured data implementation for recipes
+- **Schema.org markup**: Embedded structured data implementation for recipes in templates
 - **Performance optimizations**: Object caching with wp_cache_* functions, specialized cache groups, and limited query results
 - **Security enhancements**: All output properly escaped, input sanitized, secure API key storage
 
@@ -179,7 +180,7 @@ The theme provides seamless font integration between WordPress editors and front
 - **Performance Optimizations**: Cached random ID arrays replace expensive `orderby => 'rand'` queries with rotation system and limited datasets (max 500 posts)
 
 ### Random Access Pages  
-- **Direct Random Posts**: `/random-post` page redirects to random post via `extra_chill_redirect_to_random_post()`
+- **Direct Random Posts**: `/random-post` page redirects to random post via `sarai_chinwag_redirect_to_random_post()`
 - **Direct Random Recipes**: `/random-recipe` page redirects to random recipe (respects recipe toggle)
 - **Direct Random All**: `/random-all` page redirects to random post or recipe (mixed selection)
 - **Fallback Logic**: When recipes disabled, random-recipe redirects to random-post instead
@@ -224,13 +225,32 @@ The theme provides seamless font integration between WordPress editors and front
 - **Context Aware**: Different patterns for category, tag, search, author, date archives
 - **Function**: `sarai_chinwag_archive_breadcrumbs()` generates appropriate breadcrumb trail
 
-## Development Commands
+## Build System
 
-No build process required - this is a direct-edit WordPress theme:
-1. Edit PHP, CSS, or JS files directly
+### Production Build
+- **build.sh**: Creates optimized production package with versioned ZIP file
+- **VSCode Integration**: .vscode/tasks.json provides build commands (Ctrl/Cmd+Shift+P → "Tasks: Run Task")
+- **Output Location**: /dist directory contains clean theme and saraichinwag.zip
+- **Exclusions**: Removes /docs, .git, build.sh, .vscode, and .md files from production
+- **Automatic Versioning**: Extracts version from style.css for consistent packaging
+
+### Development Commands
+```bash
+# Create production build
+./build.sh
+
+# VSCode tasks available:
+# - Build Theme (default)
+# - Clean Build 
+# - Build and Clean (sequence)
+# - Test Build Script (dry run)
+```
+
+### Development Workflow
+1. Edit PHP, CSS, or JS files directly for development
 2. Changes are immediately reflected (CSS/JS have dynamic versioning via `filemtime()`)
-3. For PHP changes, reload the page to see updates
-4. No package.json, composer.json, or build tools configured
+3. Run build.sh when ready for production deployment
+4. Install dist/saraichinwag.zip in WordPress for production
 
 ### Testing & Debugging
 - Test functionality directly in WordPress environment
@@ -312,7 +332,7 @@ The theme includes a "Disable Recipe Functionality" setting in **Settings → Th
 - Recipe post type registered and available
 - Recipe-specific templates and widgets active
 - Rating system functional
-- Schema.org recipe markup applied
+- Embedded Schema.org recipe markup applied
 - Recipe filtering in archives
 - Random recipe functionality
 

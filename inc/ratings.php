@@ -1,6 +1,14 @@
 <?php
 /**
- * Handle recipe rating via AJAX.
+ * Recipe rating system with AJAX functionality
+ * 
+ * @package Sarai_Chinwag
+ * @since 1.0.0
+ */
+/**
+ * Handle recipe rating submissions via AJAX
+ * 
+ * @since 1.0.0
  */
 function sarai_chinwag_rate_recipe() {
     // Skip if recipes are disabled
@@ -56,7 +64,9 @@ add_action('wp_ajax_rate_recipe', 'sarai_chinwag_rate_recipe');
 add_action('wp_ajax_nopriv_rate_recipe', 'sarai_chinwag_rate_recipe');
 
 /**
- * Enqueue scripts and localize AJAX URL.
+ * Enqueue rating script with AJAX localization
+ * 
+ * @since 1.0.0
  */
 function sarai_chinwag_enqueue_rating_script() {
     // Skip if recipes are disabled
@@ -65,7 +75,6 @@ function sarai_chinwag_enqueue_rating_script() {
     }
     
     if (is_singular('recipe')) {
-        // Use dynamic versioning for cache busting
         $script_version = filemtime(get_template_directory() . '/js/rating.js');
         wp_enqueue_script('rating-js', get_template_directory_uri() . '/js/rating.js', array('wp-i18n'), $script_version, true);
         wp_set_script_translations('rating-js', 'sarai-chinwag');

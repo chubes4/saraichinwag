@@ -1,8 +1,13 @@
 <?php
 /**
- * Template part for displaying the filter bar
+ * Template part for displaying the advanced filter bar
+ * 
+ * Provides AJAX-powered filtering controls for sort options (Random, Popular, Recent, Oldest)
+ * and content type filtering (All, Posts, Recipes, Images). Includes context detection
+ * for image gallery mode and maintains filter state across load more operations.
  *
  * @package Sarai_Chinwag
+ * @since 2.0.0
  */
 
 // Get current page context for filter persistence

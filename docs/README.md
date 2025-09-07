@@ -9,7 +9,7 @@ Sarai Chinwag is designed for both recipe sites and standard blogs, featuring:
 - **Dynamic Google Fonts Integration** - Customizable typography with API-powered font selection
 - **Advanced Image Gallery System** - Specialized image archives and discovery tools
 - **Randomized Content Discovery** - Anti-chronological design with serendipitous browsing
-- **Recipe Functionality** - Complete recipe management with ratings and schema markup
+- **Recipe Functionality** - Complete recipe management with ratings and embedded Schema.org markup
 - **Performance Optimizations** - Cached content delivery and efficient queries
 - **Universal Theme Design** - Toggle between recipe site and standard blog modes
 
@@ -61,7 +61,7 @@ This documentation is organized by functional components:
 - Advanced filtering with real-time AJAX updates
 
 **For Content Management:**
-- Recipe post type with ratings and schema markup
+- Recipe post type with ratings and embedded Schema.org markup
 - Automatic image extraction from posts
 - Performance-optimized caching throughout
 - Universal theme toggle for recipe/blog modes

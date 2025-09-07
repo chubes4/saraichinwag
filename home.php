@@ -2,9 +2,12 @@
 /**
  * The home page template file
  *
- * This template file displays the blog posts index.
+ * Displays the main blog index with randomized post order, full-width
+ * 4-column grid layout, advanced filtering, and AJAX load more functionality.
+ * Includes both posts and recipes when enabled.
  *
  * @package Sarai_Chinwag
+ * @since 1.0.0
  */
 
 get_header();

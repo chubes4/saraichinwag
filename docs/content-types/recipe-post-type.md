@@ -52,7 +52,7 @@ The Sarai Chinwag theme includes a complete recipe management system with a cust
 - Specialized layout for recipe display
 - Recipe-specific styling and formatting
 - Rating widget integration
-- Schema.org markup inclusion
+- Embedded Schema.org markup inclusion
 
 **Recipe Archive Template**: Uses standard archive templates
 - Grid layout for recipe browsing
@@ -110,8 +110,9 @@ The Sarai Chinwag theme includes a complete recipe management system with a cust
 
 ### Implementation Details
 
-**File**: `/inc/schema-recipe.php`
-**Output**: JSON-LD structured data in page head
+**Implementation**: Embedded directly in recipe templates
+**Output**: Schema.org microdata attributes in HTML markup
+**Location**: `single-recipe.php` and `template-parts/content-recipe.php`
 **Validation**: Schema.org compliant markup
 **Testing**: Use Google's Rich Results Test tool
 
@@ -130,7 +131,7 @@ The Sarai Chinwag theme includes a complete recipe management system with a cust
 - Rating system functional
 - Recipe filtering in archives
 - Recipe-specific widgets and features
-- Schema.org recipe markup
+- Embedded Schema.org recipe markup
 
 ### When Recipes Disabled
 
@@ -181,7 +182,7 @@ sarai_chinwag_recipes_disabled()
 
 **Recipe Data**: wp_cache_* implementation for recipe queries
 **Rating Cache**: Cached rating calculations and counts
-**Schema Cache**: Structured data cached for performance
+**Template Cache**: Recipe template output cached for performance
 **Template Cache**: Recipe template fragments cached
 
 ### Database Optimization

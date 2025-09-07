@@ -1,3 +1,12 @@
+/**
+ * AJAX Load More functionality for posts and images
+ * 
+ * Handles infinite scroll loading for both standard post archives
+ * and image gallery mode with responsive column management and
+ * balanced image distribution across viewport-adaptive columns.
+ * 
+ * @since 2.0.0
+ */
 document.addEventListener('DOMContentLoaded', function () {
     const loadMoreButton = document.getElementById('load-more');
     const postGrid = document.getElementById('post-grid');

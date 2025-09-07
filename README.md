@@ -18,7 +18,7 @@ A versatile WordPress theme with advanced filtering, randomized content discover
 - **Performance Focused**: Simple view counter system tracks popularity without complex analytics
 
 ### Universal Theme Design
-- **Recipe Site Mode**: Full recipe post type with ratings, schema markup, and specialized templates
+- **Recipe Site Mode**: Full recipe post type with ratings, embedded Schema.org markup, and specialized templates
 - **Standard Blog Mode**: Clean blog functionality via admin toggle  
 - **White Label Ready**: Customizable for any site type
 
@@ -53,10 +53,18 @@ A versatile WordPress theme with advanced filtering, randomized content discover
 
 ## Installation
 
-1. Upload theme files to `/wp-content/themes/saraichinwag/`
+### Production Installation (Recommended)
+1. Download or build the production package: `saraichinwag.zip`
+2. Upload via WordPress admin: **Appearance → Themes → Add New → Upload Theme**
+3. Activate the theme
+4. Configure in **Settings → Theme Settings** (Google Fonts API key, recipe toggle)
+5. Customize fonts via **Appearance → Customize → Typography**
+
+### Development Installation
+1. Clone or download the repository to `/wp-content/themes/saraichinwag/`
 2. Activate the theme in WordPress admin
-3. Go to **Settings → Theme Settings** to configure Google Fonts API key
-4. Customize fonts and sizing via **Appearance → Customize → Typography**
+3. Edit files directly - changes reflect immediately
+4. Run `./build.sh` when ready for production deployment
 
 ## Configuration
 
@@ -67,8 +75,28 @@ A versatile WordPress theme with advanced filtering, randomized content discover
 
 ### Universal Theme Usage
 Toggle recipe functionality in **Settings → Theme Settings**:
-- **Recipes Enabled**: Full recipe site with ratings and schema
+- **Recipes Enabled**: Full recipe site with ratings and embedded Schema.org markup
 - **Recipes Disabled**: Clean blog theme for any content type
+
+## Build System
+
+### Production Build
+```bash
+# Create optimized production package
+./build.sh
+
+# Output: dist/saraichinwag.zip (ready for WordPress installation)
+```
+
+**Build Features:**
+- **Automatic Versioning**: Extracts version from style.css header
+- **Clean Production Package**: Excludes development files (/docs, .git, .md files)
+- **VSCode Integration**: Build commands available via Command Palette
+- **WordPress Ready**: Creates properly named ZIP for theme installation
+
+**VSCode Build Tasks:**
+- `Ctrl/Cmd+Shift+P` → "Tasks: Run Task" → "Build Theme"
+- Default build: `Ctrl/Cmd+Shift+B`
 
 ## Development
 
@@ -88,9 +116,10 @@ saraichinwag/
 │   ├── content-recipe.php       # Recipe display templates
 │   ├── content-single.php       # Single post template
 │   ├── content.php              # Standard post template
-│   ├── content-image-gallery.php # Image gallery post template
-│   ├── filter-bar.php           # Filter interface component
-│   └── gallery-item.php         # Individual gallery item
+│   ├── content-image-gallery.php     # Image gallery post template
+│   ├── filter-bar.php               # Filter interface component
+│   ├── gallery-item.php             # Individual gallery item
+│   └── archive-image-mode-link.php  # "Try Image Mode" switcher link
 └── fonts/                       # Local theme fonts
 ```
 

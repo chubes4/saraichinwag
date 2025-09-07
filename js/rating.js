@@ -1,3 +1,8 @@
+/**
+ * Recipe Rating System with AJAX and localStorage
+ * 
+ * @since 1.0.0
+ */
 document.addEventListener('DOMContentLoaded', function () {
     const { __, sprintf } = wp.i18n;
     const stars = document.querySelectorAll('.star');
@@ -7,11 +12,14 @@ document.addEventListener('DOMContentLoaded', function () {
     const postId = ratingWidget.getAttribute('data-post-id');
     const nonce = rating_ajax_obj.nonce;
 
-    // Early exit if required elements are missing
     if (!stars.length || !postId || !nonce) {
         return;
     }
 
+    /**
+     * Update visual star display based on rating value
+     * @param {number} rating The rating value (1-5)
+     */
     function setStars(rating) {
         stars.forEach((star, index) => {
             if (index < rating) {
@@ -50,8 +58,11 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    /**
+     * Submit rating to server via AJAX with error handling
+     * @param {number} rating The user's rating (1-5)
+     */
     function saveRatingToServer(rating) {
-        // Add loading state
         ratingWidget.classList.add('loading');
         
         const formData = new FormData();
@@ -74,14 +85,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 userRatingElement.textContent = sprintf(__('You rated this %d stars.', 'sarai-chinwag'), rating);
                 setStars(data.data.averageRating);
             } else {
-                // Silently handle error - user can try again
-                userRatingElement.textContent = __('Error saving rating. Please try again.', 'sarai-chinwag');
+                    userRatingElement.textContent = __('Error saving rating. Please try again.', 'sarai-chinwag');
             }
         }).catch(error => {
-            // Silently handle error - user can try again
             userRatingElement.textContent = __('Error saving rating. Please try again.', 'sarai-chinwag');
         }).finally(() => {
-            // Remove loading state
             ratingWidget.classList.remove('loading');
         });
     }

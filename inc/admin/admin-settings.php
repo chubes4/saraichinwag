@@ -3,9 +3,14 @@
  * Admin settings page for Sarai Chinwag theme
  *
  * @package Sarai_Chinwag
+ * @since 1.0.0
  */
 
-// Add admin menu
+/**
+ * Add admin menu item for theme settings
+ * 
+ * @since 1.0.0
+ */
 function sarai_chinwag_add_admin_menu() {
     add_options_page(
         __('Theme Settings', 'sarai-chinwag'),
@@ -17,7 +22,11 @@ function sarai_chinwag_add_admin_menu() {
 }
 add_action('admin_menu', 'sarai_chinwag_add_admin_menu');
 
-// Initialize settings
+/**
+ * Initialize theme settings and register fields
+ * 
+ * @since 1.0.0
+ */
 function sarai_chinwag_settings_init() {
     register_setting('sarai_chinwag_settings', 'sarai_chinwag_indexnow_key');
     register_setting('sarai_chinwag_settings', 'sarai_chinwag_disable_recipes');
@@ -113,7 +122,11 @@ function sarai_chinwag_disable_recipes_render() {
     echo '<p class="description">' . __('When enabled, completely disables all recipe-related functionality. Existing recipe posts remain accessible via direct URL but are not discoverable.', 'sarai-chinwag') . '</p>';
 }
 
-// Settings page content
+/**
+ * Render the main settings page HTML
+ * 
+ * @since 1.0.0
+ */
 function sarai_chinwag_settings_page() {
     ?>
     <div class="wrap">
@@ -138,18 +151,22 @@ function sarai_chinwag_settings_page() {
     <?php
 }
 
-// Sanitize IndexNow API key
+/**
+ * Sanitize and validate IndexNow API key
+ * 
+ * @param string $input The raw input value
+ * @return string Sanitized and validated API key
+ * @since 1.0.0
+ */
 function sarai_chinwag_sanitize_indexnow_key($input) {
     $input = sanitize_text_field($input);
     
-    // Validate format if not empty
     if (!empty($input) && !preg_match('/^[a-f0-9]{32}$/', $input)) {
         add_settings_error(
             'sarai_chinwag_indexnow_key',
             'invalid-key',
             __('IndexNow API key must be a 32-character hexadecimal string.', 'sarai-chinwag')
         );
-        // Return the old value if validation fails
         return get_option('sarai_chinwag_indexnow_key', '');
     }
     

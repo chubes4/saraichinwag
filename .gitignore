@@ -45,3 +45,6 @@ npm-debug.log*
 # Composer (if any)
 vendor/
 composer.lock
+
+# Documentation sync files
+docs/.docs-sync.json

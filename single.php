@@ -1,8 +1,13 @@
 <?php
 /**
- * The template for displaying single posts.
+ * The template for displaying single posts and recipes
+ * 
+ * Displays individual post content with Schema.org markup, badge navigation,
+ * sidebar support, and integrated comment functionality. Uses content-single
+ * template part for consistent post display.
  *
  * @package Sarai_Chinwag
+ * @since 1.0.0
  */
 
 get_header(); ?>

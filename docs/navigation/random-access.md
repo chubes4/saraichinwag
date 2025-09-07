@@ -26,7 +26,7 @@ The Sarai Chinwag theme features a comprehensive random content discovery system
 
 ### Random Access Implementation
 
-**Function**: `extra_chill_redirect_to_random_post()`
+**Function**: `sarai_chinwag_redirect_to_random_post()`
 **Method**: Server-side redirect with 302 status
 **Performance**: Cached random ID system for efficiency
 **SEO**: Proper redirect handling preserves link value

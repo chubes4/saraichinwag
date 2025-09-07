@@ -2,9 +2,12 @@
 /**
  * The archive template file
  *
- * This template file displays the blog posts index for archive pages.
+ * Displays category, tag, author, and date archive pages with full-width
+ * grid layout, advanced filtering, AJAX load more functionality, and
+ * image gallery mode links. Includes breadcrumb navigation.
  *
  * @package Sarai_Chinwag
+ * @since 1.0.0
  */
 
 get_header();

@@ -68,7 +68,7 @@ Navigate to **WordPress Admin → Settings → Theme Settings** to access all co
 - Recipe post type becomes inaccessible in admin
 - Recipe-specific templates and widgets hidden
 - Rating system disabled
-- Schema.org recipe markup removed
+- Embedded Schema.org recipe markup removed
 - Recipe filtering removed from archives
 - Random recipe functionality redirects to random posts
 - Theme operates as standard blog
@@ -76,7 +76,7 @@ Navigate to **WordPress Admin → Settings → Theme Settings** to access all co
 **When Recipes Enabled** (Default):
 - Full recipe post type functionality
 - Recipe ratings and reviews
-- Schema.org structured data
+- Embedded Schema.org structured data
 - Recipe-specific templates
 - Recipe filtering in archives and search
 
