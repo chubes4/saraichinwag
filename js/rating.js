@@ -24,8 +24,10 @@ document.addEventListener('DOMContentLoaded', function () {
         stars.forEach((star, index) => {
             if (index < rating) {
                 star.classList.add('selected');
+                star.innerHTML = '&#9733;'; // Filled star
             } else {
                 star.classList.remove('selected');
+                star.innerHTML = '&#9734;'; // Empty star
             }
         });
     }
@@ -34,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
     averageRating = averageRating ? parseFloat(averageRating[0]) : 0;
 
     if (averageRating > 0) {
-        setStars(averageRating);
+        setStars(Math.round(averageRating));
     }
 
     const userRating = localStorage.getItem(`recipe-rating-${postId}`);
@@ -81,9 +83,10 @@ document.addEventListener('DOMContentLoaded', function () {
             return response.json();
         }).then(data => {
             if (data.success) {
-                averageRatingElement.textContent = `(${data.data.averageRating}/5 based on ${data.data.reviewCount} reviews)`;
+                const reviewsText = data.data.reviewCount == 1 ? 'review' : 'reviews';
+                averageRatingElement.textContent = `(${data.data.averageRating}/5 based on ${data.data.reviewCount} ${reviewsText})`;
                 userRatingElement.textContent = sprintf(__('You rated this %d stars.', 'sarai-chinwag'), rating);
-                setStars(data.data.averageRating);
+                setStars(Math.round(data.data.averageRating));
             } else {
                     userRatingElement.textContent = __('Error saving rating. Please try again.', 'sarai-chinwag');
             }

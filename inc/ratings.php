@@ -46,10 +46,14 @@ function sarai_chinwag_rate_recipe() {
     $new_rating_value = (($rating_value * $review_count) + $rating) / ($review_count + 1);
     $new_review_count = $review_count + 1;
 
-    $rating_update = update_post_meta($post_id, 'rating_value', $new_rating_value);
-    $review_update = update_post_meta($post_id, 'review_count', $new_review_count);
+    update_post_meta($post_id, 'rating_value', $new_rating_value);
+    update_post_meta($post_id, 'review_count', $new_review_count);
 
-    if ($rating_update === false || $review_update === false) {
+    // Verify the meta was actually updated by reading it back
+    $verify_rating = get_post_meta($post_id, 'rating_value', true);
+    $verify_count = get_post_meta($post_id, 'review_count', true);
+    
+    if (floatval($verify_rating) != $new_rating_value || intval($verify_count) != $new_review_count) {
         wp_send_json_error(['message' => 'Failed to update rating meta.']);
         wp_die();
     }
@@ -85,3 +89,73 @@ function sarai_chinwag_enqueue_rating_script() {
     }
 }
 add_action('wp_enqueue_scripts', 'sarai_chinwag_enqueue_rating_script');
+
+/**
+ * Set default 5-star rating for new recipe posts
+ * 
+ * @param int $post_id The post ID
+ * @param WP_Post $post The post object
+ * @param bool $update Whether this is an existing post being updated or not
+ * @since 1.0.0
+ */
+function sarai_chinwag_set_default_recipe_rating($post_id, $post, $update) {
+    // Skip if recipes are disabled
+    if (sarai_chinwag_recipes_disabled()) {
+        return;
+    }
+    
+    // Only apply to recipe post type
+    if ($post->post_type !== 'recipe') {
+        return;
+    }
+    
+    // Only apply to published posts
+    if ($post->post_status !== 'publish') {
+        return;
+    }
+    
+    // Check if rating already exists (skip if already has rating)
+    $existing_rating = get_post_meta($post_id, 'rating_value', true);
+    if ($existing_rating) {
+        return;
+    }
+    
+    // Set default 5-star rating with 1 review count
+    update_post_meta($post_id, 'rating_value', 5.0);
+    update_post_meta($post_id, 'review_count', 1);
+}
+
+add_action('save_post', 'sarai_chinwag_set_default_recipe_rating', 10, 3);
+add_action('publish_recipe', 'sarai_chinwag_set_default_recipe_rating', 10, 3);
+
+/**
+ * Manually set default ratings for existing recipes without ratings
+ * Useful for applying defaults to recipes created before this feature
+ * 
+ * @since 1.0.0
+ */
+function sarai_chinwag_apply_default_ratings_to_existing() {
+    // Skip if recipes are disabled
+    if (sarai_chinwag_recipes_disabled()) {
+        return;
+    }
+    
+    $recipes = get_posts([
+        'post_type' => 'recipe',
+        'post_status' => 'publish',
+        'numberposts' => -1,
+        'meta_query' => [
+            [
+                'key' => 'rating_value',
+                'compare' => 'NOT EXISTS'
+            ]
+        ]
+    ]);
+    
+    foreach ($recipes as $recipe) {
+        update_post_meta($recipe->ID, 'rating_value', 5.0);
+        update_post_meta($recipe->ID, 'review_count', 1);
+    }
+    
+    return count($recipes);
+}
