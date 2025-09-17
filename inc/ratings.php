@@ -8,12 +8,7 @@
  */
 
 /**
- * Handle recipe rating submissions via AJAX
- *
- * Processes user ratings (1-5) and calculates weighted averages.
- * Includes nonce verification and input validation.
- *
- * @since 1.0.0
+ * Handle AJAX recipe rating submissions with weighted average calculation
  */
 function sarai_chinwag_rate_recipe() {
     if (sarai_chinwag_recipes_disabled()) {
@@ -45,7 +40,6 @@ function sarai_chinwag_rate_recipe() {
     $rating_value = $rating_value ? floatval($rating_value) : 0;
     $review_count = $review_count ? intval($review_count) : 0;
 
-    // Calculate weighted average: ((current_avg * count) + new_rating) / (count + 1)
     $new_rating_value = (($rating_value * $review_count) + $rating) / ($review_count + 1);
     $new_review_count = $review_count + 1;
 
@@ -71,8 +65,6 @@ add_action('wp_ajax_nopriv_rate_recipe', 'sarai_chinwag_rate_recipe');
 
 /**
  * Enqueue rating script with AJAX localization on recipe pages
- *
- * @since 1.0.0
  */
 function sarai_chinwag_enqueue_rating_script() {
     if (sarai_chinwag_recipes_disabled()) {
@@ -93,14 +85,11 @@ add_action('wp_enqueue_scripts', 'sarai_chinwag_enqueue_rating_script');
 
 /**
  * Assign default 5-star rating to newly published recipes
+ * Skips recipes with existing ratings
  *
- * Only applies to recipe post type on first publish, skips existing ratings.
- * Sets rating_value to 5.0 and review_count to 1.
- *
- * @param int $post_id The post ID
- * @param WP_Post $post The post object
- * @param bool $update Whether this is an existing post being updated
- * @since 1.0.0
+ * @param int $post_id Post ID
+ * @param WP_Post $post Post object
+ * @param bool $update Whether existing post being updated
  */
 function sarai_chinwag_set_default_recipe_rating($post_id, $post, $update) {
     if (sarai_chinwag_recipes_disabled()) {
@@ -129,12 +118,9 @@ add_action('publish_recipe', 'sarai_chinwag_set_default_recipe_rating', 10, 3);
 
 /**
  * Apply default 5-star ratings to existing recipes without ratings
- *
- * Bulk operation for recipes created before default rating feature.
- * Uses meta_query to target only recipes missing rating_value.
+ * Uses meta_query to target recipes missing rating_value
  *
  * @return int Number of recipes updated
- * @since 1.0.0
  */
 function sarai_chinwag_apply_default_ratings_to_existing() {
     if (sarai_chinwag_recipes_disabled()) {

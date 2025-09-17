@@ -1,11 +1,6 @@
 /**
  * Advanced Filter Bar with AJAX sorting and content type filtering
- *
- * Handles Random/Popular/Recent/Oldest sorting plus All/Posts/Recipes/Images filtering.
- * Maintains filter state across Load More operations and supports image gallery mode.
- *
- * @version 2.2
- * @since 2.0.0
+ * Maintains filter state across Load More operations and supports image gallery mode
  */
 document.addEventListener('DOMContentLoaded', function () {
     const loadMoreButton = document.getElementById('load-more');
@@ -52,9 +47,6 @@ document.addEventListener('DOMContentLoaded', function () {
     let loadedPostIds = [];
     let loadedImageIds = [];
 
-    /**
-     * Initialize arrays of loaded content IDs from existing grid
-     */
     function initializeLoadedContent() {
         if (isImageGallery) {
             loadedImageIds = Array.from(postGrid.querySelectorAll('.gallery-item img')).map(img => {

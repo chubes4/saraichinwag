@@ -7,26 +7,20 @@
  * @since 1.0.0
  */
 
-/**
- * Register Typography and Color Scheme customizer controls
- */
 function sarai_chinwag_customize_register($wp_customize) {
     
-    // Typography Section
     $wp_customize->add_section('sarai_chinwag_typography', array(
         'title' => __('Typography', 'sarai-chinwag'),
         'description' => __('Customize fonts for your site.', 'sarai-chinwag'),
         'priority' => 30,
     ));
 
-    // Color Scheme Section
     $wp_customize->add_section('sarai_chinwag_colors', array(
         'title' => __('Color Scheme', 'sarai-chinwag'),
         'description' => __('Customize colors for your site.', 'sarai-chinwag'),
         'priority' => 40,
     ));
 
-    // Heading Font Control
     $wp_customize->add_setting('sarai_chinwag_heading_font', array(
         'default' => 'Gluten',
         'sanitize_callback' => 'sanitize_text_field',
@@ -41,7 +35,6 @@ function sarai_chinwag_customize_register($wp_customize) {
         'description' => __('Choose a display font for headings (h1-h6).', 'sarai-chinwag'),
     ));
 
-    // Heading Font Size Control
     $wp_customize->add_setting('sarai_chinwag_heading_font_size', array(
         'default' => 50,
         'sanitize_callback' => 'absint',
@@ -60,7 +53,6 @@ function sarai_chinwag_customize_register($wp_customize) {
         'description' => __('Scale heading sizes (50% = current theme size).', 'sarai-chinwag'),
     ));
 
-    // Body Font Control
     $wp_customize->add_setting('sarai_chinwag_body_font', array(
         'default' => 'System Fonts',
         'sanitize_callback' => 'sanitize_text_field',
@@ -75,7 +67,6 @@ function sarai_chinwag_customize_register($wp_customize) {
         'description' => __('Choose a font for body text and paragraphs.', 'sarai-chinwag'),
     ));
 
-    // Body Font Size Control
     $wp_customize->add_setting('sarai_chinwag_body_font_size', array(
         'default' => 50,
         'sanitize_callback' => 'absint',
@@ -95,7 +86,6 @@ function sarai_chinwag_customize_register($wp_customize) {
     ));
 
 
-    // Primary Color Control
     $wp_customize->add_setting('sarai_chinwag_primary_color', array(
         'default' => '#1fc5e2',
         'sanitize_callback' => 'sanitize_hex_color',
@@ -108,7 +98,6 @@ function sarai_chinwag_customize_register($wp_customize) {
         'description' => __('Used for buttons, links, and main accents.', 'sarai-chinwag'),
     )));
 
-    // Secondary Color Control
     $wp_customize->add_setting('sarai_chinwag_secondary_color', array(
         'default' => '#ff6eb1',
         'sanitize_callback' => 'sanitize_hex_color',
@@ -121,7 +110,6 @@ function sarai_chinwag_customize_register($wp_customize) {
         'description' => __('Used for borders, highlights, and secondary accents.', 'sarai-chinwag'),
     )));
 
-    // Text Color Control
     $wp_customize->add_setting('sarai_chinwag_text_color', array(
         'default' => '#000000',
         'sanitize_callback' => 'sanitize_hex_color',
@@ -134,7 +122,6 @@ function sarai_chinwag_customize_register($wp_customize) {
         'description' => __('Main text color for content.', 'sarai-chinwag'),
     )));
 
-    // Background Color Control
     $wp_customize->add_setting('sarai_chinwag_background_color', array(
         'default' => '#ffffff',
         'sanitize_callback' => 'sanitize_hex_color',
@@ -147,7 +134,6 @@ function sarai_chinwag_customize_register($wp_customize) {
         'description' => __('Main background color for the site.', 'sarai-chinwag'),
     )));
 
-    // Header/Footer Background Color Control
     $wp_customize->add_setting('sarai_chinwag_header_footer_bg_color', array(
         'default' => '#000000',
         'sanitize_callback' => 'sanitize_hex_color',
@@ -163,7 +149,7 @@ function sarai_chinwag_customize_register($wp_customize) {
 add_action('customize_register', 'sarai_chinwag_customize_register');
 
 /**
- * Fetch Google Fonts from API by category
+ * Fetch Google Fonts from API by category with caching
  */
 function sarai_chinwag_fetch_google_fonts_by_category($category = '') {
     $api_key = get_option('sarai_chinwag_google_fonts_api_key', '');
@@ -206,22 +192,19 @@ function sarai_chinwag_fetch_google_fonts_by_category($category = '') {
 }
 
 /**
- * Get fonts for customizer dropdowns
+ * Get fonts for customizer dropdowns with fallbacks
  */
 function sarai_chinwag_get_google_fonts($type = '') {
     $fonts = array();
     
-     // Add theme default fonts first
     $fallback_fonts = array(
         'Gluten' => 'Gluten (Google)',
         'System Fonts' => 'System Fonts'
     );
     
     if ($type === 'display') {
-        // Header fonts: Display category only
         $api_fonts = sarai_chinwag_fetch_google_fonts_by_category('display');
     } elseif ($type === 'body') {
-        // Body fonts: Combine sans-serif and serif
         $sans_serif_fonts = sarai_chinwag_fetch_google_fonts_by_category('sans-serif');
         $serif_fonts = sarai_chinwag_fetch_google_fonts_by_category('serif');
         $api_fonts = array_merge($sans_serif_fonts, $serif_fonts);
@@ -229,21 +212,17 @@ function sarai_chinwag_get_google_fonts($type = '') {
         $api_fonts = array();
     }
     
-    // If API call failed, return just default fonts
     if (empty($api_fonts)) {
         return $fallback_fonts;
     }
     
-    // Merge fallback fonts with API fonts
     return array_merge($fallback_fonts, $api_fonts);
 }
 
 /**
  * Get Google Fonts to load based on customizer selections
- * Shared function for both frontend and admin font loading
  */
 function sarai_chinwag_get_fonts_to_load() {
-    // Get only the 2 font settings
     $fonts_to_check = array(
         get_theme_mod('sarai_chinwag_heading_font', 'Gluten'),
         get_theme_mod('sarai_chinwag_body_font', 'System Fonts')
@@ -251,7 +230,6 @@ function sarai_chinwag_get_fonts_to_load() {
     
     $fonts_to_load = array();
     
-    // Check each font and add to load list if it's a Google Font
     foreach ($fonts_to_check as $font) {
         if ($font !== 'System Fonts' && !in_array($font, $fonts_to_load)) {
             $fonts_to_load[] = $font;
@@ -262,16 +240,14 @@ function sarai_chinwag_get_fonts_to_load() {
 }
 
 /**
- * Enqueue Google Fonts based on customizer selections (Frontend)
+ * Enqueue Google Fonts based on customizer selections
  */
 function sarai_chinwag_enqueue_google_fonts() {
     $fonts_to_load = sarai_chinwag_get_fonts_to_load();
     
-    // Enqueue Google Fonts if any are selected
     if (!empty($fonts_to_load)) {
         $fonts_url = 'https://fonts.googleapis.com/css2?';
         foreach ($fonts_to_load as $font) {
-            // Use proper URL encoding for Google Fonts API v2 compatibility
             $fonts_url .= 'family=' . urlencode($font) . ':wght@400;500;600;700&';
         }
         $fonts_url .= 'display=swap';
@@ -282,15 +258,13 @@ function sarai_chinwag_enqueue_google_fonts() {
 add_action('wp_enqueue_scripts', 'sarai_chinwag_enqueue_google_fonts');
 
 /**
- * Enqueue root.css and Google Fonts for wp-admin contexts (Classic Editor)
+ * Enqueue root.css and Google Fonts for Classic Editor
  */
 function sarai_chinwag_enqueue_admin_google_fonts($hook) {
-    // Only load fonts on post edit pages where editors are used
     if (!in_array($hook, array('post.php', 'post-new.php'))) {
         return;
     }
     
-    // Enqueue root.css for admin editor pages
     wp_enqueue_style(
         'sarai-chinwag-admin-root',
         get_template_directory_uri() . '/css/root.css',
@@ -300,11 +274,9 @@ function sarai_chinwag_enqueue_admin_google_fonts($hook) {
     
     $fonts_to_load = sarai_chinwag_get_fonts_to_load();
     
-    // Enqueue Google Fonts if any are selected
     if (!empty($fonts_to_load)) {
         $fonts_url = 'https://fonts.googleapis.com/css2?';
         foreach ($fonts_to_load as $font) {
-            // Use proper URL encoding for Google Fonts API v2 compatibility
             $fonts_url .= 'family=' . urlencode($font) . ':wght@400;500;600;700&';
         }
         $fonts_url .= 'display=swap';
@@ -321,10 +293,8 @@ add_action('admin_enqueue_scripts', 'sarai_chinwag_enqueue_admin_google_fonts');
 
 /**
  * Enqueue root.css and Google Fonts for Block Editor
- * No inline CSS - everything centralized in root.css
  */
 function sarai_chinwag_enqueue_block_editor_assets() {
-    // Enqueue root.css FIRST for Block Editor
     wp_enqueue_style(
         'sarai-chinwag-block-editor-root',
         get_template_directory_uri() . '/css/root.css',
@@ -332,7 +302,6 @@ function sarai_chinwag_enqueue_block_editor_assets() {
         filemtime(get_template_directory() . '/css/root.css')
     );
     
-    // Then enqueue Google Fonts if any are selected
     $fonts_to_load = sarai_chinwag_get_fonts_to_load();
     if (!empty($fonts_to_load)) {
         $fonts_url = 'https://fonts.googleapis.com/css2?';
@@ -354,7 +323,6 @@ add_action('enqueue_block_editor_assets', 'sarai_chinwag_enqueue_block_editor_as
 
 /**
  * Update root.css file with current customizer values
- * Replaces inline CSS approach with centralized file-based approach
  */
 function sarai_chinwag_update_root_css() {
     $heading_font = get_theme_mod('sarai_chinwag_heading_font', 'Gluten');
@@ -410,24 +378,18 @@ function sarai_chinwag_update_root_css() {
     file_put_contents($root_css_path, $css_content);
 }
 
-/**
- * Trigger root.css update when customizer settings change
- */
 function sarai_chinwag_update_root_css_on_customizer_save() {
     sarai_chinwag_update_root_css();
 }
 add_action('customize_save_after', 'sarai_chinwag_update_root_css_on_customizer_save');
 
-/**
- * Initialize root.css with current values on theme activation
- */
 function sarai_chinwag_initialize_root_css() {
     sarai_chinwag_update_root_css();
 }
 add_action('after_setup_theme', 'sarai_chinwag_initialize_root_css');
 
 /**
- * Get font family CSS value with simple fallback strategy
+ * Get font family CSS value with fallback strategy
  */
 function sarai_chinwag_get_font_family($font_name) {
     switch ($font_name) {
@@ -436,17 +398,14 @@ function sarai_chinwag_get_font_family($font_name) {
         case 'System Fonts':
             return "Helvetica, Arial, sans-serif";
         default:
-            // Simple fallback: Google Font → Helvetica → System
-            // Remove quotes from Google Font names for better Block Editor compatibility
             return "{$font_name}, Helvetica, Arial, sans-serif";
     }
 }
 
 /**
- * Enqueue root CSS variables file FIRST, then customizer CSS
+ * Enqueue root CSS variables file with customizer CSS
  */
 function sarai_chinwag_output_customizer_css() {
-    // Enqueue root.css FIRST with highest priority
     wp_enqueue_style(
         'sarai-chinwag-root-css',
         get_template_directory_uri() . '/css/root.css',
@@ -454,7 +413,6 @@ function sarai_chinwag_output_customizer_css() {
         filemtime(get_template_directory() . '/css/root.css')
     );
     
-    // Then enqueue customizer.css after root.css
     wp_enqueue_style(
         'sarai-chinwag-customizer-css',
         get_template_directory_uri() . '/css/customizer.css',
@@ -464,9 +422,6 @@ function sarai_chinwag_output_customizer_css() {
 }
 add_action('wp_enqueue_scripts', 'sarai_chinwag_output_customizer_css');
 
-/**
- * Enqueue customizer preview script
- */
 function sarai_chinwag_customize_preview_js() {
     wp_enqueue_script('sarai-chinwag-customizer', get_template_directory_uri() . '/js/customizer.js', array('customize-preview'), '1.0.0', true);
 }

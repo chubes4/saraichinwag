@@ -5,16 +5,13 @@
  */
 
 /**
- * Track a view for the current post
- * Only increments for singular posts and recipes, once per page load
+ * Track view for current post on singular pages only
  */
 function sarai_chinwag_track_post_view() {
-    // Only track views on singular posts and recipes
     if (!is_singular(array('post', 'recipe'))) {
         return;
     }
     
-    // Don't track admin views
     if (is_admin()) {
         return;
     }
@@ -26,19 +23,17 @@ function sarai_chinwag_track_post_view() {
     
     $post_id = $post->ID;
     
-    // Get current view count
     $views = get_post_meta($post_id, '_post_views', true);
     $views = $views ? intval($views) : 0;
     
-    // Increment and update
     $new_views = $views + 1;
     update_post_meta($post_id, '_post_views', $new_views);
 }
 
 /**
- * Get view count for a specific post
- * 
- * @param int $post_id Post ID to get views for
+ * Get view count for specific post
+ *
+ * @param int $post_id Post ID
  * @return int Number of views
  */
 function sarai_chinwag_get_post_views($post_id) {
@@ -48,8 +43,8 @@ function sarai_chinwag_get_post_views($post_id) {
 
 /**
  * Display formatted view count
- * 
- * @param int $post_id Post ID to display views for
+ *
+ * @param int $post_id Post ID
  * @return string Formatted view count
  */
 function sarai_chinwag_display_post_views($post_id) {
@@ -66,9 +61,9 @@ function sarai_chinwag_display_post_views($post_id) {
 
 /**
  * Get most popular posts by view count
- * 
- * @param array $args WP_Query arguments to merge with view count query
- * @return WP_Query Query object with posts sorted by popularity
+ *
+ * @param array $args WP_Query arguments
+ * @return WP_Query Query object sorted by popularity
  */
 function sarai_chinwag_get_popular_posts($args = array()) {
     $default_args = array(
@@ -89,22 +84,18 @@ function sarai_chinwag_get_popular_posts($args = array()) {
     return new WP_Query($query_args);
 }
 
-// Hook the view tracking to wp_head on singular pages
 add_action('wp_head', 'sarai_chinwag_track_post_view');
 
 /**
- * Initialize view count for posts that don't have it yet
- * This helps with sorting queries (posts without meta will have 0 views)
+ * Initialize view count for posts without meta to aid sorting queries
  */
 function sarai_chinwag_initialize_post_views() {
-    // Only run occasionally to avoid performance impact
     if (wp_cache_get('views_initialized', 'sarai_chinwag_views')) {
         return;
     }
     
     global $wpdb;
     
-    // Find posts without view count meta
     $posts_without_views = $wpdb->get_results("
         SELECT p.ID 
         FROM {$wpdb->posts} p 
@@ -115,12 +106,10 @@ function sarai_chinwag_initialize_post_views() {
         LIMIT 100
     ");
     
-    // Initialize with 0 views
     foreach ($posts_without_views as $post) {
         update_post_meta($post->ID, '_post_views', 0);
     }
     
-    // Set cache to prevent this from running too often
     wp_cache_set('views_initialized', true, 'sarai_chinwag_views', DAY_IN_SECONDS);
 }
 add_action('init', 'sarai_chinwag_initialize_post_views');

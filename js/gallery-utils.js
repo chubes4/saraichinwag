@@ -1,11 +1,6 @@
 /**
  * Shared gallery utilities for responsive masonry layout
- *
- * Provides column management and image placement utilities for
- * both filter-bar.js and load-more.js gallery functionality.
- *
- * @version 2.2
- * @since 2.1.0
+ * Provides column management and image placement utilities
  */
 window.SaraiGalleryUtils = (function() {
     
@@ -18,9 +13,6 @@ window.SaraiGalleryUtils = (function() {
         return 4;
     }
     
-    /**
-     * Create gallery column DOM elements
-     */
     function createColumns(count) {
         const columns = [];
         for (let i = 0; i < count; i++) {
@@ -31,9 +23,6 @@ window.SaraiGalleryUtils = (function() {
         return columns;
     }
     
-    /**
-     * Find shortest column for optimal image placement
-     */
     function getShortestColumn(columns) {
         if (columns.length === 0) return null;
         return columns.reduce((shortest, col) => (

@@ -1,12 +1,6 @@
 /**
  * Recipe Rating System with AJAX submission and localStorage persistence
- *
- * Handles user ratings (1-5 stars) with dual-state management:
- * - localStorage for immediate UI feedback
- * - AJAX to server for persistent storage and average calculation
- *
- * @version 2.2
- * @since 1.0.0
+ * Dual-state management: localStorage for UI feedback, AJAX for server storage
  */
 document.addEventListener('DOMContentLoaded', function () {
     const { __, sprintf } = wp.i18n;
@@ -29,10 +23,10 @@ document.addEventListener('DOMContentLoaded', function () {
         stars.forEach((star, index) => {
             if (index < rating) {
                 star.classList.add('selected');
-                star.innerHTML = '&#9733;'; // Filled star
+                star.innerHTML = '&#9733;';
             } else {
                 star.classList.remove('selected');
-                star.innerHTML = '&#9734;'; // Empty star
+                star.innerHTML = '&#9734;;
             }
         });
     }

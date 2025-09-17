@@ -12,9 +12,6 @@
  * @since 1.0.0
  */
 
-/**
- * Theme setup and initialization
- */
 function sarai_chinwag_setup() {
         load_theme_textdomain( 'sarai-chinwag', get_template_directory() . '/languages' );
         
@@ -26,7 +23,6 @@ function sarai_chinwag_setup() {
         add_editor_style( 'style.css' );
         add_editor_style( 'css/editor.css' );
         
-        // Remove unused WordPress defaults, add optimized grid thumbnail
         remove_image_size('thumbnail');
         remove_image_size('medium');
         remove_image_size('medium_large');
@@ -39,9 +35,6 @@ function sarai_chinwag_setup() {
 }
 add_action( 'after_setup_theme', 'sarai_chinwag_setup' );
 
-/**
- * Enqueue scripts and styles with dynamic versioning
- */
 function sarai_chinwag_scripts() {
     $style_version = filemtime( get_template_directory() . '/style.css' );
     wp_enqueue_style( 'sarai-chinwag-style', get_stylesheet_uri(), array('sarai-chinwag-root-css'), $style_version );
@@ -98,8 +91,6 @@ require_once $queries_dir . '/image-mode/image-extractor.php';
 require_once $queries_dir . '/image-mode/image-archives.php';
 require_once $queries_dir . '/image-mode/rewrite-rules.php';
 require_once $queries_dir . '/image-mode/search-images.php';
-
-require_once get_template_directory() . '/inc/admin/image-migration.php';
 
 /**
  * Wrap content images with anchorable spans for gallery deep linking
@@ -230,9 +221,6 @@ add_action('untrash_post', 'sarai_chinwag_clear_performance_caches');
 
 
 
-/**
- * Register widget areas
- */
 function sarai_chinwag_widgets_init() {
     register_sidebar( array(
         'name'          => __( 'Sidebar', 'sarai-chinwag' ),
@@ -246,9 +234,6 @@ function sarai_chinwag_widgets_init() {
 }
 add_action( 'widgets_init', 'sarai_chinwag_widgets_init' );
 
-/**
- * Set Content-Language header for browser translation detection
- */
 function sarai_chinwag_set_content_language_header() {
     if (!headers_sent()) {
         header('Content-Language: en');
@@ -257,10 +242,8 @@ function sarai_chinwag_set_content_language_header() {
 add_action('wp_head', 'sarai_chinwag_set_content_language_header', 1);
 
 /**
- * Display category/tag badges on single posts and recipes
- *
- * Shows primary category (blue) and up to 3 tags (pink) as clickable badges.
- * Part of badge-breadcrumb navigation system for single content.
+ * Display category/tag badges as part of badge-breadcrumb navigation system
+ * Shows primary category (blue) and up to 3 tags (pink) on singular content
  */
 function sarai_chinwag_post_badges() {
     if (!is_singular(array('post', 'recipe'))) {
@@ -300,10 +283,8 @@ function sarai_chinwag_post_badges() {
 }
 
 /**
- * Display traditional breadcrumbs for archive and search pages
- *
- * Generates hierarchical navigation breadcrumbs for non-singular pages.
- * Part of badge-breadcrumb dual navigation system.
+ * Display traditional breadcrumbs as part of dual navigation system
+ * Generates hierarchical navigation for archive and search pages
  */
 function sarai_chinwag_archive_breadcrumbs() {
     if (!is_archive() && !is_search()) {
@@ -353,7 +334,7 @@ function sarai_chinwag_archive_breadcrumbs() {
 }
 
 /**
- * Display gallery discovery badges for single posts and recipes
+ * Display gallery discovery badges with cached image counts for related categories/tags
  */
 function sarai_chinwag_gallery_discovery_badges() {
     if (!is_singular(array('post', 'recipe'))) {
@@ -505,7 +486,7 @@ function sarai_chinwag_get_search_image_count($search_query) {
 }
 
 /**
- * AJAX endpoint for loading template parts via filter system
+ * AJAX endpoint for loading template parts with nonce verification
  */
 function sarai_chinwag_load_template() {
     if (!wp_verify_nonce($_POST['nonce'], 'filter_posts_nonce')) {
@@ -528,5 +509,29 @@ function sarai_chinwag_load_template() {
 }
 add_action('wp_ajax_load_template', 'sarai_chinwag_load_template');
 add_action('wp_ajax_nopriv_load_template', 'sarai_chinwag_load_template');
+
+/**
+ * Display featured image styled as Gutenberg image block with proper attributes
+ *
+ * @param string $size Image size (default: 'large')
+ * @param array $attr Additional image attributes
+ */
+function sarai_chinwag_display_featured_image_as_block($size = 'large', $attr = array()) {
+    if (!has_post_thumbnail()) {
+        return;
+    }
+
+    $attachment_id = get_post_thumbnail_id();
+    $default_attr = array(
+        'class' => 'wp-image-' . $attachment_id,
+        'itemprop' => 'image'
+    );
+
+    $attr = array_merge($default_attr, $attr);
+
+    echo '<figure class="wp-block-image">';
+    the_post_thumbnail($size, $attr);
+    echo '</figure>';
+}
 
 ?>

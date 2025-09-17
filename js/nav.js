@@ -1,11 +1,6 @@
 /**
  * Header search functionality with admin bar position adjustment
- *
- * Handles search toggle positioning relative to header and WordPress admin bar.
- * Includes click-outside-to-close behavior and responsive positioning.
- *
- * @version 2.2
- * @since 1.0.0
+ * Handles search toggle positioning and click-outside-to-close behavior
  */
 document.addEventListener('DOMContentLoaded', function() {
     var header = document.querySelector('#masthead');

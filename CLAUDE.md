@@ -83,13 +83,13 @@ The theme uses organized PHP modules in the `/inc` directory loaded via function
 The theme implements an automatic default 5-star rating system for all new recipe posts to ensure immediate visibility in popularity sorting and consistent user experience:
 
 **Core Implementation:**
-- **sarai_chinwag_set_default_recipe_rating()** (`inc/ratings.php:101`): Automatically assigns 5.0 rating with 1 review count to new published recipes
+- **sarai_chinwag_set_default_recipe_rating()** (`inc/ratings.php:105`): Automatically assigns 5.0 rating with 1 review count to new published recipes
 - **Triggered by WordPress hooks**: `save_post` and `publish_recipe` actions ensure coverage of all publication methods
 - **Smart detection**: Only applies to recipe post type with published status, skips recipes that already have ratings
 - **Prevents rating gaps**: Eliminates scenarios where new recipes appear unrated or invisible in popularity-based sorting
 
 **Bulk Application:**
-- **sarai_chinwag_apply_default_ratings_to_existing()** (`inc/ratings.php:137`): Retroactively applies default ratings to existing recipes without ratings
+- **sarai_chinwag_apply_default_ratings_to_existing()** (`inc/ratings.php:139`): Retroactively applies default ratings to existing recipes without ratings
 - **Meta query filtering**: Uses WordPress meta_query to identify recipes lacking rating_value meta
 - **Batch processing**: Handles unlimited recipes efficiently for theme upgrades and migrations
 

@@ -1,18 +1,16 @@
 <?php
 /**
- * Image Extractor System
- *
- * Extracts images from post content for gallery archives with caching.
+ * Image Extractor System for gallery archives with caching
  *
  * @package Sarai_Chinwag
  */
 
 /**
- * Extract all images from posts in a specific term (category or tag)
+ * Extract all images from posts in specific term with caching
  *
- * @param int $term_id The term ID
- * @param string $term_type The taxonomy (category, post_tag)
- * @param int $limit Maximum number of images to return
+ * @param int $term_id Term ID
+ * @param string $term_type Taxonomy (category, post_tag)
+ * @param int $limit Maximum images to return
  * @return array Array of image data
  */
 function sarai_chinwag_extract_images_from_term($term_id, $term_type, $limit = 30) {
@@ -79,9 +77,9 @@ function sarai_chinwag_extract_images_from_term($term_id, $term_type, $limit = 3
 }
 
 /**
- * Extract all images from a single post
+ * Extract all images from single post
  *
- * @param int $post_id The post ID
+ * @param int $post_id Post ID
  * @return array Array of image data
  */
 function sarai_chinwag_extract_images_from_post($post_id) {
