@@ -27,7 +27,6 @@
     }
 
     if ( is_singular() ) {
-        // Interactive Rating Widget
         $rating_value = get_post_meta(get_the_ID(), 'rating_value', true);
         $review_count = get_post_meta(get_the_ID(), 'review_count', true);
         $review_count = $review_count ? intval($review_count) : 0;
@@ -35,7 +34,6 @@
         $rating_display = $review_count > 0 ? "(" . round(floatval($rating_value), 2) . "/5 based on " . $review_count . " " . $reviews_text . ")" : "(Not yet rated)";
     ?>
     
-        <!-- Interactive Star Rating Widget -->
         <div id="rating-widget" data-post-id="<?php the_ID(); ?>" class="recipe-rating">
             <h3>Rate this Recipe:</h3>
             <?php wp_nonce_field('rate_recipe_nonce', 'rate_recipe_nonce'); ?>

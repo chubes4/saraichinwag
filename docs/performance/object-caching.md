@@ -51,6 +51,12 @@ The theme uses segregated cache groups for organized cache management:
 - **Content**: Extracted image collections and metadata
 - **Scope**: Term-based, site-wide, and search image caches
 
+#### Rating System Caching
+- **Purpose**: Recipe rating data optimization
+- **Implementation**: Post meta caching for rating_value and review_count
+- **Performance**: Efficient rating calculations and display
+- **Integration**: Seamless with default 5-star rating system
+
 ## Random Content Caching
 
 ### Random Post ID System

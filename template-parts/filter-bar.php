@@ -10,9 +10,7 @@
  * @since 2.0.0
  */
 
-// Get current page context for filter persistence
-// Consider both term-specific and site-wide image gallery routes using native endpoint
-// Must check both query var exists AND URL contains /images to avoid false positives on normal archives
+// Complex image gallery detection to avoid false positives
 $has_images_var = get_query_var('images') !== false;
 $url_has_images = strpos($_SERVER['REQUEST_URI'], '/images/') !== false || strpos($_SERVER['REQUEST_URI'], '/images') !== false;
 $is_image_gallery = $has_images_var && $url_has_images;
@@ -40,11 +38,9 @@ $search_term = is_search() ? get_search_query() : '';
     </div>
     
     <?php 
-    // Determine what buttons to show
     $has_both_post_types = !sarai_chinwag_recipes_disabled() && sarai_chinwag_has_both_posts_and_recipes();
     $can_show_mode_toggle = is_category() || is_tag() || is_home() || is_search() || $is_image_gallery;
     
-    // Show type filters if we have multiple post types OR can show mode toggle
     $show_type_filters = $has_both_post_types || $can_show_mode_toggle;
     
     if ($show_type_filters) :
@@ -52,7 +48,6 @@ $search_term = is_search() ? get_search_query() : '';
     <div class="filter-section type-filters">
         <div class="filter-buttons">
             <?php 
-            // Show All button only when we have both posts AND recipes
             if ($has_both_post_types) : 
             ?>
             <button class="filter-btn type-btn <?php echo (!$is_image_gallery) ? 'active' : ''; ?>" data-type="all">
@@ -65,7 +60,6 @@ $search_term = is_search() ? get_search_query() : '';
                 <?php _e('Recipes', 'sarai-chinwag'); ?>
             </button>
             <?php else : ?>
-            <!-- When only posts exist, show Posts button (always active when not in image mode) -->
             <button class="filter-btn type-btn <?php echo $is_image_gallery ? '' : 'active'; ?>" data-type="posts">
                 <?php _e('Posts', 'sarai-chinwag'); ?>
             </button>
@@ -80,7 +74,6 @@ $search_term = is_search() ? get_search_query() : '';
     </div>
     <?php endif; ?>
     
-    <!-- Hidden data for JavaScript -->
     <div class="filter-data">
         <input type="hidden" id="filter-category" value="<?php echo esc_attr($category); ?>">
         <input type="hidden" id="filter-tag" value="<?php echo esc_attr($tag); ?>">

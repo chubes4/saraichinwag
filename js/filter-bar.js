@@ -1,5 +1,11 @@
 /**
- * Advanced Filter Bar System with AJAX
+ * Advanced Filter Bar with AJAX sorting and content type filtering
+ *
+ * Handles Random/Popular/Recent/Oldest sorting plus All/Posts/Recipes/Images filtering.
+ * Maintains filter state across Load More operations and supports image gallery mode.
+ *
+ * @version 2.2
+ * @since 2.0.0
  */
 document.addEventListener('DOMContentLoaded', function () {
     const loadMoreButton = document.getElementById('load-more');
@@ -21,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const isAllSiteImages = isImageGallery && (path === '/images/' || path === '/images');
 
     /**
-     * Determine initial filter type based on page context
+     * Determine initial filter type from active button or page context
      * @returns {string} Initial filter type
      */
     function determineInitialType() {

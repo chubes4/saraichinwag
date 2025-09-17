@@ -1,4 +1,4 @@
-/* Editor-specific CSS for the Block Editor */
+/* WordPress Block Editor font integration */
 
 /* Body font for editor content */
 .editor-styles-wrapper,
@@ -10,7 +10,6 @@
     font-size: calc(20px * var(--font-body-scale));
 }
 
-/* Heading fonts for editor content */
 .editor-styles-wrapper h1,
 .wp-block-heading h1,
 .wp-block-post-title h1,

@@ -1,14 +1,15 @@
 <?php
 /**
- * Recipe post type registration and functionality
+ * Recipe post type registration with universal theme toggle
  *
  * @package Sarai_Chinwag
+ * @version 2.2
  * @since 1.0.0
  */
 
 /**
- * Register Recipe custom post type
- * 
+ * Register Recipe custom post type with Schema.org support
+ *
  * @since 1.0.0
  */
 function sarai_chinwag_register_recipe_post_type() {

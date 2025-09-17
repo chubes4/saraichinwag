@@ -1,6 +1,6 @@
 # Recipe Post Type
 
-The Sarai Chinwag theme includes a complete recipe management system with a custom post type, ratings functionality, and Schema.org structured data markup.
+The Sarai Chinwag theme includes a complete recipe management system with a custom post type, automatic default 5-star rating system, user ratings functionality, and Schema.org structured data markup.
 
 ## Recipe Post Type Features
 
@@ -60,37 +60,88 @@ The Sarai Chinwag theme includes a complete recipe management system with a cust
 - Category and tag filtering
 - Recipe-specific styling
 
-## Rating System
+## Default 5-Star Rating System
 
-### User Ratings
+### Automatic Rating Assignment
 
-**Rating Widget**: 5-star rating system on single recipe pages
+**New Recipe Default**: Every new recipe automatically receives a 5.0 rating with 1 review count upon publication
+**Immediate Visibility**: Ensures recipes appear properly in popularity sorting from day one
+**Function**: `sarai_chinwag_set_default_recipe_rating()` in `/inc/ratings.php:101`
+
+**Implementation Details**:
+- Triggered by `save_post` and `publish_recipe` WordPress hooks
+- Only applies to published recipe post type
+- Skips recipes that already have ratings (prevents overwriting)
+- Respects recipe toggle setting (disabled when recipes are turned off)
+
+**Meta Storage**:
+- `rating_value`: Set to 5.0 for default rating
+- `review_count`: Set to 1 for default review count
+- Uses WordPress post meta system for data persistence
+
+### Retroactive Default Ratings
+
+**Bulk Application Function**: `sarai_chinwag_apply_default_ratings_to_existing()`
+**Purpose**: Apply default 5-star ratings to existing recipes without ratings
+**Implementation**: Located in `/inc/ratings.php:137`
+
+**Technical Details**:
+- Uses WP_Query with meta_query to find recipes lacking ratings
+- Processes unlimited recipes efficiently
+- Returns count of recipes updated
+- Ideal for theme upgrades and migrations
+
+## Interactive User Rating System
+
+### User Rating Interface
+
+**Rating Widget**: 5-star clickable rating system on single recipe pages
 **User Experience**:
-- Click stars to rate (1-5 stars)
-- One rating per recipe per user
-- Ratings saved to localStorage for immediate feedback
-- Server-side rating storage for persistence
+- Click stars to submit rating (1-5 stars)
+- One rating per recipe per user session
+- Immediate visual feedback with localStorage
+- Server-side persistence with AJAX submission
 
-### Rating Functionality
+**Dual-State Management**:
+- **Client-side**: localStorage provides instant visual feedback
+- **Server-side**: AJAX updates database with nonce security
+- **Average calculation**: `(($rating_value * $review_count) + $rating) / ($review_count + 1)`
 
-**AJAX Implementation**:
-- Real-time rating submission without page reload
-- Nonce security verification
-- Error handling with user feedback
-- Loading states during submission
+### AJAX Rating Functionality
 
-**Rating Storage**:
-- Individual user ratings stored in database
-- Average rating calculation
-- Review count tracking
-- Cache optimization for performance
+**Real-time Submission**:
+- No page reload required for rating submission
+- WordPress nonce verification prevents CSRF attacks
+- Input validation ensures 1-5 rating range
+- Error handling with user-friendly messages
+- Translation-ready with `wp.i18n` integration
 
-### Rating Display
+**Security Implementation**:
+- Nonce generation: `wp_create_nonce('rate_recipe_nonce')`
+- Server-side validation: `check_ajax_referer()`
+- Post ID and rating range validation
+- Meta verification after database updates
 
-**Average Rating**: Displayed as "(4.2/5 based on 15 reviews)"
-**User Rating**: Shows "You rated this 5 stars" after rating
-**Star Visual**: Visual star representation of ratings
-**Rating Widget**: `/js/rating.js` handles all interactions
+**Error Handling**:
+- Network errors gracefully handled
+- User feedback for failed submissions
+- Loading states during AJAX requests
+- Fallback behavior for localStorage failures
+
+### Rating Display System
+
+**Visual Components**:
+- **Average Rating**: "(4.2/5 based on 15 reviews)" format
+- **User Rating**: "You rated this 5 stars" confirmation
+- **Star Visual**: Filled/empty star representation
+- **Interactive Stars**: Click handler for rating submission
+
+**JavaScript Implementation**: `/js/rating.js`
+- Handles all rating interactions
+- localStorage persistence
+- AJAX submission logic
+- Visual star state management
+- Translation support via `wp.i18n`
 
 ## Schema.org Structured Data
 
@@ -128,7 +179,8 @@ The Sarai Chinwag theme includes a complete recipe management system with a cust
 **Full Functionality**:
 - Recipe post type available in admin
 - Recipe templates and styling active
-- Rating system functional
+- Default 5-star rating system for new recipes
+- User rating system functional
 - Recipe filtering in archives
 - Recipe-specific widgets and features
 - Embedded Schema.org recipe markup
@@ -138,7 +190,8 @@ The Sarai Chinwag theme includes a complete recipe management system with a cust
 **Disabled Features**:
 - Recipe post type hidden from admin
 - Recipe creation disabled
-- Rating system inactive
+- Default rating system inactive
+- User rating system disabled
 - Recipe-specific templates unused
 - Recipe filtering removed from archives
 

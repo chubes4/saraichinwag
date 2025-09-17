@@ -42,7 +42,7 @@ The theme uses organized PHP modules in the `/inc` directory loaded via function
 - **js/load-more.js**: AJAX Load More functionality that preserves filter state
 - **js/gallery-utils.js**: Image gallery navigation, lightbox functionality, and gallery-specific interactions
 - **js/pinterest.js**: Pinterest save button integration and enhanced social functionality
-- **js/rating.js**: AJAX rating system with localStorage persistence, nonce security, and dual-state management (user + server average)
+- **js/rating.js**: AJAX rating system with localStorage persistence, nonce security, dual-state management (user + server average), and automatic default 5-star ratings for new recipes
 
 ### Template Parts
 - `template-parts/content-recipe.php`: Recipe display with embedded Schema.org markup
@@ -64,17 +64,54 @@ The theme uses organized PHP modules in the `/inc` directory loaded via function
 - **Dynamic Google Fonts system**: API integration with category filtering (display fonts for headings, sans-serif + serif for body)
 - **Percentage-based font scaling**: 1-100% size control with 50% = current theme baseline, maintains heading hierarchy
 - **Universal theme design**: Can function as recipe site or standard blog via admin toggle
-- **Recipe functionality**: Complete recipe post type with ratings, embedded Schema.org markup, and specialized templates (when enabled)
+- **Recipe functionality**: Complete recipe post type with default 5-star ratings, user rating system, embedded Schema.org markup, and specialized templates (when enabled)
 - **WordPress Customizer integration**: Live preview for font changes and size scaling with custom CSS properties
 - **WordPress Editor Font Integration**: Consistent font experience between Block Editor, Classic Editor, and frontend display
 - **Pinterest integration**: Footer follow button + automatic Pinterest save buttons with enhanced social functionality
 - **Badge-breadcrumb system**: Category/tag badges on single posts for navigation, traditional breadcrumbs on archives
 - **Random discovery section**: 3-post random grid replaces complex related posts logic
 - **Dynamic asset versioning**: Uses `filemtime()` for cache busting on CSS and JS files
-- **Rating system**: AJAX-powered recipe ratings with localStorage persistence, nonce security, and dual-state management
+- **Default 5-Star Rating System**: New recipes automatically receive 5.0 rating with 1 review count for immediate display in popularity sorting and rating widgets
+- **Interactive Rating System**: AJAX-powered user ratings with localStorage persistence, nonce security, and dual-state management
 - **Schema.org markup**: Embedded structured data implementation for recipes in templates
 - **Performance optimizations**: Object caching with wp_cache_* functions, specialized cache groups, and limited query results
 - **Security enhancements**: All output properly escaped, input sanitized, secure API key storage
+
+## Default 5-Star Rating System
+
+### Automatic Rating Assignment
+The theme implements an automatic default 5-star rating system for all new recipe posts to ensure immediate visibility in popularity sorting and consistent user experience:
+
+**Core Implementation:**
+- **sarai_chinwag_set_default_recipe_rating()** (`inc/ratings.php:101`): Automatically assigns 5.0 rating with 1 review count to new published recipes
+- **Triggered by WordPress hooks**: `save_post` and `publish_recipe` actions ensure coverage of all publication methods
+- **Smart detection**: Only applies to recipe post type with published status, skips recipes that already have ratings
+- **Prevents rating gaps**: Eliminates scenarios where new recipes appear unrated or invisible in popularity-based sorting
+
+**Bulk Application:**
+- **sarai_chinwag_apply_default_ratings_to_existing()** (`inc/ratings.php:137`): Retroactively applies default ratings to existing recipes without ratings
+- **Meta query filtering**: Uses WordPress meta_query to identify recipes lacking rating_value meta
+- **Batch processing**: Handles unlimited recipes efficiently for theme upgrades and migrations
+
+**Technical Details:**
+- **Meta storage**: Uses `rating_value` (5.0) and `review_count` (1) post meta fields
+- **Integration**: Seamlessly works with existing user rating system - user ratings update the average calculation
+- **Universal compatibility**: Respects recipe functionality toggle - completely disabled when recipes are turned off
+
+### Interactive User Rating System
+Beyond default ratings, users can submit their own ratings through a sophisticated AJAX-powered interface:
+
+**Dual-State Management:**
+- **Client-side**: localStorage persistence provides immediate visual feedback
+- **Server-side**: AJAX submissions with nonce security update database permanently
+- **Average calculation**: New ratings computed as `(($rating_value * $review_count) + $rating) / ($review_count + 1)`
+- **Meta verification**: Server validates successful database updates before confirming to client
+
+**Security & Performance:**
+- **Nonce protection**: WordPress nonce verification prevents CSRF attacks
+- **Input validation**: Rating range (1-5) and post ID validation on server side
+- **Error handling**: Graceful degradation with user-friendly error messages
+- **Translation ready**: Full wp.i18n integration for internationalization
 
 ## Complete Image Gallery System
 
@@ -374,6 +411,8 @@ if (!sarai_chinwag_recipes_disabled()) {
 
 ### Key Function Reference
 - `sarai_chinwag_recipes_disabled()`: Check if recipes are disabled
+- `sarai_chinwag_set_default_recipe_rating($post_id, $post, $update)`: Automatically assign default 5-star rating to new recipes
+- `sarai_chinwag_apply_default_ratings_to_existing()`: Retroactively apply default ratings to existing recipes without ratings
 - `sarai_chinwag_track_post_view($post_id)`: Increment view counter
 - `sarai_chinwag_get_post_views($post_id)`: Get view count
 - `sarai_chinwag_extract_images_from_term($term, $taxonomy)`: Extract images from term
@@ -412,6 +451,7 @@ if (!sarai_chinwag_recipes_disabled()) {
 **Developer**: Chris Huber ([chubes.net](https://chubes.net))
 
 ### Recent Major Updates (v2.2)
+- **Default 5-Star Rating System**: New recipes automatically receive 5.0 rating with 1 review count upon publication for immediate visibility in popularity sorting
 - **WordPress Editor Font Integration**: Consistent font experience between Block Editor, Classic Editor, and frontend
 - **Footer Architecture Simplification**: Removed category/tag clouds for better UX and SEO (130+ link reduction)
 - **Pinterest Icon Enhancement**: Clean Bootstrap Icons SVG with proper 16x16 viewBox

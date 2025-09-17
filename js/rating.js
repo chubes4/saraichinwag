@@ -1,6 +1,11 @@
 /**
- * Recipe Rating System with AJAX and localStorage
- * 
+ * Recipe Rating System with AJAX submission and localStorage persistence
+ *
+ * Handles user ratings (1-5 stars) with dual-state management:
+ * - localStorage for immediate UI feedback
+ * - AJAX to server for persistent storage and average calculation
+ *
+ * @version 2.2
  * @since 1.0.0
  */
 document.addEventListener('DOMContentLoaded', function () {
@@ -17,8 +22,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /**
-     * Update visual star display based on rating value
-     * @param {number} rating The rating value (1-5)
+     * Update visual star display
+     * @param {number} rating Rating value (1-5)
      */
     function setStars(rating) {
         stars.forEach((star, index) => {
@@ -61,8 +66,8 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /**
-     * Submit rating to server via AJAX with error handling
-     * @param {number} rating The user's rating (1-5)
+     * Submit rating to server with error handling and UI updates
+     * @param {number} rating User's rating (1-5)
      */
     function saveRatingToServer(rating) {
         ratingWidget.classList.add('loading');

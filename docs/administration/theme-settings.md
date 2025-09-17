@@ -67,7 +67,8 @@ Navigate to **WordPress Admin → Settings → Theme Settings** to access all co
 **When Recipes Disabled**:
 - Recipe post type becomes inaccessible in admin
 - Recipe-specific templates and widgets hidden
-- Rating system disabled
+- Default 5-star rating system disabled
+- User rating system disabled
 - Embedded Schema.org recipe markup removed
 - Recipe filtering removed from archives
 - Random recipe functionality redirects to random posts

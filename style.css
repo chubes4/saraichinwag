@@ -82,9 +82,8 @@ img{
     position: relative; /* Ensure images are positioned relative */
 }
 .entry-content img{
-display: flex;
-align-items: center;
-margin: auto;
+    display: block;
+    margin: 0 auto;
 }
 
 .site-main{
@@ -490,10 +489,6 @@ fill: #fff;
 @media only screen and (min-width : 992px) {
     .wp-block-separator{
         max-width: 100%;
-    }
-    .entry-content img{
-        max-height: 95vh;
-        object-fit: cover;
     }
     .site-main {
         max-width: 89%;
@@ -1326,6 +1321,35 @@ button:focus, a:focus {
 .source-post-link:hover {
     color: #fff;
     text-decoration: none;
+}
+
+/* ===== IMAGE GALLERY DEEP LINK SUPPORT ===== */
+/* Anchor wrapper around images inside single posts for direct deep links */
+.sc-image-anchor {
+    display: inline-block;
+    scroll-margin-top: 40px; /* cushion for admin bar, adjust if header becomes sticky */
+    position: relative;
+}
+
+/* Full-card link for gallery items */
+.gallery-link {
+    display: block;
+    position: relative;
+    text-decoration: none;
+    color: inherit;
+}
+
+/* Ensure overlay doesn't block click */
+.gallery-item-overlay { pointer-events: none; }
+
+/* Keyboard accessibility: show overlay when focused */
+.gallery-link:focus-visible .gallery-item-overlay { opacity: 1; }
+
+/* Stronger focus outline encompassing entire card */
+.gallery-link:focus-visible {
+    outline: 3px solid var(--color-primary);
+    outline-offset: 2px;
+    border-radius: 12px;
 }
 
 .image-gallery-header {

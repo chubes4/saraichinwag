@@ -100,6 +100,36 @@ require_once $queries_dir . '/image-mode/rewrite-rules.php';
 require_once $queries_dir . '/image-mode/search-images.php';
 
 /**
+ * Wrap content images with anchorable spans for gallery deep linking
+ *
+ * Enables direct linking to specific images using #sc-image-{ID} hash fragments.
+ * Only processes images with wp-image-{ID} class on singular pages.
+ */
+add_filter('the_content', function($content){
+    if (!is_singular()) {
+        return $content;
+    }
+    if (strpos($content, 'wp-image-') === false) {
+        return $content;
+    }
+    $content = preg_replace_callback(
+        '/<img\b[^>]*\bwp-image-(\d+)[^>]*>/i',
+        function($m){
+            $img = $m[0];
+            $id  = $m[1];
+            if (strpos($img, 'data-sc-anchor="1"') !== false) {
+                return $img; // Already processed
+            }
+            return '<span id="sc-image-' . esc_attr($id) . '" class="sc-image-anchor">'
+                . preg_replace('/<img/i','<img data-sc-anchor="1"',$img,1)
+                . '</span>';
+        },
+        $content
+    );
+    return $content;
+}, 15);
+
+/**
  * Check if recipe functionality is disabled
  *
  * @return bool True if recipes are disabled, false if enabled
@@ -111,7 +141,10 @@ function sarai_chinwag_recipes_disabled() {
 
 
 /**
- * Get cached random post ID to avoid expensive orderby => 'rand' queries
+ * Get cached random post ID using rotation system
+ *
+ * Avoids expensive orderby => 'rand' queries by maintaining cached arrays.
+ * Rotates through cached IDs and refreshes cache when exhausted.
  *
  * @param string $post_type Post type to query
  * @return int|false Random post ID or false if none found
@@ -144,7 +177,10 @@ function sarai_chinwag_get_cached_random_post_id($post_type = 'post') {
 }
 
 /**
- * Get cached random post IDs for main query randomization
+ * Get cached random IDs for main query performance optimization
+ *
+ * Pre-generates random post arrays to replace orderby => 'rand' in main queries.
+ * Maintains separate cache per post type combination.
  *
  * @param array $post_types Array of post types to include
  * @param int $count Number of random posts needed
@@ -178,9 +214,10 @@ function sarai_chinwag_get_cached_random_query_ids($post_types, $count = 10) {
 /**
  * Clear performance caches when content changes
  *
- * @param int|null $post_id Post ID being modified
+ * Flushes random and related post caches to ensure fresh content.
+ * Triggered on save, delete, trash, and untrash operations.
  */
-function sarai_chinwag_clear_performance_caches($post_id = null) {
+function sarai_chinwag_clear_performance_caches() {
     wp_cache_flush_group('sarai_chinwag_random');
     wp_cache_flush_group('sarai_chinwag_related');
 }
@@ -219,6 +256,9 @@ add_action('wp_head', 'sarai_chinwag_set_content_language_header', 1);
 
 /**
  * Display category/tag badges on single posts and recipes
+ *
+ * Shows primary category (blue) and up to 3 tags (pink) as clickable badges.
+ * Part of badge-breadcrumb navigation system for single content.
  */
 function sarai_chinwag_post_badges() {
     if (!is_singular(array('post', 'recipe'))) {
@@ -258,7 +298,10 @@ function sarai_chinwag_post_badges() {
 }
 
 /**
- * Display breadcrumbs for archive and search pages
+ * Display traditional breadcrumbs for archive and search pages
+ *
+ * Generates hierarchical navigation breadcrumbs for non-singular pages.
+ * Part of badge-breadcrumb dual navigation system.
  */
 function sarai_chinwag_archive_breadcrumbs() {
     if (!is_archive() && !is_search()) {

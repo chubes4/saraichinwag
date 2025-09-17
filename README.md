@@ -17,9 +17,17 @@ A versatile WordPress theme with advanced filtering, randomized content discover
 - **Responsive Grid**: 4 columns (desktop) → 3 (laptop) → 2 (tablet) → 1 (mobile)
 - **Performance Focused**: Simple view counter system tracks popularity without complex analytics
 
+### Default 5-Star Rating System
+- **Automatic Assignment**: New recipes receive 5.0 rating with 1 review count upon publication
+- **Immediate Visibility**: Ensures new recipes appear properly in popularity sorting from day one
+- **User Interaction**: Visitors can submit their own ratings through AJAX-powered interface
+- **Smart Integration**: User ratings update the average calculation while preserving the initial boost
+- **Security First**: AJAX submissions use WordPress nonce verification for CSRF protection
+- **Local Storage**: Immediate visual feedback with localStorage persistence
+
 ### Universal Theme Design
-- **Recipe Site Mode**: Full recipe post type with ratings, embedded Schema.org markup, and specialized templates
-- **Standard Blog Mode**: Clean blog functionality via admin toggle  
+- **Recipe Site Mode**: Full recipe post type with automatic default 5-star ratings, user rating system, embedded Schema.org markup, and specialized templates
+- **Standard Blog Mode**: Clean blog functionality via admin toggle
 - **White Label Ready**: Customizable for any site type
 
 ### Enhanced Navigation
@@ -76,7 +84,7 @@ A versatile WordPress theme with advanced filtering, randomized content discover
 
 ### Universal Theme Usage
 Toggle recipe functionality in **Settings → Theme Settings**:
-- **Recipes Enabled**: Full recipe site with ratings and embedded Schema.org markup
+- **Recipes Enabled**: Full recipe site with automatic default 5-star ratings, user rating system, and embedded Schema.org markup
 - **Recipes Disabled**: Clean blog theme for any content type
 
 ## Build System
@@ -170,11 +178,12 @@ This theme is designed for personal use and white-labeling. Commercial distribut
 
 ## Changelog
 
-### v2.2 - WordPress Editor Integration & Complete Image Gallery System
+### v2.2 - WordPress Editor Integration & Default 5-Star Rating System
+- **NEW**: Default 5-Star Rating System - new recipes automatically receive 5.0 rating with 1 review count for immediate visibility in popularity sorting
 - **NEW**: WordPress Editor Font Integration - consistent fonts between editors and frontend
 - **NEW**: Complete Image Gallery System - advanced image extraction, gallery archives, and specialized display templates
 - **NEW**: Archive Image Mode Links - intelligent "Try Image Mode" links with accurate image counts for seamless gallery switching
-- **NEW**: Image Search & Discovery - comprehensive image search with category/tag-based filtering  
+- **NEW**: Image Search & Discovery - comprehensive image search with category/tag-based filtering
 - **NEW**: Load More Integration - AJAX infinite scroll that preserves filter state
 - **NEW**: Enhanced Pinterest Integration - improved social functionality with js/pinterest.js
 - **IMPROVED**: Footer Architecture Simplification - removed category/tag clouds for better UX/SEO
