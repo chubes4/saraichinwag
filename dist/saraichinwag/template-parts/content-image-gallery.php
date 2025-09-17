@@ -5,7 +5,6 @@
  * @package Sarai_Chinwag
  */
 
-// Get current term or check for site-wide gallery
 $term = get_queried_object();
 $url_has_images = strpos($_SERVER['REQUEST_URI'], '/images/') !== false || strpos($_SERVER['REQUEST_URI'], '/images') !== false;
 $is_site_wide = is_home() && $url_has_images;
@@ -58,7 +57,6 @@ if (empty($images)) {
 
 <div class="image-gallery masonry" id="post-grid">
     <?php
-    // Build 4 columns server-side
     $col_count = 4;
     $cols = array_fill(0, $col_count, '');
     foreach ($images as $index => $image) {
@@ -74,21 +72,21 @@ if (empty($images)) {
             }
         }
 
+        $deep_link = !empty($post_id) ? trailingslashit($image['source_post_url']) . '#sc-image-' . $attachment_id : $image['source_post_url'];
+
         $fig = '<figure class="wp-block-image gallery-item"'
             . ' data-post-id="' . esc_attr($post_id) . '"'
             . ' data-attachment-id="' . esc_attr($attachment_id) . '">'
+            . '<a class="gallery-link" href="' . esc_url($deep_link) . '" aria-label="View image in post: ' . esc_attr($image['source_post_title']) . '">' 
             . '<img src="' . esc_url($image_url) . '" alt="' . esc_attr($alt_text) . '"'
             . ' loading="' . ($index < 12 ? 'eager' : 'lazy') . '"'
             . ' class="gallery-image wp-image-' . esc_attr($attachment_id) . '"'
             . ' width="' . esc_attr(intval($image['width'])) . '" height="' . esc_attr(intval($image['height'])) . '"'
             . ' data-attachment-id="' . esc_attr($attachment_id) . '" />'
             . '<div class="gallery-item-overlay">'
-            . '<a href="' . esc_url($image['source_post_url']) . '" class="source-post-link"'
-            . ' data-post-id="' . esc_attr($post_id) . '"'
-            . ' data-attachment-id="' . esc_attr($attachment_id) . '">'
-            . esc_html($image['source_post_title'])
-            . '</a>'
+            . '<span class="source-post-link" data-post-id="' . esc_attr($post_id) . '" data-attachment-id="' . esc_attr($attachment_id) . '">' . esc_html($image['source_post_title']) . '</span>'
             . '</div>'
+            . '</a>'
             . '</figure>';
         $cols[$index % $col_count] .= $fig;
     }

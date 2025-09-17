@@ -4,12 +4,12 @@
     --font-heading: 'Gluten', 'Helvetica', Arial, sans-serif;
     --font-body: 'Helvetica', Arial, sans-serif;
     
-    /* Font Scaling - Default to 100% (1.0) */
+    /* Font Scaling */
     --font-heading-scale: 1.0;
     --font-body-scale: 1.0;
     
-    /* Base Font Sizes (50% = baseline) */
-    --font-size-base: 1.25rem; /* 20px base */
+    /* Base Font Sizes */
+    --font-size-base: 1.25rem;
     --font-size-h1: 1.575em;
     --font-size-h2: 1.38em;
     --font-size-h3: 1.2em;

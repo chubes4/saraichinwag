@@ -1,19 +1,13 @@
 <?php
 /**
  * Template part for displaying single posts and recipes
- * 
- * Provides consistent single post display with badge navigation,
- * post title, content, and pagination links. Used by single.php
- * and single-recipe.php templates.
  *
  * @package Sarai_Chinwag
- * @since 1.0.0
  */
 ?>
 
 <header class="entry-header">
     <?php
-    // Show badge-breadcrumbs for single posts
     sarai_chinwag_post_badges();
     
     the_title( '<h1 class="entry-title">', '</h1>' );
@@ -23,6 +17,9 @@
 
 <div class="entry-content">
     <?php
+    // Display featured image as Gutenberg block at the top of content
+    sarai_chinwag_display_featured_image_as_block();
+
     the_content();
 
     wp_link_pages( array(

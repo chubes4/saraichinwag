@@ -1,12 +1,14 @@
 <?php
 /**
- * WordPress Customizer integration for fonts and colors
+ * WordPress Customizer integration with Google Fonts and live preview
  *
  * @package Sarai_Chinwag
+ * @version 2.2
+ * @since 1.0.0
  */
 
 /**
- * Add customizer sections and controls
+ * Register Typography and Color Scheme customizer controls
  */
 function sarai_chinwag_customize_register($wp_customize) {
     

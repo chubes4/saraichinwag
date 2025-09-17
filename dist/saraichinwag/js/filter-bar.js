@@ -1,6 +1,10 @@
 /**
- * Advanced Filter Bar System with AJAX
- * 
+ * Advanced Filter Bar with AJAX sorting and content type filtering
+ *
+ * Handles Random/Popular/Recent/Oldest sorting plus All/Posts/Recipes/Images filtering.
+ * Maintains filter state across Load More operations and supports image gallery mode.
+ *
+ * @version 2.2
  * @since 2.0.0
  */
 document.addEventListener('DOMContentLoaded', function () {
@@ -12,7 +16,6 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
-    // Detect image gallery mode
     let isImageGallery = document.getElementById('filter-image-gallery') ? 
         document.getElementById('filter-image-gallery').value === '1' : false;
     const path = window.location.pathname;
@@ -24,7 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const isAllSiteImages = isImageGallery && (path === '/images/' || path === '/images');
 
     /**
-     * Determine initial filter type based on page context
+     * Determine initial filter type from active button or page context
      * @returns {string} Initial filter type
      */
     function determineInitialType() {
@@ -37,7 +40,6 @@ document.addEventListener('DOMContentLoaded', function () {
         return document.querySelector('.type-btn[data-type="all"]') ? 'all' : 'posts';
     }
 
-    // Filter state
     let currentFilters = {
         sort_by: 'random',
         post_type_filter: determineInitialType(),

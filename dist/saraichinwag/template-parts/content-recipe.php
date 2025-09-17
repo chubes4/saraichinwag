@@ -29,23 +29,23 @@
     if ( is_singular() ) {
         $rating_value = get_post_meta(get_the_ID(), 'rating_value', true);
         $review_count = get_post_meta(get_the_ID(), 'review_count', true);
-        $average_rating = $review_count > 0 ? round($rating_value, 2) : 0;
-        $rating_display = $review_count > 0 ? "($review_count reviews)" : "(0 reviews)";
+        $review_count = $review_count ? intval($review_count) : 0;
+        $reviews_text = $review_count == 1 ? "review" : "reviews";
+        $rating_display = $review_count > 0 ? "(" . round(floatval($rating_value), 2) . "/5 based on " . $review_count . " " . $reviews_text . ")" : "(Not yet rated)";
     ?>
     
-        <div class="recipe-rating">
+        <div id="rating-widget" data-post-id="<?php the_ID(); ?>" class="recipe-rating">
+            <h3>Rate this Recipe:</h3>
+            <?php wp_nonce_field('rate_recipe_nonce', 'rate_recipe_nonce'); ?>
             <div class="stars">
-                <?php
-                for ($i = 1; $i <= 5; $i++) {
-                    if ($i <= $average_rating) {
-                        echo '<span class="star">&#9733;</span>';
-                    } else {
-                        echo '<span class="star">&#9734;</span>';
-                    }
-                }
-                ?>
+                <span class="star" data-value="1">&#9734;</span>
+                <span class="star" data-value="2">&#9734;</span>
+                <span class="star" data-value="3">&#9734;</span>
+                <span class="star" data-value="4">&#9734;</span>
+                <span class="star" data-value="5">&#9734;</span>
             </div>
-            <span class="rating-text"><?php echo esc_html($rating_display); ?></span>
+            <span id="average-rating"><?php echo esc_html($rating_display); ?></span>
+            <span id="user-rating"></span>
         </div>
     
     <?php } ?>
@@ -54,6 +54,9 @@
 <div class="entry-content" lang="<?php echo get_locale() === 'en_US' ? 'en' : substr(get_locale(), 0, 2); ?>">
     <?php
     if ( is_singular() ) {
+        // Display featured image as Gutenberg block at the top of content
+        sarai_chinwag_display_featured_image_as_block();
+
         the_content();
     } else {
     }

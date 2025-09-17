@@ -1,19 +1,15 @@
 <?php
 /**
- * Template part for displaying "Try Image Mode" link on archive pages
+ * "Try Image Mode" link for archive pages
  * 
- * Displays a link to switch to image gallery mode with accurate image counts.
- * Visual style matches the gallery discovery badges used on single post pages.
+ * Links to image gallery view with accurate counts.
  *
  * @package Sarai_Chinwag
  */
 
-// Only display on supported archive contexts
 if (!is_home() && !is_category() && !is_tag() && !is_search()) {
     return;
 }
-
-// Don't show if already on image gallery page
 $has_images_var = get_query_var('images') !== false;
 $url_has_images = strpos($_SERVER['REQUEST_URI'], '/images/') !== false || strpos($_SERVER['REQUEST_URI'], '/images') !== false;
 $is_image_gallery = $has_images_var && $url_has_images;
@@ -22,11 +18,9 @@ if ($is_image_gallery) {
     return;
 }
 
-// Determine context and build link data
 $link_data = array();
 
 if (is_home()) {
-    // Homepage - link to site-wide image gallery
     $image_count = sarai_chinwag_get_site_wide_image_count();
     if ($image_count > 0) {
         $link_data = array(
@@ -37,7 +31,6 @@ if (is_home()) {
         );
     }
 } elseif (is_category()) {
-    // Category archive - link to category image gallery
     $term = get_queried_object();
     if ($term && !is_wp_error($term)) {
         $image_count = sarai_chinwag_get_accurate_term_image_count($term->term_id, 'category');
@@ -52,7 +45,6 @@ if (is_home()) {
         }
     }
 } elseif (is_tag()) {
-    // Tag archive - link to tag image gallery
     $term = get_queried_object();
     if ($term && !is_wp_error($term)) {
         $image_count = sarai_chinwag_get_accurate_term_image_count($term->term_id, 'post_tag');
@@ -67,7 +59,6 @@ if (is_home()) {
         }
     }
 } elseif (is_search()) {
-    // Search results - link to search image gallery
     $search_query = get_search_query();
     if (!empty($search_query)) {
         $image_count = sarai_chinwag_get_search_image_count($search_query);
@@ -83,7 +74,6 @@ if (is_home()) {
     }
 }
 
-// Only display if we have valid link data
 if (empty($link_data)) {
     return;
 }

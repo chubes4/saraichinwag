@@ -1,3 +1,12 @@
+/**
+ * Header search functionality with admin bar position adjustment
+ *
+ * Handles search toggle positioning relative to header and WordPress admin bar.
+ * Includes click-outside-to-close behavior and responsive positioning.
+ *
+ * @version 2.2
+ * @since 1.0.0
+ */
 document.addEventListener('DOMContentLoaded', function() {
     var header = document.querySelector('#masthead');
     var adminBar = document.getElementById('wpadminbar');
@@ -8,7 +17,6 @@ document.addEventListener('DOMContentLoaded', function() {
         var headerHeight = header.offsetHeight;
         var adminBarHeight = (adminBar && scrollTop === 0) ? adminBar.offsetHeight : 0;
 
-        // Adjust the position by reducing 1px
         searchForm.style.top = (headerHeight + adminBarHeight - 1) + 'px';
     }
 
@@ -28,7 +36,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Use event delegation for .search-toggle clicks
     document.addEventListener('click', function(event) {
         if (event.target.closest('.search-toggle')) {
             event.preventDefault();
@@ -36,7 +43,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Close the search form if clicking outside of it, but not when clicking on .search-toggle or inside the search form
     document.addEventListener('click', function(event) {
         if (
             !header.contains(event.target) &&

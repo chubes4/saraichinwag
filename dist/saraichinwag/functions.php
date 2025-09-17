@@ -14,8 +14,6 @@
 
 /**
  * Theme setup and initialization
- * 
- * @since 1.0.0
  */
 function sarai_chinwag_setup() {
         load_theme_textdomain( 'sarai-chinwag', get_template_directory() . '/languages' );
@@ -28,12 +26,10 @@ function sarai_chinwag_setup() {
         add_editor_style( 'style.css' );
         add_editor_style( 'css/editor.css' );
         
-        // Remove unused WordPress image sizes to optimize performance
+        // Remove unused WordPress defaults, add optimized grid thumbnail
         remove_image_size('thumbnail');
         remove_image_size('medium');
         remove_image_size('medium_large');
-        
-        // Custom image size optimized for post grid display
         add_image_size('grid-thumb', 450, 450, true);
         
         register_nav_menus( array(
@@ -45,8 +41,6 @@ add_action( 'after_setup_theme', 'sarai_chinwag_setup' );
 
 /**
  * Enqueue scripts and styles with dynamic versioning
- * 
- * @since 1.0.0
  */
 function sarai_chinwag_scripts() {
     $style_version = filemtime( get_template_directory() . '/style.css' );
@@ -65,12 +59,11 @@ add_action( 'wp_enqueue_scripts', 'sarai_chinwag_scripts' );
 
 
 /**
- * Add Pinterest data attributes to featured images
- * 
- * @param string $html The post thumbnail HTML
- * @param int $post_id Post ID
+ * Add Pinterest data attributes to featured images for save functionality
+ *
+ * @param string $html Post thumbnail HTML
+ * @param int    $post_id Post ID
  * @return string Modified HTML with Pinterest data attributes
- * @since 1.0.0
  */
 function add_data_pin_url_to_featured_images($html, $post_id) {
     if (is_home() || is_archive() || is_search()) {
@@ -83,7 +76,6 @@ function add_data_pin_url_to_featured_images($html, $post_id) {
 }
 add_filter('post_thumbnail_html', 'add_data_pin_url_to_featured_images', 10, 2);
 
-// Include module files
 require_once get_template_directory() . '/inc/admin/admin-notices.php';
 require_once get_template_directory() . '/inc/admin/admin-settings.php';
 require_once get_template_directory() . '/inc/admin/customizer.php';
@@ -102,11 +94,42 @@ require_once $queries_dir . '/sorting-archives.php';
 require_once get_template_directory() . '/inc/bing-index-now.php';
 require_once get_template_directory() . '/inc/yoast-stuff.php';
 
-// Image gallery system
 require_once $queries_dir . '/image-mode/image-extractor.php';
 require_once $queries_dir . '/image-mode/image-archives.php';
 require_once $queries_dir . '/image-mode/rewrite-rules.php';
 require_once $queries_dir . '/image-mode/search-images.php';
+
+require_once get_template_directory() . '/inc/admin/image-migration.php';
+
+/**
+ * Wrap content images with anchorable spans for gallery deep linking
+ *
+ * Enables direct linking to specific images using #sc-image-{ID} hash fragments.
+ * Only processes images with wp-image-{ID} class on singular pages.
+ */
+add_filter('the_content', function($content){
+    if (!is_singular()) {
+        return $content;
+    }
+    if (strpos($content, 'wp-image-') === false) {
+        return $content;
+    }
+    $content = preg_replace_callback(
+        '/<img\b[^>]*\bwp-image-(\d+)[^>]*>/i',
+        function($m){
+            $img = $m[0];
+            $id  = $m[1];
+            if (strpos($img, 'data-sc-anchor="1"') !== false) {
+                return $img; // Already processed
+            }
+            return '<span id="sc-image-' . esc_attr($id) . '" class="sc-image-anchor">'
+                . preg_replace('/<img/i','<img data-sc-anchor="1"',$img,1)
+                . '</span>';
+        },
+        $content
+    );
+    return $content;
+}, 15);
 
 /**
  * Check if recipe functionality is disabled
@@ -120,11 +143,12 @@ function sarai_chinwag_recipes_disabled() {
 
 
 /**
- * Get cached random post ID
- * 
- * Replaces expensive orderby => 'rand' queries with cached ID arrays.
+ * Get cached random post ID using rotation system
  *
- * @param string $post_type The post type
+ * Avoids expensive orderby => 'rand' queries by maintaining cached arrays.
+ * Rotates through cached IDs and refreshes cache when exhausted.
+ *
+ * @param string $post_type Post type to query
  * @return int|false Random post ID or false if none found
  */
 function sarai_chinwag_get_cached_random_post_id($post_type = 'post') {
@@ -132,7 +156,6 @@ function sarai_chinwag_get_cached_random_post_id($post_type = 'post') {
     $random_ids = wp_cache_get($cache_key, 'sarai_chinwag_random');
     
     if (false === $random_ids || empty($random_ids)) {
-        // Get limited post IDs for this post type
         $all_posts = get_posts(array(
             'post_type' => $post_type,
             'fields' => 'ids',
@@ -145,12 +168,10 @@ function sarai_chinwag_get_cached_random_post_id($post_type = 'post') {
             return false;
         }
         
-        
         wp_cache_set($cache_key, $all_posts, 'sarai_chinwag_random', HOUR_IN_SECONDS);
         $random_ids = $all_posts;
     }
     
-    // Return first ID and rotate array for next request
     $post_id = array_shift($random_ids);
     wp_cache_set($cache_key, $random_ids, 'sarai_chinwag_random', HOUR_IN_SECONDS);
     
@@ -158,7 +179,10 @@ function sarai_chinwag_get_cached_random_post_id($post_type = 'post') {
 }
 
 /**
- * Get cached random post IDs for main query randomization
+ * Get cached random IDs for main query performance optimization
+ *
+ * Pre-generates random post arrays to replace orderby => 'rand' in main queries.
+ * Maintains separate cache per post type combination.
  *
  * @param array $post_types Array of post types to include
  * @param int $count Number of random posts needed
@@ -169,7 +193,6 @@ function sarai_chinwag_get_cached_random_query_ids($post_types, $count = 10) {
     $random_ids = wp_cache_get($cache_key, 'sarai_chinwag_random');
     
     if (false === $random_ids || empty($random_ids)) {
-        // Get limited random post IDs for specified post types
         $all_posts = get_posts(array(
             'post_type' => $post_types,
             'fields' => 'ids',
@@ -187,17 +210,16 @@ function sarai_chinwag_get_cached_random_query_ids($post_types, $count = 10) {
         wp_cache_set($cache_key, $random_ids, 'sarai_chinwag_random', 30 * MINUTE_IN_SECONDS);
     }
     
-    // Return the requested number of IDs
     return array_slice($random_ids, 0, $count);
 }
 
 /**
  * Clear performance caches when content changes
- * 
- * @param int|null $post_id The post ID being modified
- * @since 2.0.0
+ *
+ * Flushes random and related post caches to ensure fresh content.
+ * Triggered on save, delete, trash, and untrash operations.
  */
-function sarai_chinwag_clear_performance_caches($post_id = null) {
+function sarai_chinwag_clear_performance_caches() {
     wp_cache_flush_group('sarai_chinwag_random');
     wp_cache_flush_group('sarai_chinwag_related');
 }
@@ -210,8 +232,6 @@ add_action('untrash_post', 'sarai_chinwag_clear_performance_caches');
 
 /**
  * Register widget areas
- * 
- * @since 1.0.0
  */
 function sarai_chinwag_widgets_init() {
     register_sidebar( array(
@@ -237,10 +257,12 @@ function sarai_chinwag_set_content_language_header() {
 add_action('wp_head', 'sarai_chinwag_set_content_language_header', 1);
 
 /**
- * Display badge-breadcrumbs for single posts and recipes
+ * Display category/tag badges on single posts and recipes
+ *
+ * Shows primary category (blue) and up to 3 tags (pink) as clickable badges.
+ * Part of badge-breadcrumb navigation system for single content.
  */
 function sarai_chinwag_post_badges() {
-    // Only show on single posts and recipes
     if (!is_singular(array('post', 'recipe'))) {
         return;
     }
@@ -248,29 +270,24 @@ function sarai_chinwag_post_badges() {
     global $post;
     $post_id = $post->ID;
     
-    // Get primary category
     $categories = get_the_category($post_id);
     $primary_category = !empty($categories) ? $categories[0] : null;
     
-    // Get up to 3 relevant tags
     $tags = get_the_tags($post_id);
     $relevant_tags = !empty($tags) ? array_slice($tags, 0, 3) : array();
     
-    // Only display if we have a category or tags
     if (!$primary_category && empty($relevant_tags)) {
         return;
     }
     
     echo '<nav class="post-badge-breadcrumbs" aria-label="' . esc_attr__('Content navigation', 'sarai-chinwag') . '">';
     
-    // Primary category badge
     if ($primary_category) {
         echo '<a href="' . esc_url(get_category_link($primary_category->term_id)) . '" class="badge-breadcrumb badge-category" rel="category tag">';
         echo esc_html($primary_category->name);
         echo '</a>';
     }
     
-    // Tag badges
     if (!empty($relevant_tags)) {
         foreach ($relevant_tags as $tag) {
             echo '<a href="' . esc_url(get_tag_link($tag->term_id)) . '" class="badge-breadcrumb badge-tag" rel="tag">';
@@ -283,10 +300,12 @@ function sarai_chinwag_post_badges() {
 }
 
 /**
- * Display traditional breadcrumbs for archive pages
+ * Display traditional breadcrumbs for archive and search pages
+ *
+ * Generates hierarchical navigation breadcrumbs for non-singular pages.
+ * Part of badge-breadcrumb dual navigation system.
  */
 function sarai_chinwag_archive_breadcrumbs() {
-    // Only show on archive pages (not on singular posts)
     if (!is_archive() && !is_search()) {
         return;
     }
@@ -296,7 +315,6 @@ function sarai_chinwag_archive_breadcrumbs() {
     $home_title = __('Home', 'sarai-chinwag');
     $home_url = home_url('/');
     
-    // Start with home link
     $breadcrumbs[] = '<a href="' . esc_url($home_url) . '">' . esc_html($home_title) . '</a>';
     
     if (is_category()) {
@@ -327,7 +345,6 @@ function sarai_chinwag_archive_breadcrumbs() {
         }
     }
     
-    // Only display if we have more than just home
     if (count($breadcrumbs) > 1) {
         echo '<nav class="archive-breadcrumbs" aria-label="' . esc_attr__('Page navigation', 'sarai-chinwag') . '">';
         echo implode($separator, $breadcrumbs);
@@ -336,10 +353,9 @@ function sarai_chinwag_archive_breadcrumbs() {
 }
 
 /**
- * Display gallery discovery badges above "Keep Exploring" section
+ * Display gallery discovery badges for single posts and recipes
  */
 function sarai_chinwag_gallery_discovery_badges() {
-    // Only show on single posts and recipes
     if (!is_singular(array('post', 'recipe'))) {
         return;
     }
@@ -347,7 +363,6 @@ function sarai_chinwag_gallery_discovery_badges() {
     global $post;
     $post_id = $post->ID;
     
-    // Check cache first - gallery badges cached for 15 minutes
     $cache_key = "gallery_badges_{$post_id}";
     $cached_badges = wp_cache_get($cache_key, 'sarai_chinwag_related');
     
@@ -356,16 +371,13 @@ function sarai_chinwag_gallery_discovery_badges() {
         return;
     }
     
-    // Start output buffering to cache the result
     ob_start();
     
     $gallery_badges = array();
     
-    // Get categories for this post
     $categories = get_the_category($post_id);
     if (!empty($categories)) {
         foreach ($categories as $category) {
-            // Check if category has images and get accurate count
             $image_count = sarai_chinwag_get_accurate_term_image_count($category->term_id, 'category');
             if ($image_count > 0) {
                 $category_url = get_category_link($category->term_id);
@@ -380,11 +392,9 @@ function sarai_chinwag_gallery_discovery_badges() {
         }
     }
     
-    // Get tags for this post
     $tags = get_the_tags($post_id);
     if (!empty($tags)) {
         foreach ($tags as $tag) {
-            // Check if tag has images and get accurate count
             $image_count = sarai_chinwag_get_accurate_term_image_count($tag->term_id, 'post_tag');
             if ($image_count > 0) {
                 $tag_url = get_tag_link($tag->term_id);
@@ -399,7 +409,6 @@ function sarai_chinwag_gallery_discovery_badges() {
         }
     }
     
-    // Only display if we have gallery badges to show
     if (!empty($gallery_badges)) {
         echo '<aside class="gallery-discovery-badges">';
         echo '<h3 class="gallery-badges-title">' . __('Browse Image Galleries', 'sarai-chinwag') . '</h3>';
@@ -417,7 +426,6 @@ function sarai_chinwag_gallery_discovery_badges() {
         echo '</aside>';
     }
     
-    // Cache the output for 15 minutes
     $output = ob_get_contents();
     wp_cache_set($cache_key, $output, 'sarai_chinwag_related', 15 * MINUTE_IN_SECONDS);
     
@@ -425,7 +433,11 @@ function sarai_chinwag_gallery_discovery_badges() {
 }
 
 /**
- * Get accurate image count for a specific term
+ * Get cached image count for category/tag with 2-hour cache
+ *
+ * @param int    $term_id  Term ID
+ * @param string $taxonomy Taxonomy name
+ * @return int Image count
  */
 function sarai_chinwag_get_accurate_term_image_count($term_id, $taxonomy) {
     $cache_key = "term_image_count_{$term_id}_{$taxonomy}";
@@ -435,23 +447,20 @@ function sarai_chinwag_get_accurate_term_image_count($term_id, $taxonomy) {
         return $cached_count;
     }
     
-    // Use the existing image extractor function for accurate counts only
     if (function_exists('sarai_chinwag_extract_images_from_term')) {
         $images = sarai_chinwag_extract_images_from_term($term_id, $taxonomy, 999);
         $count = count($images);
-        
-        // Cache for 2 hours
         wp_cache_set($cache_key, $count, 'sarai_chinwag_images', 2 * HOUR_IN_SECONDS);
-        
         return $count;
     }
     
-    // If image extractor function doesn't exist, return 0
     return 0;
 }
 
 /**
- * Get accurate site-wide image count
+ * Get cached site-wide image count with 2-hour cache
+ *
+ * @return int Total site image count
  */
 function sarai_chinwag_get_site_wide_image_count() {
     $cache_key = "site_wide_image_count";
@@ -461,23 +470,21 @@ function sarai_chinwag_get_site_wide_image_count() {
         return $cached_count;
     }
     
-    // Use the existing site-wide image extractor function for accurate counts
     if (function_exists('sarai_chinwag_get_all_site_images')) {
         $images = sarai_chinwag_get_all_site_images(999);
         $count = count($images);
-        
-        // Cache for 2 hours
         wp_cache_set($cache_key, $count, 'sarai_chinwag_images', 2 * HOUR_IN_SECONDS);
-        
         return $count;
     }
     
-    // If site images function doesn't exist, return 0
     return 0;
 }
 
 /**
- * Get accurate search image count
+ * Get cached search image count with 2-hour cache
+ *
+ * @param string $search_query Search query
+ * @return int Search image count
  */
 function sarai_chinwag_get_search_image_count($search_query) {
     $cache_key = "search_image_count_" . md5($search_query);
@@ -487,25 +494,18 @@ function sarai_chinwag_get_search_image_count($search_query) {
         return $cached_count;
     }
     
-    // Use the existing search image extractor function for accurate counts
     if (function_exists('sarai_chinwag_extract_images_from_search')) {
         $images = sarai_chinwag_extract_images_from_search($search_query, 999);
         $count = count($images);
-        
-        // Cache for 2 hours
         wp_cache_set($cache_key, $count, 'sarai_chinwag_images', 2 * HOUR_IN_SECONDS);
-        
         return $count;
     }
     
-    // If search images function doesn't exist, return 0
     return 0;
 }
 
 /**
- * AJAX endpoint for loading template parts
- * 
- * @since 2.0.0
+ * AJAX endpoint for loading template parts via filter system
  */
 function sarai_chinwag_load_template() {
     if (!wp_verify_nonce($_POST['nonce'], 'filter_posts_nonce')) {
@@ -515,7 +515,6 @@ function sarai_chinwag_load_template() {
     $template = sanitize_text_field($_POST['template']);
     $args = isset($_POST['args']) ? (array) $_POST['args'] : array();
     
-    // Sanitize args
     if (isset($args['content_type'])) {
         $args['content_type'] = sanitize_text_field($args['content_type']);
     }
