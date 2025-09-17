@@ -54,6 +54,9 @@
 <div class="entry-content" lang="<?php echo get_locale() === 'en_US' ? 'en' : substr(get_locale(), 0, 2); ?>">
     <?php
     if ( is_singular() ) {
+        // Display featured image as Gutenberg block at the top of content
+        sarai_chinwag_display_featured_image_as_block();
+
         the_content();
     } else {
     }

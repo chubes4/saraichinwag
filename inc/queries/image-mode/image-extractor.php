@@ -86,7 +86,7 @@ function sarai_chinwag_extract_images_from_term($term_id, $term_type, $limit = 3
  */
 function sarai_chinwag_extract_images_from_post($post_id) {
     $images = array();
-    
+
     $featured_image_id = get_post_thumbnail_id($post_id);
     if ($featured_image_id) {
         $image_data = sarai_chinwag_get_image_data($featured_image_id, $post_id, 'featured');
@@ -94,20 +94,20 @@ function sarai_chinwag_extract_images_from_post($post_id) {
             $images[] = $image_data;
         }
     }
-    
+
     $post = get_post($post_id);
     if (!$post) {
         return $images;
     }
-    
+
     $content = $post->post_content;
-    
+
     if (has_blocks($content)) {
         $blocks = parse_blocks($content);
         $block_images = sarai_chinwag_extract_images_from_blocks($blocks, $post_id);
         $images = array_merge($images, $block_images);
     }
-    
+
     return $images;
 }
 
@@ -120,7 +120,7 @@ function sarai_chinwag_extract_images_from_post($post_id) {
  */
 function sarai_chinwag_extract_images_from_blocks($blocks, $post_id) {
     $images = array();
-    
+
     foreach ($blocks as $block) {
         if ($block['blockName'] === 'core/image' && isset($block['attrs']['id'])) {
             $attachment_id = $block['attrs']['id'];
@@ -129,7 +129,7 @@ function sarai_chinwag_extract_images_from_blocks($blocks, $post_id) {
                 $images[] = $image_data;
             }
         }
-        
+
         if ($block['blockName'] === 'core/gallery' && isset($block['attrs']['ids'])) {
             foreach ($block['attrs']['ids'] as $attachment_id) {
                 $image_data = sarai_chinwag_get_image_data($attachment_id, $post_id, 'gallery');
@@ -138,7 +138,7 @@ function sarai_chinwag_extract_images_from_blocks($blocks, $post_id) {
                 }
             }
         }
-        
+
         if ($block['blockName'] === 'core/media-text' && isset($block['attrs']['mediaId'])) {
             $attachment_id = $block['attrs']['mediaId'];
             $image_data = sarai_chinwag_get_image_data($attachment_id, $post_id, 'media-text');
@@ -146,13 +146,13 @@ function sarai_chinwag_extract_images_from_blocks($blocks, $post_id) {
                 $images[] = $image_data;
             }
         }
-        
+
         if (!empty($block['innerBlocks'])) {
             $nested_images = sarai_chinwag_extract_images_from_blocks($block['innerBlocks'], $post_id);
             $images = array_merge($images, $nested_images);
         }
     }
-    
+
     return $images;
 }
 

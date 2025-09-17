@@ -17,6 +17,9 @@
 
 <div class="entry-content">
     <?php
+    // Display featured image as Gutenberg block at the top of content
+    sarai_chinwag_display_featured_image_as_block();
+
     the_content();
 
     wp_link_pages( array(

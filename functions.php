@@ -99,6 +99,8 @@ require_once $queries_dir . '/image-mode/image-archives.php';
 require_once $queries_dir . '/image-mode/rewrite-rules.php';
 require_once $queries_dir . '/image-mode/search-images.php';
 
+require_once get_template_directory() . '/inc/admin/image-migration.php';
+
 /**
  * Wrap content images with anchorable spans for gallery deep linking
  *
