@@ -10,16 +10,20 @@ This is a WordPress theme for "Sarai Chinwag" with a production build system. Fi
 The theme includes an admin settings page accessible via **Settings → Theme Settings** in the WordPress admin. This page allows configuration of:
 - IndexNow API Key for automatic search engine indexing
 - Google Fonts API Key for dynamic font loading from Google Fonts API
+- Pinterest Username for social media integration
+- Cloudflare Turnstile keys for contact form bot protection
+- Contact form recipient email and copy settings
 - Recipe Functionality Toggle: Completely disable all recipe-related features for universal theme usage
 
 ## Theme Architecture
 
 ### Core Structure
-- **functions.php**: Main theme setup, enqueues styles/scripts with dynamic versioning using `filemtime()`, loads PHP modules from `/inc` directory
-- **style.css**: Primary stylesheet with theme styles (CSS variables centralized in `css/root.css`)
-- **css/root.css**: Centralized CSS custom properties and variables
-- **css/editor.css**: WordPress Block Editor and Classic Editor font integration  
-- **css/customizer.css**: Live preview styling for WordPress Customizer
+- **functions.php**: Main theme setup, loads PHP modules from `/inc` directory
+- **inc/core/assets.php**: Centralized asset management with dynamic versioning using `filemtime()` for all CSS and JavaScript files
+- **style.css**: Primary stylesheet with theme styles (CSS variables centralized in `inc/assets/css/root.css`)
+- **inc/assets/css/root.css**: Centralized CSS custom properties and variables
+- **inc/assets/css/editor.css**: WordPress Block Editor and Classic Editor font integration
+- **inc/assets/css/customizer.css**: Live preview styling for WordPress Customizer
 - **Template hierarchy**: Standard WordPress templates (single.php, archive.php, home.php, search.php, page.php, etc.)
 - **page.php**: Standard page template using `template-parts/content-single.php` with sidebar support
 
@@ -30,6 +34,8 @@ The theme includes an admin settings page accessible via **Settings → Theme Se
 ### PHP Module System
 The theme uses organized PHP modules in the `/inc` directory loaded via functions.php:
 - **inc/admin/**: Admin interface components (settings, customizer, notices)
+- **inc/core/**: Core functionality (assets.php for centralized asset management)
+- **inc/contact/**: Contact form system (AJAX processing, email handling, Cloudflare Turnstile integration)
 - **inc/queries/**: Query modification and content retrieval systems
 - **inc/queries/image-mode/**: Complete image gallery and extraction system
 - **Core modules**: recipes.php, ratings.php for recipe functionality
@@ -43,6 +49,7 @@ The theme uses organized PHP modules in the `/inc` directory loaded via function
 - **js/gallery-utils.js**: Image gallery navigation, lightbox functionality, and gallery-specific interactions
 - **js/pinterest.js**: Pinterest save button integration and enhanced social functionality
 - **js/rating.js**: AJAX rating system with localStorage persistence, nonce security, dual-state management (user + server average), and automatic default 5-star ratings for new recipes
+- **js/contact-form.js**: AJAX-powered contact form with Cloudflare Turnstile integration and validation
 
 ### Template Parts
 - `template-parts/content-recipe.php`: Recipe display with embedded Schema.org markup
@@ -51,6 +58,7 @@ The theme uses organized PHP modules in the `/inc` directory loaded via function
 - `template-parts/filter-bar.php`: Advanced filter interface for archives and home page
 - `template-parts/gallery-item.php`: Individual gallery item display component
 - `template-parts/archive-image-mode-link.php`: "Try Image Mode" link for seamless switching to gallery view with accurate image counts and context-aware functionality
+- `template-parts/contact-form.php`: AJAX-powered contact form with Cloudflare Turnstile integration
 
 ### Key Features
 - **Advanced Filter System**: Full-width filter bar with sort options (Random, Most Popular, Recent, Oldest) and post type filtering
@@ -68,6 +76,9 @@ The theme uses organized PHP modules in the `/inc` directory loaded via function
 - **WordPress Customizer integration**: Live preview for font changes and size scaling with custom CSS properties
 - **WordPress Editor Font Integration**: Consistent font experience between Block Editor, Classic Editor, and frontend display
 - **Pinterest integration**: Footer follow button + automatic Pinterest save buttons with enhanced social functionality
+- **Contact form system**: AJAX-powered contact forms with Cloudflare Turnstile bot protection and email notifications
+- **Image anchoring**: Automatic anchorable spans on images for deep linking and navigation
+- **Gallery discovery badges**: Intelligent gallery links on single posts with image counts
 - **Badge-breadcrumb system**: Category/tag badges on single posts for navigation, traditional breadcrumbs on archives
 - **Random discovery section**: 3-post random grid replaces complex related posts logic
 - **Dynamic asset versioning**: Uses `filemtime()` for cache busting on CSS and JS files
@@ -76,6 +87,8 @@ The theme uses organized PHP modules in the `/inc` directory loaded via function
 - **Schema.org markup**: Embedded structured data implementation for recipes in templates
 - **Performance optimizations**: Object caching with wp_cache_* functions, specialized cache groups, and limited query results
 - **Security enhancements**: All output properly escaped, input sanitized, secure API key storage
+- **AJAX template loading**: Dynamic template part loading with nonce security for enhanced interactivity
+- **Content-Language header**: Automatic language header setting for browser translation detection
 
 ## Default 5-Star Rating System
 
@@ -83,13 +96,13 @@ The theme uses organized PHP modules in the `/inc` directory loaded via function
 The theme implements an automatic default 5-star rating system for all new recipe posts to ensure immediate visibility in popularity sorting and consistent user experience:
 
 **Core Implementation:**
-- **sarai_chinwag_set_default_recipe_rating()** (`inc/ratings.php:105`): Automatically assigns 5.0 rating with 1 review count to new published recipes
+- **sarai_chinwag_set_default_recipe_rating()** (`inc/ratings.php:94`): Automatically assigns 5.0 rating with 1 review count to new published recipes
 - **Triggered by WordPress hooks**: `save_post` and `publish_recipe` actions ensure coverage of all publication methods
 - **Smart detection**: Only applies to recipe post type with published status, skips recipes that already have ratings
 - **Prevents rating gaps**: Eliminates scenarios where new recipes appear unrated or invisible in popularity-based sorting
 
 **Bulk Application:**
-- **sarai_chinwag_apply_default_ratings_to_existing()** (`inc/ratings.php:139`): Retroactively applies default ratings to existing recipes without ratings
+- **sarai_chinwag_apply_default_ratings_to_existing()** (`inc/ratings.php:125`): Retroactively applies default ratings to existing recipes without ratings
 - **Meta query filtering**: Uses WordPress meta_query to identify recipes lacking rating_value meta
 - **Batch processing**: Handles unlimited recipes efficiently for theme upgrades and migrations
 
@@ -112,6 +125,53 @@ Beyond default ratings, users can submit their own ratings through a sophisticat
 - **Input validation**: Rating range (1-5) and post ID validation on server side
 - **Error handling**: Graceful degradation with user-friendly error messages
 - **Translation ready**: Full wp.i18n integration for internationalization
+
+## Contact Form System
+
+### Cloudflare Turnstile Integration
+
+**Bot Protection**: Complete Cloudflare Turnstile integration for spam prevention
+**Configuration**: Site key and secret key stored securely in WordPress options
+**Verification**: Server-side token verification with Cloudflare API
+**Fallback**: Graceful degradation when Turnstile is not configured
+
+**Settings**:
+- `sarai_chinwag_turnstile_site_key`: Public key for frontend widget
+- `sarai_chinwag_turnstile_secret_key`: Private key for server verification
+- `sarai_chinwag_contact_recipient_email`: Email address for form submissions
+- `sarai_chinwag_contact_send_copy`: Option to send confirmation to submitter
+
+### Contact Form Implementation
+
+**Shortcode**: `[sarai_contact_form]` for embedding contact forms in pages/posts
+**AJAX Processing**: Real-time form submission without page reload
+**Validation**: Client and server-side validation with user-friendly error messages
+**Email Handling**: Automated admin notifications and optional submitter confirmations
+
+**Form Fields**:
+- Name (required, max 100 chars)
+- Email (required, valid email format, max 100 chars)
+- Subject (required, max 200 chars)
+- Message (required, max 5000 chars)
+- Turnstile verification (required)
+
+**Security Features**:
+- WordPress nonce verification for CSRF protection
+- Input sanitization with appropriate WordPress functions
+- Rate limiting through Turnstile verification
+- IP address logging for moderation
+
+### Email System
+
+**Admin Notifications**: Formatted emails sent to configured recipient
+**Submitter Copies**: Optional confirmation emails to form submitters
+**Email Headers**: Proper From, Reply-To, and Content-Type headers
+**Internationalization**: All email content translatable
+
+**Email Content**:
+- Submission details (name, email, subject, message)
+- Timestamp and IP address for moderation
+- Formatted for easy reading and moderation
 
 ## Complete Image Gallery System
 
@@ -164,6 +224,26 @@ The theme includes an intelligent "Try Image Mode" link system that appears on a
 - Functions: `sarai_chinwag_get_site_wide_image_count()`, `sarai_chinwag_get_search_image_count()`
 - Performance: Leverages existing image caching system with `sarai_chinwag_images` cache group
 - Integration: Seamlessly works with existing rewrite rules and image archive system
+
+### Gallery Discovery Badges System
+
+The theme includes intelligent gallery discovery badges that appear on single posts to encourage exploration of related image galleries.
+
+**Context-Aware Display**: Shows relevant gallery links based on post categories and tags
+**Image Count Integration**: Displays accurate image counts for each gallery
+**Caching**: Cached per-post with 15-minute expiration using `sarai_chinwag_related` cache group
+**Visual Design**: Consistent with gallery discovery theme throughout the site
+
+**Badge Types**:
+- **Category Galleries**: Blue badges linking to category-specific image galleries
+- **Tag Galleries**: Pink badges linking to tag-specific image galleries
+- **Count Display**: Shows number of images available in each gallery
+- **Navigation**: Direct links to gallery pages with proper URL structure
+
+**Function**: `sarai_chinwag_gallery_discovery_badges()`
+**Display Location**: Below post content on single posts and recipes
+**Conditional Logic**: Only displays when galleries contain images
+**Accessibility**: Proper ARIA labels and semantic navigation structure
 
 ## Image Optimization Strategy
 
@@ -323,6 +403,7 @@ The theme provides seamless font integration between WordPress editors and front
 - **Image gallery testing**: Test category/tag image archives with `/category/name/images/` URLs
 - **AJAX testing**: Verify nonce generation and validation for rating system and filter bar
 - **Recipe toggle testing**: Enable/disable recipes in Settings → Theme Settings to test universal theme functionality
+- **Contact form testing**: Use `[sarai_contact_form]` shortcode to embed contact forms and test Turnstile integration
 
 ## Code Conventions
 
@@ -421,6 +502,10 @@ if (!sarai_chinwag_recipes_disabled()) {
 - `sarai_chinwag_get_search_image_count($search_query)`: Count images for search result image mode link
 - `sarai_chinwag_post_badges()`: Display category/tag badges
 - `sarai_chinwag_archive_breadcrumbs()`: Generate breadcrumb navigation
+- `sarai_chinwag_gallery_discovery_badges()`: Display gallery discovery badges with image counts
+- `sarai_chinwag_display_featured_image_as_block()`: Display featured image as Gutenberg block
+- `sarai_chinwag_load_template()`: AJAX endpoint for loading template parts
+- `sarai_chinwag_set_content_language_header()`: Set Content-Language HTTP header
 
 ## Internationalization & Browser Compatibility
 
@@ -446,13 +531,16 @@ if (!sarai_chinwag_recipes_disabled()) {
 
 ## Theme Information
 
-**Current Version**: 2.2 (WordPress Editor Integration & Footer Simplification)  
+**Current Version**: 2.2 (WordPress Editor Integration & Contact Form System)  
 **Live Demo**: [saraichinwag.com](https://saraichinwag.com)  
 **Developer**: Chris Huber ([chubes.net](https://chubes.net))
 
 ### Recent Major Updates (v2.2)
 - **Default 5-Star Rating System**: New recipes automatically receive 5.0 rating with 1 review count upon publication for immediate visibility in popularity sorting
 - **WordPress Editor Font Integration**: Consistent font experience between Block Editor, Classic Editor, and frontend
+- **Contact Form System**: Complete AJAX-powered contact forms with Cloudflare Turnstile bot protection, email notifications, and shortcode integration
+- **Gallery Discovery Badges**: Intelligent gallery links on single posts showing related image galleries with accurate counts
+- **Image Anchoring**: Automatic anchorable spans on images for deep linking and improved navigation
 - **Footer Architecture Simplification**: Removed category/tag clouds for better UX and SEO (130+ link reduction)
 - **Pinterest Icon Enhancement**: Clean Bootstrap Icons SVG with proper 16x16 viewBox
 - **Object Caching Evolution**: New cache groups for views and sidebar, continued wp_cache_* migration

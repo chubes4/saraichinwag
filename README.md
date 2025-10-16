@@ -56,8 +56,9 @@ A versatile WordPress theme with advanced filtering, randomized content discover
 - **Archive Image Mode Links**: Intelligent "Try Image Mode" links for seamless switching between standard and gallery views
 
 ### Admin Features
-- **Theme Settings Panel**: Configure API keys and toggle functionality
+- **Theme Settings Panel**: Configure API keys, contact form settings, and toggle functionality
 - **WordPress Customizer**: Live preview font and size changes
+- **Contact Form System**: AJAX-powered forms with Cloudflare Turnstile bot protection
 - **Recipe Toggle**: Completely disable recipe features for universal use
 
 ## Installation
@@ -81,6 +82,13 @@ A versatile WordPress theme with advanced filtering, randomized content discover
 1. Get your API key from [Google Fonts Developer API](https://developers.google.com/fonts/docs/developer_api)
 2. Add it in **Settings → Theme Settings → Google Fonts API Key**
 3. All Google Fonts will then be available in the customizer
+
+### Contact Form Configuration
+Configure contact forms in **Settings → Theme Settings → Contact Form Settings**:
+- **Cloudflare Turnstile Keys**: Get keys from Cloudflare Turnstile dashboard for bot protection
+- **Recipient Email**: Set email address for form submissions
+- **Submitter Copy**: Optionally send confirmation emails to form submitters
+- **Shortcode**: Use `[sarai_contact_form]` to embed forms in pages/posts
 
 ### Universal Theme Usage
 Toggle recipe functionality in **Settings → Theme Settings**:
@@ -178,9 +186,12 @@ This theme is designed for personal use and white-labeling. Commercial distribut
 
 ## Changelog
 
-### v2.2 - WordPress Editor Integration & Default 5-Star Rating System
+### v2.2 - WordPress Editor Integration & Contact Form System
 - **NEW**: Default 5-Star Rating System - new recipes automatically receive 5.0 rating with 1 review count for immediate visibility in popularity sorting
 - **NEW**: WordPress Editor Font Integration - consistent fonts between editors and frontend
+- **NEW**: Complete Contact Form System - AJAX-powered forms with Cloudflare Turnstile bot protection and email notifications
+- **NEW**: Gallery Discovery Badges - intelligent gallery links on single posts with accurate image counts
+- **NEW**: Image Anchoring - automatic anchorable spans on images for deep linking
 - **NEW**: Complete Image Gallery System - advanced image extraction, gallery archives, and specialized display templates
 - **NEW**: Archive Image Mode Links - intelligent "Try Image Mode" links with accurate image counts for seamless gallery switching
 - **NEW**: Image Search & Discovery - comprehensive image search with category/tag-based filtering

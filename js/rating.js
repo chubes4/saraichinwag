@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 star.innerHTML = '&#9733;';
             } else {
                 star.classList.remove('selected');
-                star.innerHTML = '&#9734;;
+                star.innerHTML = '&#9734;';
             }
         });
     }

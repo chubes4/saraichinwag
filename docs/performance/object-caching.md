@@ -45,6 +45,12 @@ The theme uses segregated cache groups for organized cache management:
 - **Content**: Rendered widget output
 - **Benefits**: Reduced widget rendering overhead
 
+#### Rating System Caching
+- **Purpose**: Recipe rating data optimization
+- **Implementation**: Post meta caching for rating_value and review_count
+- **Performance**: Efficient rating calculations and display
+- **Integration**: Seamless with default 5-star rating system
+
 #### sarai_chinwag_images
 - **Purpose**: Image extraction and gallery caching
 - **Duration**: 1-2 hours

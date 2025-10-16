@@ -1,0 +1,78 @@
+/* ===== SIDEBAR-SPECIFIC STYLES ===== */
+/* Only loaded on pages that display the sidebar for performance optimization */
+
+/* ===== SIDEBAR LAYOUT AND POSITIONING ===== */
+
+/* Desktop sidebar positioning */
+#secondary {
+    float: right;
+    width: 28%;
+    padding: 0 0 0 6px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===== WIDGET STYLES ===== */
+
+/* Enhanced widget separation */
+.widget {
+    padding: .5em;
+    background-color: rgba(255,255,255,0.02);
+    border-radius: 8px;
+}
+
+/* Widget titles */
+.widget-title {
+    border-bottom: 3px dashed var(--color-secondary);
+    width: max-content;
+}
+
+/* ===== RELATED ITEMS (SIDEBAR CONTEXT) ===== */
+
+/* Related content grid in sidebar */
+.related-items {
+    display: flex;
+    justify-content: space-between;
+    flex: 1 1 30%;
+}
+
+.related-item {
+    width: 30%;
+}
+
+/* ===== RESPONSIVE SIDEBAR STYLES ===== */
+
+/* Mobile First - Base responsive styles */
+@media only screen and (min-width : 320px) {
+    #secondary {
+        margin: auto;
+    }
+
+    #secondary p, #secondary h1, #secondary h3, #secondary h4, #secondary h5, #secondary button, #secondary #pinterest_follow {
+        width: 92%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #secondary #random_posts h2, #secondary #random_recipes h2{
+        width: max-content;
+        margin-left:4%;
+    }
+
+    #secondary, .related-items {
+        text-align: center;
+    }
+}
+
+/* Medium Devices, Desktops - Enhanced sidebar layout */
+@media only screen and (min-width : 992px) {
+    .related-items {
+        display: flex;
+        justify-content: space-between;
+        flex: 1 1 30%;
+    }
+
+    .related-item {
+        width: 30%;
+    }
+}

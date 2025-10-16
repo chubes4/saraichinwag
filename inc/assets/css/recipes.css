@@ -1,0 +1,27 @@
+/* ===== RECIPE-SPECIFIC STYLES ===== */
+/* Only loaded on recipe pages for performance optimization */
+
+/* Recipe rating widget in entry header */
+.entry-header .recipe-rating {
+    padding: 5px 0 10px;
+}
+
+/* Star rating display and interaction */
+.stars {
+    display: inline-block;
+}
+
+.star {
+    cursor: pointer;
+    color: gold;
+}
+
+.star.rated,
+.star.selected {
+    color: gold;
+}
+
+/* Average rating display */
+#average-rating {
+    margin-left: 10px;
+}

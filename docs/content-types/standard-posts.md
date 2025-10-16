@@ -158,6 +158,35 @@ The Sarai Chinwag theme enhances WordPress standard posts with advanced features
 **Discovery Integration**: Related posts enhance content discovery
 **Visual Display**: Grid layout for related content
 
+## Gallery Discovery Integration
+
+### Gallery Discovery Badges
+
+**Implementation**: `sarai_chinwag_gallery_discovery_badges()` function
+**Display Location**: Below post content on single posts
+**Purpose**: Encourages exploration of related image galleries
+
+**Badge Features**:
+- **Category Galleries**: Links to category-specific image galleries
+- **Tag Galleries**: Links to tag-specific image galleries
+- **Image Counts**: Shows accurate number of images in each gallery
+- **Caching**: Cached per-post with 15-minute expiration using `sarai_chinwag_related` cache group
+- **Conditional Display**: Only shows galleries with images
+
+**Visual Design**:
+- Category badges: Blue styling
+- Tag badges: Pink styling
+- Count display: Parenthetical numbers
+- Responsive layout: Mobile-friendly design
+
+### Image Anchoring
+
+**Function**: Content filter for deep linking to images
+**Implementation**: Automatic anchorable spans on images with `wp-image-{ID}` class
+**Purpose**: Enables direct linking to specific images using `#sc-image-{ID}` hash fragments
+**Scope**: Only applies to singular pages (posts, recipes)
+**Performance**: Lightweight content filter with minimal processing overhead
+
 ## Template Customization
 
 ### Template Parts

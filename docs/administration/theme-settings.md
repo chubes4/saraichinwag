@@ -53,6 +53,67 @@ Navigate to **WordPress Admin → Settings → Theme Settings** to access all co
 - Automatic Pinterest save buttons on images
 - Enhanced social media connectivity
 
+## Contact Form Settings
+
+### Cloudflare Turnstile Site Key
+
+**Purpose**: Enables bot protection for contact forms using Cloudflare Turnstile.
+
+**Configuration**:
+- **Field Type**: Text input (50 characters)
+- **Required**: Must be configured for contact forms to function
+- **Get Key**: Visit [Cloudflare Turnstile Dashboard](https://dash.cloudflare.com/?to=/:account/turnstile)
+- **Type**: Site key (public key)
+
+**Features Enabled**:
+- Bot protection on contact forms
+- Spam prevention
+- User verification without CAPTCHA complexity
+
+### Cloudflare Turnstile Secret Key
+
+**Purpose**: Server-side verification of Turnstile tokens.
+
+**Configuration**:
+- **Field Type**: Password input (50 characters)
+- **Required**: Must be configured for contact forms to function
+- **Security**: Stored securely in database
+- **Type**: Secret key (private key)
+
+**Technical Details**:
+- Used for server-side token verification
+- Never exposed to frontend
+- Required for form processing
+
+### Contact Form Recipient Email
+
+**Purpose**: Sets the email address where contact form submissions are sent.
+
+**Configuration**:
+- **Field Type**: Email input
+- **Default**: Site admin email (`admin_email` option)
+- **Validation**: Must be valid email format
+- **Required**: Must be configured for contact forms
+
+**Email Features**:
+- Receives formatted contact form submissions
+- Includes submitter details and message
+- Timestamp and IP address for moderation
+
+### Send Copy to Submitter
+
+**Purpose**: Controls whether confirmation emails are sent to form submitters.
+
+**Configuration**:
+- **Field Type**: Checkbox
+- **Default**: Unchecked (no copy sent)
+- **Optional**: Can be enabled per site preference
+
+**Email Content**:
+- Thank you message from site
+- Copy of submitted message
+- Professional confirmation format
+
 ## Theme Functionality Settings
 
 ### Disable Recipe Functionality
@@ -147,3 +208,39 @@ Changes to these settings affect:
 - Changes take effect immediately
 - Existing recipe posts remain accessible via direct URL when disabled
 - Re-enabling recipes restores full functionality
+
+## Contact Form Usage
+
+### Embedding Contact Forms
+
+**Shortcode**: Use `[sarai_contact_form]` to embed contact forms in any page or post
+**Automatic Loading**: Scripts and styles load only when shortcode is present
+**Multiple Forms**: Can use multiple contact forms on different pages
+
+### Form Configuration Requirements
+
+**Turnstile Setup**: Both site key and secret key must be configured
+**Email Settings**: Recipient email must be set
+**Testing**: Test forms after configuration to ensure proper functionality
+
+### Troubleshooting Contact Forms
+
+**Form Not Loading**:
+1. Verify Turnstile keys are configured
+2. Check that shortcode is properly formatted
+3. Ensure page is published and accessible
+
+**Emails Not Sending**:
+1. Verify recipient email is configured
+2. Check WordPress email configuration
+3. Review server email logs
+
+**Turnstile Errors**:
+1. Confirm both site and secret keys are correct
+2. Check Turnstile dashboard for key status
+3. Verify domain configuration in Turnstile
+
+**AJAX Issues**:
+1. Check browser console for JavaScript errors
+2. Verify nonce generation and validation
+3. Test with different browsers

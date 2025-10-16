@@ -66,7 +66,7 @@ The Sarai Chinwag theme includes a complete recipe management system with a cust
 
 **New Recipe Default**: Every new recipe automatically receives a 5.0 rating with 1 review count upon publication
 **Immediate Visibility**: Ensures recipes appear properly in popularity sorting from day one
-**Function**: `sarai_chinwag_set_default_recipe_rating()` in `/inc/ratings.php:105`
+**Function**: `sarai_chinwag_set_default_recipe_rating()` in `/inc/ratings.php:94`
 
 **Implementation Details**:
 - Triggered by `save_post` and `publish_recipe` WordPress hooks
@@ -83,7 +83,7 @@ The Sarai Chinwag theme includes a complete recipe management system with a cust
 
 **Bulk Application Function**: `sarai_chinwag_apply_default_ratings_to_existing()`
 **Purpose**: Apply default 5-star ratings to existing recipes without ratings
-**Implementation**: Located in `/inc/ratings.php:139`
+**Implementation**: Located in `/inc/ratings.php:125`
 
 **Technical Details**:
 - Uses WP_Query with meta_query to find recipes lacking ratings

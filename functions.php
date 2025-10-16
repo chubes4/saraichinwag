@@ -20,9 +20,22 @@ function sarai_chinwag_setup() {
         add_theme_support( 'custom-logo' );
         add_theme_support( 'menus' );
         add_theme_support( 'editor-styles' );
-        add_editor_style( 'style.css' );
-        add_editor_style( 'css/editor.css' );
-        
+
+        // Load editor styles into Block Editor content iframe only
+        add_editor_style( 'inc/assets/css/root.css' );
+        add_editor_style( 'inc/assets/css/editor.css' );
+
+        // Load Google Fonts for Block Editor if customizer has fonts selected
+        $fonts_to_load = sarai_chinwag_get_fonts_to_load();
+        if (!empty($fonts_to_load)) {
+                $fonts_url = 'https://fonts.googleapis.com/css2?';
+                foreach ($fonts_to_load as $font) {
+                        $fonts_url .= 'family=' . urlencode($font) . ':wght@400;500;600;700&';
+                }
+                $fonts_url .= 'display=swap';
+                add_editor_style( $fonts_url );
+        }
+
         remove_image_size('thumbnail');
         remove_image_size('medium');
         remove_image_size('medium_large');
@@ -35,21 +48,7 @@ function sarai_chinwag_setup() {
 }
 add_action( 'after_setup_theme', 'sarai_chinwag_setup' );
 
-function sarai_chinwag_scripts() {
-    $style_version = filemtime( get_template_directory() . '/style.css' );
-    wp_enqueue_style( 'sarai-chinwag-style', get_stylesheet_uri(), array('sarai-chinwag-root-css'), $style_version );
-
-    $nav_version = filemtime( get_template_directory() . '/js/nav.js' );
-    wp_enqueue_script( 'sarai-chinwag-nav', get_template_directory_uri() . '/js/nav.js', array(), $nav_version, true );
-
-    $gallery_utils_version = filemtime( get_template_directory() . '/js/gallery-utils.js' );
-    wp_enqueue_script( 'sarai-chinwag-gallery-utils', get_template_directory_uri() . '/js/gallery-utils.js', array(), $gallery_utils_version, true );
-
-    $pinterest_version = filemtime( get_template_directory() . '/js/pinterest.js' );
-    wp_enqueue_script( 'sarai-chinwag-pinterest', get_template_directory_uri() . '/js/pinterest.js', array(), $pinterest_version, true );
-}
-add_action( 'wp_enqueue_scripts', 'sarai_chinwag_scripts' );
-
+require_once get_template_directory() . '/inc/core/assets.php';
 
 /**
  * Add Pinterest data attributes to featured images for save functionality
@@ -75,6 +74,11 @@ require_once get_template_directory() . '/inc/admin/customizer.php';
 
 require_once get_template_directory() . '/inc/recipes.php';
 require_once get_template_directory() . '/inc/ratings.php';
+
+require_once get_template_directory() . '/inc/contact/form.php';
+require_once get_template_directory() . '/inc/contact/ajax-handler.php';
+require_once get_template_directory() . '/inc/contact/email.php';
+require_once get_template_directory() . '/inc/contact/cloudflare-turnstile.php';
 
 $queries_dir = get_template_directory() . '/inc/queries';
 require_once $queries_dir . '/view-counter.php';
@@ -509,6 +513,27 @@ function sarai_chinwag_load_template() {
 }
 add_action('wp_ajax_load_template', 'sarai_chinwag_load_template');
 add_action('wp_ajax_nopriv_load_template', 'sarai_chinwag_load_template');
+
+/**
+ * Check if current request is for image gallery mode
+ *
+ * @return bool True if viewing image gallery, false otherwise
+ */
+function sarai_chinwag_is_image_mode() {
+    $has_images_var = get_query_var('images') !== false;
+    $url_has_images = strpos($_SERVER['REQUEST_URI'], '/images/') !== false || strpos($_SERVER['REQUEST_URI'], '/images') !== false;
+    return $has_images_var && $url_has_images && ((is_category() || is_tag()) || is_home() || is_search());
+}
+
+/**
+ * Check if contact form shortcode is present on current page
+ *
+ * @return bool True if contact form shortcode is present
+ */
+function sarai_chinwag_has_contact_form() {
+    global $post;
+    return is_a($post, 'WP_Post') && has_shortcode($post->post_content, 'sarai_contact_form');
+}
 
 /**
  * Display featured image styled as Gutenberg image block with proper attributes

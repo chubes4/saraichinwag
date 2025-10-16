@@ -68,7 +68,7 @@ sarai_chinwag_post_badges()
 
 ### Traditional Breadcrumb Trails
 
-**Function**: `sarai_chinwag_archive_breadcrumbs()`
+**Implementation**: `sarai_chinwag_archive_breadcrumbs()` function
 **Display Location**: Top of archive pages
 **Format**: Home > Category/Tag/Search > Current Location
 

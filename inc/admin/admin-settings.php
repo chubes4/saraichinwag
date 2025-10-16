@@ -32,14 +32,23 @@ function sarai_chinwag_settings_init() {
     register_setting('sarai_chinwag_settings', 'sarai_chinwag_disable_recipes');
     register_setting('sarai_chinwag_settings', 'sarai_chinwag_google_fonts_api_key');
     register_setting('sarai_chinwag_settings', 'sarai_chinwag_pinterest_username');
-    
+    register_setting('sarai_chinwag_settings', 'sarai_chinwag_turnstile_site_key');
+    register_setting('sarai_chinwag_settings', 'sarai_chinwag_turnstile_secret_key');
+
     add_settings_section(
         'sarai_chinwag_settings_section',
         __('API Configuration', 'sarai-chinwag'),
         'sarai_chinwag_settings_section_callback',
         'sarai_chinwag_settings'
     );
-    
+
+    add_settings_section(
+        'sarai_chinwag_contact_section',
+        __('Contact Form Settings', 'sarai-chinwag'),
+        'sarai_chinwag_contact_section_callback',
+        'sarai_chinwag_settings'
+    );
+
     add_settings_section(
         'sarai_chinwag_functionality_section',
         __('Theme Functionality', 'sarai-chinwag'),
@@ -72,6 +81,22 @@ function sarai_chinwag_settings_init() {
     );
     
     add_settings_field(
+        'sarai_chinwag_turnstile_site_key',
+        __('Cloudflare Turnstile Site Key', 'sarai-chinwag'),
+        'sarai_chinwag_turnstile_site_key_render',
+        'sarai_chinwag_settings',
+        'sarai_chinwag_contact_section'
+    );
+
+    add_settings_field(
+        'sarai_chinwag_turnstile_secret_key',
+        __('Cloudflare Turnstile Secret Key', 'sarai-chinwag'),
+        'sarai_chinwag_turnstile_secret_key_render',
+        'sarai_chinwag_settings',
+        'sarai_chinwag_contact_section'
+    );
+
+    add_settings_field(
         'sarai_chinwag_disable_recipes',
         __('Disable Recipe Functionality', 'sarai-chinwag'),
         'sarai_chinwag_disable_recipes_render',
@@ -84,6 +109,11 @@ add_action('admin_init', 'sarai_chinwag_settings_init');
 // Settings section callback
 function sarai_chinwag_settings_section_callback() {
     echo '<p>' . __('Configure API keys and external service settings for your theme.', 'sarai-chinwag') . '</p>';
+}
+
+// Contact section callback
+function sarai_chinwag_contact_section_callback() {
+    echo '<p>' . __('Configure Cloudflare Turnstile and contact form settings. The form is embedded using the shortcode: <code>[sarai_contact_form]</code>', 'sarai-chinwag') . '</p>';
 }
 
 // Functionality section callback
@@ -113,6 +143,21 @@ function sarai_chinwag_pinterest_username_render() {
     echo '<input type="text" name="sarai_chinwag_pinterest_username" value="' . esc_attr($value) . '" size="30" />';
     echo '<p class="description">' . __('Enter your Pinterest username to display a Pinterest follow widget in the sidebar. Leave empty to disable Pinterest integration.', 'sarai-chinwag') . '</p>';
     echo '<p class="description">' . __('Example: If your Pinterest URL is pinterest.com/yourname, enter "yourname"', 'sarai-chinwag') . '</p>';
+}
+
+// Turnstile site key field render
+function sarai_chinwag_turnstile_site_key_render() {
+    $value = get_option('sarai_chinwag_turnstile_site_key', '');
+    echo '<input type="text" name="sarai_chinwag_turnstile_site_key" value="' . esc_attr($value) . '" size="50" />';
+    echo '<p class="description">' . __('Enter your Cloudflare Turnstile site key (public key). Required for contact form bot protection.', 'sarai-chinwag') . '</p>';
+    echo '<p class="description">' . __('Get your keys at: <a href="https://dash.cloudflare.com/?to=/:account/turnstile" target="_blank">Cloudflare Turnstile Dashboard</a>', 'sarai-chinwag') . '</p>';
+}
+
+// Turnstile secret key field render
+function sarai_chinwag_turnstile_secret_key_render() {
+    $value = get_option('sarai_chinwag_turnstile_secret_key', '');
+    echo '<input type="password" name="sarai_chinwag_turnstile_secret_key" value="' . esc_attr($value) . '" size="50" />';
+    echo '<p class="description">' . __('Enter your Cloudflare Turnstile secret key (private key). This is used for server-side verification.', 'sarai-chinwag') . '</p>';
 }
 
 // Disable recipes field render
@@ -173,4 +218,34 @@ function sarai_chinwag_sanitize_indexnow_key($input) {
     return $input;
 }
 add_filter('pre_update_option_sarai_chinwag_indexnow_key', 'sarai_chinwag_sanitize_indexnow_key');
+
+/**
+ * Display admin notice if Turnstile is not configured
+ *
+ * @since 1.0.0
+ */
+function sarai_chinwag_turnstile_admin_notice() {
+    $screen = get_current_screen();
+
+    // Only show on relevant admin pages
+    if (!$screen || strpos($screen->id, 'sarai-chinwag') === false) {
+        return;
+    }
+
+    $site_key = get_option('sarai_chinwag_turnstile_site_key', '');
+    $secret_key = get_option('sarai_chinwag_turnstile_secret_key', '');
+
+    if (empty($site_key) || empty($secret_key)) {
+        ?>
+        <div class="notice notice-warning">
+            <p>
+                <strong><?php _e('Cloudflare Turnstile Not Configured', 'sarai-chinwag'); ?></strong><br>
+                <?php _e('The contact form requires Cloudflare Turnstile keys to function. Please configure your Turnstile site key and secret key in ', 'sarai-chinwag'); ?>
+                <a href="<?php echo admin_url('options-general.php?page=sarai-chinwag-settings'); ?>"><?php _e('Theme Settings', 'sarai-chinwag'); ?></a>.
+            </p>
+        </div>
+        <?php
+    }
+}
+add_action('admin_notices', 'sarai_chinwag_turnstile_admin_notice');
 ?>

@@ -1,0 +1,64 @@
+/* WordPress Block Editor font integration */
+/* Styles scoped to content area only - WordPress UI remains default */
+
+/* Body text and content blocks - scoped to content area */
+.editor-styles-wrapper p,
+.editor-styles-wrapper ul,
+.editor-styles-wrapper ol,
+.editor-styles-wrapper li,
+.editor-styles-wrapper blockquote {
+    font-family: var(--font-body);
+    font-size: calc(20px * var(--font-body-scale));
+}
+
+/* Heading styles - scoped to content area with text-transform */
+.editor-styles-wrapper h1 {
+    font-family: var(--font-heading) !important;
+    font-size: calc(1.75em * var(--font-heading-scale));
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.editor-styles-wrapper h2 {
+    font-family: var(--font-heading) !important;
+    font-size: calc(1.38em * var(--font-heading-scale));
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.editor-styles-wrapper h3 {
+    font-family: var(--font-heading) !important;
+    font-size: calc(1.2em * var(--font-heading-scale));
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.editor-styles-wrapper h4 {
+    font-family: var(--font-heading) !important;
+    font-size: calc(1.1em * var(--font-heading-scale));
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.editor-styles-wrapper h5 {
+    font-family: var(--font-heading) !important;
+    font-size: calc(1.05em * var(--font-heading-scale));
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.editor-styles-wrapper h6 {
+    font-family: var(--font-heading) !important;
+    font-size: calc(1em * var(--font-heading-scale));
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+/* Post title field (outside content wrapper but should match h1) */
+.editor-post-title__input,
+.editor-post-title textarea {
+    font-family: var(--font-heading) !important;
+    font-size: calc(1.75em * var(--font-heading-scale));
+    text-transform: uppercase;
+    font-weight: 600;
+}

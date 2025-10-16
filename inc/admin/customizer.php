@@ -22,7 +22,7 @@ function sarai_chinwag_customize_register($wp_customize) {
     ));
 
     $wp_customize->add_setting('sarai_chinwag_heading_font', array(
-        'default' => 'Gluten',
+        'default' => 'System Fonts',
         'sanitize_callback' => 'sanitize_text_field',
         'transport' => 'postMessage',
     ));
@@ -224,7 +224,7 @@ function sarai_chinwag_get_google_fonts($type = '') {
  */
 function sarai_chinwag_get_fonts_to_load() {
     $fonts_to_check = array(
-        get_theme_mod('sarai_chinwag_heading_font', 'Gluten'),
+        get_theme_mod('sarai_chinwag_heading_font', 'System Fonts'),
         get_theme_mod('sarai_chinwag_body_font', 'System Fonts')
     );
     
@@ -258,33 +258,46 @@ function sarai_chinwag_enqueue_google_fonts() {
 add_action('wp_enqueue_scripts', 'sarai_chinwag_enqueue_google_fonts');
 
 /**
- * Enqueue root.css and Google Fonts for Classic Editor
+ * Enqueue root.css, editor.css, and Google Fonts for Classic Editor
  */
 function sarai_chinwag_enqueue_admin_google_fonts($hook) {
     if (!in_array($hook, array('post.php', 'post-new.php'))) {
         return;
     }
-    
+
+    $theme_dir = get_template_directory();
+    $theme_uri = get_template_directory_uri();
+
+    // Root CSS variables (must load first)
     wp_enqueue_style(
         'sarai-chinwag-admin-root',
-        get_template_directory_uri() . '/css/root.css',
+        $theme_uri . '/inc/assets/css/root.css',
         array(),
-        filemtime(get_template_directory() . '/css/root.css')
+        filemtime($theme_dir . '/inc/assets/css/root.css')
     );
-    
+
+    // Editor-specific styles (depends on root variables)
+    wp_enqueue_style(
+        'sarai-chinwag-admin-editor-styles',
+        $theme_uri . '/inc/assets/css/editor.css',
+        array('sarai-chinwag-admin-root'),
+        filemtime($theme_dir . '/inc/assets/css/editor.css')
+    );
+
+    // Google Fonts (only if selected, depends on root)
     $fonts_to_load = sarai_chinwag_get_fonts_to_load();
-    
+
     if (!empty($fonts_to_load)) {
         $fonts_url = 'https://fonts.googleapis.com/css2?';
         foreach ($fonts_to_load as $font) {
             $fonts_url .= 'family=' . urlencode($font) . ':wght@400;500;600;700&';
         }
         $fonts_url .= 'display=swap';
-        
+
         wp_enqueue_style(
-            'sarai-chinwag-admin-google-fonts', 
-            $fonts_url, 
-            array('sarai-chinwag-admin-root'), 
+            'sarai-chinwag-admin-google-fonts',
+            $fonts_url,
+            array('sarai-chinwag-admin-root'),
             null
         );
     }
@@ -292,40 +305,10 @@ function sarai_chinwag_enqueue_admin_google_fonts($hook) {
 add_action('admin_enqueue_scripts', 'sarai_chinwag_enqueue_admin_google_fonts');
 
 /**
- * Enqueue root.css and Google Fonts for Block Editor
- */
-function sarai_chinwag_enqueue_block_editor_assets() {
-    wp_enqueue_style(
-        'sarai-chinwag-block-editor-root',
-        get_template_directory_uri() . '/css/root.css',
-        array(),
-        filemtime(get_template_directory() . '/css/root.css')
-    );
-    
-    $fonts_to_load = sarai_chinwag_get_fonts_to_load();
-    if (!empty($fonts_to_load)) {
-        $fonts_url = 'https://fonts.googleapis.com/css2?';
-        foreach ($fonts_to_load as $font) {
-            $fonts_url .= 'family=' . urlencode($font) . ':wght@400;500;600;700&';
-        }
-        $fonts_url .= 'display=swap';
-        
-        wp_enqueue_style(
-            'sarai-chinwag-block-editor-fonts', 
-            $fonts_url, 
-            array('sarai-chinwag-block-editor-root'), 
-            null
-        );
-    }
-}
-add_action('enqueue_block_editor_assets', 'sarai_chinwag_enqueue_block_editor_assets');
-
-
-/**
  * Update root.css file with current customizer values
  */
 function sarai_chinwag_update_root_css() {
-    $heading_font = get_theme_mod('sarai_chinwag_heading_font', 'Gluten');
+    $heading_font = get_theme_mod('sarai_chinwag_heading_font', 'System Fonts');
     $body_font = get_theme_mod('sarai_chinwag_body_font', 'System Fonts');
     $heading_font_size = get_theme_mod('sarai_chinwag_heading_font_size', 50);
     $body_font_size = get_theme_mod('sarai_chinwag_body_font_size', 50);
@@ -374,7 +357,7 @@ function sarai_chinwag_update_root_css() {
     --color-border: #ddd;
 }";
 
-    $root_css_path = get_template_directory() . '/css/root.css';
+    $root_css_path = get_template_directory() . '/inc/assets/css/root.css';
     file_put_contents($root_css_path, $css_content);
 }
 
@@ -403,27 +386,33 @@ function sarai_chinwag_get_font_family($font_name) {
 }
 
 /**
- * Enqueue root CSS variables file with customizer CSS
+ * Enqueue customizer live preview CSS
  */
 function sarai_chinwag_output_customizer_css() {
-    wp_enqueue_style(
-        'sarai-chinwag-root-css',
-        get_template_directory_uri() . '/css/root.css',
-        array(),
-        filemtime(get_template_directory() . '/css/root.css')
-    );
-    
+    $theme_dir = get_template_directory();
+    $theme_uri = get_template_directory_uri();
+
     wp_enqueue_style(
         'sarai-chinwag-customizer-css',
-        get_template_directory_uri() . '/css/customizer.css',
+        $theme_uri . '/inc/assets/css/customizer.css',
         array('sarai-chinwag-root-css'),
-        filemtime(get_template_directory() . '/css/customizer.css')
+        filemtime($theme_dir . '/inc/assets/css/customizer.css')
     );
 }
 add_action('wp_enqueue_scripts', 'sarai_chinwag_output_customizer_css');
 
 function sarai_chinwag_customize_preview_js() {
-    wp_enqueue_script('sarai-chinwag-customizer', get_template_directory_uri() . '/js/customizer.js', array('customize-preview'), '1.0.0', true);
+    $theme_dir = get_template_directory();
+    $theme_uri = get_template_directory_uri();
+
+    $customizer_js_version = filemtime($theme_dir . '/js/customizer.js');
+    wp_enqueue_script(
+        'sarai-chinwag-customizer',
+        $theme_uri . '/js/customizer.js',
+        array('customize-preview'),
+        $customizer_js_version,
+        true
+    );
 }
 add_action('customize_preview_init', 'sarai_chinwag_customize_preview_js');
 ?>

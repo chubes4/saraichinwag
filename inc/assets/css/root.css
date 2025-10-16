@@ -1,8 +1,8 @@
 /* Centralized CSS Variables - Updated dynamically by theme functions */
 :root {
     /* Typography */
-    --font-heading: 'Gluten', 'Helvetica', Arial, sans-serif;
-    --font-body: 'Helvetica', Arial, sans-serif;
+    --font-heading: Helvetica, Arial, sans-serif;
+    --font-body: Helvetica, Arial, sans-serif;
     
     /* Font Scaling */
     --font-heading-scale: 1.0;

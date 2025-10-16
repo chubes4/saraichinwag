@@ -55,9 +55,7 @@
     <?php
     if ( is_singular() ) {
         sarai_chinwag_display_featured_image_as_block();
-
         the_content();
-    } else {
     }
     ?>
 </div><!-- .entry-content -->

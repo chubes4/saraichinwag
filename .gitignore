@@ -48,3 +48,6 @@ composer.lock
 
 # Documentation sync files
 docs/.docs-sync.json
+
+# Build output
+dist/

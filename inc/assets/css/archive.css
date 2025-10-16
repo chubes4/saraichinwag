@@ -1,0 +1,475 @@
+/* ===== ARCHIVE/HOME/SEARCH STYLES ===== */
+/* Only loaded on regular archive pages (home/archive/search) for performance optimization */
+/* Excludes image gallery mode styles which are in image-mode.css */
+
+/* ===== FULL-WIDTH LAYOUT ===== */
+
+/* Hide sidebar on archive pages */
+.home #secondary,
+.archive #secondary,
+.search #secondary {
+    display: none;
+}
+
+/* Full-width primary content */
+.home #primary,
+.archive #primary,
+.search #primary {
+    width: 100%;
+    max-width: 100%;
+    float: none;
+}
+
+/* ===== POST GRID SYSTEM ===== */
+
+/* Post grid container */
+.home .post-grid,
+.archive .post-grid,
+.search .post-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 15px;
+    margin: 15px 0;
+}
+
+/* Grid article styling */
+.home .post-grid article,
+.archive .post-grid article,
+.search .post-grid article {
+    flex: 1 1 calc(23% - 10px);
+    max-width: calc(23% - 10px);
+    margin: 0;
+}
+
+/* ===== ARCHIVE ENTRY TITLES ===== */
+
+/* Different title styling for grid vs single */
+.home .entry-title,
+.archive .entry-title {
+    font-size: 1.1em;
+    line-height: 1.3;
+    margin: 10px 0;
+}
+
+/* ===== ARCHIVE BREADCRUMBS ===== */
+
+/* Archive breadcrumb navigation */
+.archive-breadcrumbs {
+    font-size: 0.8em;
+    color: var(--color-text-light);
+    margin: 10px 0 15px 0;
+    padding: 0;
+}
+
+.archive-breadcrumbs a {
+    color: var(--color-primary);
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.archive-breadcrumbs a:hover {
+    color: var(--color-secondary);
+    text-decoration: underline;
+}
+
+/* ===== LOAD MORE FUNCTIONALITY ===== */
+
+/* Load more container */
+.load-more-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    clear: both;
+    margin: 2rem auto 0;
+    -webkit-column-break-inside: avoid;
+    break-inside: avoid;
+    column-span: all;
+}
+
+.load-more-container #load-more {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ===== RANDOM DISCOVERY SECTION ===== */
+
+/* Random discovery section (home page) */
+.random-discovery {
+    margin: 30px 0;
+    padding: 20px 0;
+    border-top: 3px dashed var(--color-secondary);
+}
+
+.random-discovery .widget-title {
+    text-align: center;
+    margin-bottom: 20px;
+    background: var(--color-primary);
+    color: var(--color-background);
+    padding: 8px 15px;
+    border-bottom: 4px solid #000;
+    border-radius: 10px;
+    width: max-content;
+    margin: 0 auto 20px;
+}
+
+.discovery-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    gap: 15px;
+}
+
+.discovery-post {
+    flex: 1 1 30%;
+    max-width: 30%;
+    min-width: 250px;
+    text-align: center;
+}
+
+.discovery-post .entry-title {
+    font-size: 1.1em;
+    margin: 10px 0 5px;
+    line-height: 1.4;
+}
+
+.discovery-post .entry-title a {
+    color: var(--color-text);
+    text-decoration: underline;
+    text-decoration-color: var(--color-primary);
+}
+
+.discovery-post .entry-title a:hover {
+    text-decoration-color: var(--color-secondary);
+}
+
+.discovery-post .post-thumbnail {
+    margin-bottom: 10px;
+}
+
+/* ===== CONTENT WRAP OVERRIDES ===== */
+
+/* Full-width content wrap overrides */
+.home .content-wrap,
+.archive .content-wrap,
+.search .content-wrap {
+    max-width: 95%;
+}
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+/* Mobile First - Base responsive styles */
+@media only screen and (min-width : 320px) {
+    .post-badge-breadcrumbs, .archive-breadcrumbs {
+        width: 92%;
+    }
+}
+
+/* Medium Devices, Desktops - Enhanced grid layout */
+@media only screen and (min-width : 992px) {
+    #primary {
+        float: left;
+        width: 66%;
+    }
+
+    .related-items {
+        display: flex;
+        justify-content: space-between;
+        flex: 1 1 30%;
+    }
+
+    .related-item {
+        width: 30%;
+    }
+
+    .home .content-wrap,
+    .archive .content-wrap,
+    .search .content-wrap {
+        max-width: 89%;
+    }
+
+    .related-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        margin: 15px 0;
+    }
+
+    .related-items {
+        display: flex;
+        justify-content: space-between;
+        flex: 1 1 30%;
+    }
+
+    .related-item {
+        width: 30%;
+    }
+}
+
+/* Large Devices, Wide Screens */
+@media only screen and (min-width : 1200px) {
+
+}
+
+/* ===== MOBILE RESPONSIVE ===== */
+
+@media (max-width: 1199px) {
+    .home .post-grid article,
+    .archive .post-grid article,
+    .search .post-grid article {
+        flex-basis: calc(30% - 10px);
+        max-width: calc(30% - 10px);
+    }
+}
+
+@media (max-width: 991px) {
+    .home .post-grid article,
+    .archive .post-grid article,
+    .search .post-grid article {
+        flex-basis: calc(47% - 10px);
+        max-width: calc(47% - 10px);
+    }
+}
+
+@media (max-width: 768px) {
+    .home .post-grid,
+    .archive .post-grid,
+    .search .post-grid {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .home .post-grid article,
+    .archive .post-grid article,
+    .search .post-grid article {
+        flex: 1 1 100%;
+        max-width: 100%;
+        position: relative;
+        margin-bottom: 20px;
+    }
+
+    .home .entry-title,
+    .archive .entry-title {
+        font-size: 1em;
+        margin: 12px 0;
+    }
+
+    #load-more {
+        width: 100%;
+        max-width: 300px;
+        margin: 20px auto;
+        padding: 15px;
+        font-size: 16px;
+    }
+
+    .load-more-container {
+        text-align: center;
+    }
+
+    .random-discovery {
+        margin: 20px 0;
+        padding: 15px 0;
+    }
+
+    .discovery-grid {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .discovery-post {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+
+    .discovery-post .post-thumbnail {
+        margin-bottom: 15px;
+    }
+
+    .home .content-wrap,
+    .archive .content-wrap,
+    .search .content-wrap {
+        max-width: 100%;
+    }
+
+    .home .entry-title,
+    .archive .entry-title {
+        font-size: 1em;
+        margin: 12px 0;
+    }
+
+    .post-badge-breadcrumbs {
+        margin: 10px auto 8px;
+        gap: 6px;
+    }
+
+    .badge-breadcrumb {
+        padding: 5px 10px;
+        font-size: 0.7em;
+    }
+
+    .archive-breadcrumbs {
+        font-size: 0.75em;
+        margin: 8px auto 12px;
+    }
+}
+
+/* ===== FILTER BAR SYSTEM ===== */
+
+.filter-bar {
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid var(--color-border);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px auto 30px;
+    max-width: 75%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.filter-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.filter-label {
+    font-weight: 600;
+    color: var(--color-text);
+    margin-right: 5px;
+    white-space: nowrap;
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    background: white;
+    border: 2px solid var(--color-border);
+    color: var(--color-text);
+    padding: 8px 16px;
+    border-radius: 24px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.filter-btn:hover {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: white;
+    transform: translateY(-1px);
+}
+
+.filter-btn.active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+}
+
+/* Secondary color for type filter buttons */
+.type-btn {
+    border-color: var(--color-secondary);
+}
+
+.type-btn:hover {
+    border-color: var(--color-secondary);
+    background: var(--color-secondary);
+    color: white;
+    transform: translateY(-1px);
+}
+
+.type-btn.active {
+    background: var(--color-secondary);
+    border-color: var(--color-secondary);
+    color: white;
+}
+
+.filter-data {
+    display: none;
+}
+
+/* Mobile responsiveness for filter bar */
+@media (max-width: 768px) {
+    .filter-bar {
+        max-width: 95%;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        margin: 15px auto 25px;
+    }
+
+    .filter-section {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .filter-buttons {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .filter-btn {
+        padding: 8px 12px;
+        font-size: 13px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Consolidated mobile touch targets */
+    #random_posts a, #random_recipes a {
+        min-height: 44px;
+        padding: 12px;
+    }
+
+    #random-icon-link {
+        padding: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .filter-bar {
+        max-width: 98%;
+        margin: 10px auto 20px;
+        padding: 10px;
+    }
+
+    .filter-section {
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .filter-buttons {
+        width: 100%;
+        justify-content: center;
+        gap: 6px;
+    }
+
+    .filter-btn {
+        padding: 8px 12px;
+        font-size: 12px;
+        min-width: 50px;
+        min-height: 44px;
+    }
+
+    /* Mobile-friendly Pinterest button */
+    .pinterest-follow-btn {
+        min-height: 44px;
+        padding: 8px 12px;
+    }
+}

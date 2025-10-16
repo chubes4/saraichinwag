@@ -1,0 +1,86 @@
+/* ===== SINGLE VIEW STYLES ===== */
+/* Only loaded on single posts, recipes, and pages for performance optimization */
+
+/* ===== ENTRY HEADER & CONTENT ===== */
+
+/* Single post/page title styling */
+h1.entry-title {
+    margin: 15px 0;
+    line-height: 1.4;
+}
+
+/* Entry content image centering */
+.entry-content img {
+    display: block;
+    margin: 0 auto;
+}
+
+/* ===== BADGE-BREADCRUMB NAVIGATION ===== */
+
+/* Badge-breadcrumbs for single posts */
+.post-badge-breadcrumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 15px 0 10px 0;
+    padding: 0;
+}
+
+.badge-breadcrumb {
+    display: inline-block;
+    padding: 6px 12px;
+    font-size: 0.75em;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.badge-category {
+    background-color: var(--color-primary);
+    color: var(--color-background);
+}
+
+.badge-category:hover {
+    background-color: var(--color-secondary);
+    color: var(--color-background);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.badge-tag {
+    background-color: var(--color-secondary);
+    color: var(--color-background);
+}
+
+.badge-tag:hover {
+    background-color: var(--color-primary);
+    color: var(--color-background);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* ===== IMAGE ANCHORING ===== */
+
+/* Anchor wrapper around images inside single posts for direct deep links */
+.sc-image-anchor {
+    display: inline-block;
+    scroll-margin-top: 40px; /* cushion for admin bar, adjust if header becomes sticky */
+    position: relative;
+}
+
+/* ===== MOBILE RESPONSIVE ===== */
+
+/* Consolidated badge-breadcrumb mobile styles */
+@media (max-width: 768px) {
+    .post-badge-breadcrumbs {
+        margin: 10px auto 8px;
+        gap: 6px;
+    }
+
+    .badge-breadcrumb {
+        padding: 5px 10px;
+        font-size: 0.7em;
+    }
+}
