@@ -1,11 +1,17 @@
 <?php
 /**
- * Simple view counter system for tracking post popularity
- * Stores view counts in post meta for efficient querying
+ * View Counter System
+ *
+ * Tracks post views for popularity sorting
+ *
+ * @package Sarai_Chinwag
+ * @since 2.0
  */
 
 /**
- * Track view for current post on singular pages only
+ * Track view for current post on singular pages
+ *
+ * @since 2.0
  */
 function sarai_chinwag_track_post_view() {
     if (!is_singular(array('post', 'recipe'))) {
@@ -31,10 +37,11 @@ function sarai_chinwag_track_post_view() {
 }
 
 /**
- * Get view count for specific post
+ * Get view count for post
  *
  * @param int $post_id Post ID
- * @return int Number of views
+ * @return int View count
+ * @since 2.0
  */
 function sarai_chinwag_get_post_views($post_id) {
     $views = get_post_meta($post_id, '_post_views', true);
@@ -45,7 +52,8 @@ function sarai_chinwag_get_post_views($post_id) {
  * Display formatted view count
  *
  * @param int $post_id Post ID
- * @return string Formatted view count
+ * @return string Formatted count
+ * @since 2.0
  */
 function sarai_chinwag_display_post_views($post_id) {
     $views = sarai_chinwag_get_post_views($post_id);
@@ -63,7 +71,8 @@ function sarai_chinwag_display_post_views($post_id) {
  * Get most popular posts by view count
  *
  * @param array $args WP_Query arguments
- * @return WP_Query Query object sorted by popularity
+ * @return WP_Query Query object
+ * @since 2.0
  */
 function sarai_chinwag_get_popular_posts($args = array()) {
     $default_args = array(
@@ -87,7 +96,9 @@ function sarai_chinwag_get_popular_posts($args = array()) {
 add_action('wp_head', 'sarai_chinwag_track_post_view');
 
 /**
- * Initialize view count for posts without meta to aid sorting queries
+ * Initialize view count for posts without meta
+ *
+ * @since 2.1
  */
 function sarai_chinwag_initialize_post_views() {
     if (wp_cache_get('views_initialized', 'sarai_chinwag_views')) {

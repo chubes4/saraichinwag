@@ -1,15 +1,17 @@
 <?php
 /**
- * Admin settings page for Sarai Chinwag theme
+ * Admin Settings Page
+ *
+ * Theme settings interface for API keys and functionality toggles
  *
  * @package Sarai_Chinwag
- * @since 1.0.0
+ * @since 2.0
  */
 
 /**
  * Add admin menu item for theme settings
- * 
- * @since 1.0.0
+ *
+ * @since 2.0
  */
 function sarai_chinwag_add_admin_menu() {
     add_options_page(
@@ -24,8 +26,8 @@ add_action('admin_menu', 'sarai_chinwag_add_admin_menu');
 
 /**
  * Initialize theme settings and register fields
- * 
- * @since 1.0.0
+ *
+ * @since 2.0
  */
 function sarai_chinwag_settings_init() {
     register_setting('sarai_chinwag_settings', 'sarai_chinwag_indexnow_key');
@@ -106,22 +108,18 @@ function sarai_chinwag_settings_init() {
 }
 add_action('admin_init', 'sarai_chinwag_settings_init');
 
-// Settings section callback
 function sarai_chinwag_settings_section_callback() {
     echo '<p>' . __('Configure API keys and external service settings for your theme.', 'sarai-chinwag') . '</p>';
 }
 
-// Contact section callback
 function sarai_chinwag_contact_section_callback() {
     echo '<p>' . __('Configure Cloudflare Turnstile and contact form settings. The form is embedded using the shortcode: <code>[sarai_contact_form]</code>', 'sarai-chinwag') . '</p>';
 }
 
-// Functionality section callback
 function sarai_chinwag_functionality_section_callback() {
     echo '<p>' . __('Control which theme features are enabled or disabled.', 'sarai-chinwag') . '</p>';
 }
 
-// IndexNow API key field render
 function sarai_chinwag_indexnow_key_render() {
     $value = get_option('sarai_chinwag_indexnow_key', '');
     echo '<input type="text" name="sarai_chinwag_indexnow_key" value="' . esc_attr($value) . '" size="50" />';
@@ -129,7 +127,6 @@ function sarai_chinwag_indexnow_key_render() {
     echo '<p class="description">' . __('Format: 32-character hexadecimal string (e.g., 4ee5f0302df14ea9b2d2f5e9dd919fb0)', 'sarai-chinwag') . '</p>';
 }
 
-// Google Fonts API key field render
 function sarai_chinwag_google_fonts_api_key_render() {
     $value = get_option('sarai_chinwag_google_fonts_api_key', '');
     echo '<input type="text" name="sarai_chinwag_google_fonts_api_key" value="' . esc_attr($value) . '" size="50" />';
@@ -137,7 +134,6 @@ function sarai_chinwag_google_fonts_api_key_render() {
     echo '<p class="description">' . __('Get your API key at: <a href="https://developers.google.com/fonts/docs/developer_api" target="_blank">Google Fonts Developer API</a>', 'sarai-chinwag') . '</p>';
 }
 
-// Pinterest username field render  
 function sarai_chinwag_pinterest_username_render() {
     $value = get_option('sarai_chinwag_pinterest_username', '');
     echo '<input type="text" name="sarai_chinwag_pinterest_username" value="' . esc_attr($value) . '" size="30" />';
@@ -145,7 +141,6 @@ function sarai_chinwag_pinterest_username_render() {
     echo '<p class="description">' . __('Example: If your Pinterest URL is pinterest.com/yourname, enter "yourname"', 'sarai-chinwag') . '</p>';
 }
 
-// Turnstile site key field render
 function sarai_chinwag_turnstile_site_key_render() {
     $value = get_option('sarai_chinwag_turnstile_site_key', '');
     echo '<input type="text" name="sarai_chinwag_turnstile_site_key" value="' . esc_attr($value) . '" size="50" />';
@@ -153,14 +148,12 @@ function sarai_chinwag_turnstile_site_key_render() {
     echo '<p class="description">' . __('Get your keys at: <a href="https://dash.cloudflare.com/?to=/:account/turnstile" target="_blank">Cloudflare Turnstile Dashboard</a>', 'sarai-chinwag') . '</p>';
 }
 
-// Turnstile secret key field render
 function sarai_chinwag_turnstile_secret_key_render() {
     $value = get_option('sarai_chinwag_turnstile_secret_key', '');
     echo '<input type="password" name="sarai_chinwag_turnstile_secret_key" value="' . esc_attr($value) . '" size="50" />';
     echo '<p class="description">' . __('Enter your Cloudflare Turnstile secret key (private key). This is used for server-side verification.', 'sarai-chinwag') . '</p>';
 }
 
-// Disable recipes field render
 function sarai_chinwag_disable_recipes_render() {
     $value = get_option('sarai_chinwag_disable_recipes', false);
     echo '<input type="checkbox" name="sarai_chinwag_disable_recipes" value="1" ' . checked(1, $value, false) . ' />';
@@ -168,9 +161,9 @@ function sarai_chinwag_disable_recipes_render() {
 }
 
 /**
- * Render the main settings page HTML
- * 
- * @since 1.0.0
+ * Render settings page HTML
+ *
+ * @since 2.0
  */
 function sarai_chinwag_settings_page() {
     ?>
@@ -198,10 +191,10 @@ function sarai_chinwag_settings_page() {
 
 /**
  * Sanitize and validate IndexNow API key
- * 
- * @param string $input The raw input value
- * @return string Sanitized and validated API key
- * @since 1.0.0
+ *
+ * @param string $input Raw input value
+ * @return string Sanitized API key
+ * @since 2.0
  */
 function sarai_chinwag_sanitize_indexnow_key($input) {
     $input = sanitize_text_field($input);
@@ -222,12 +215,11 @@ add_filter('pre_update_option_sarai_chinwag_indexnow_key', 'sarai_chinwag_saniti
 /**
  * Display admin notice if Turnstile is not configured
  *
- * @since 1.0.0
+ * @since 2.2
  */
 function sarai_chinwag_turnstile_admin_notice() {
     $screen = get_current_screen();
 
-    // Only show on relevant admin pages
     if (!$screen || strpos($screen->id, 'sarai-chinwag') === false) {
         return;
     }

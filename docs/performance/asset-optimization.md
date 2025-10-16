@@ -19,8 +19,10 @@ wp_enqueue_style('sarai-chinwag-style', get_stylesheet_uri(), array(), $style_ve
 
 #### JavaScript Versioning
 ```php
-$nav_version = filemtime(get_template_directory() . '/js/nav.js');
-wp_enqueue_script('sarai-chinwag-nav', get_template_directory_uri() . '/js/nav.js', array(), $nav_version, true);
+$nav_version = filemtime(get_template_directory() . '/inc/assets/js/nav.js');
+wp_enqueue_script('sarai-chinwag-nav',
+    get_template_directory_uri() . '/inc/assets/js/nav.js',
+    array(), $nav_version, true);
 ```
 
 ### Version Management Benefits
@@ -30,6 +32,21 @@ wp_enqueue_script('sarai-chinwag-nav', get_template_directory_uri() . '/js/nav.j
 **CDN Compatibility**: Works with CDN caching strategies
 **Development Friendly**: No manual version bumping during development
 
+## Centralized Asset Management System
+
+### Asset Management Architecture
+
+**Centralized Control**: All asset loading managed via `inc/core/assets.php`
+**Conditional Loading**: CSS and JavaScript files load only when needed
+**Dependency Management**: Proper dependency chains for all assets
+**Dynamic Versioning**: Automatic cache busting using `filemtime()`
+
+**Core Functions**:
+- `sarai_chinwag_enqueue_styles()` - Frontend CSS loading
+- `sarai_chinwag_enqueue_scripts()` - Frontend JavaScript loading
+- `sarai_chinwag_enqueue_admin_styles()` - Admin-only CSS
+- `sarai_chinwag_enqueue_editor_styles()` - Editor-specific styles
+
 ## CSS Optimization
 
 ### Modular CSS Architecture
@@ -37,23 +54,50 @@ wp_enqueue_script('sarai-chinwag-nav', get_template_directory_uri() . '/js/nav.j
 **Root CSS System**: Centralized CSS custom properties
 **File Structure**:
 - `/style.css` - Main theme stylesheet
-- `/css/root.css` - CSS custom properties and variables
-- `/css/customizer.css` - Live preview styling
-- `/css/editor.css` - WordPress editor integration
+- `/inc/assets/css/root.css` - CSS custom properties and variables (loaded first)
+- `/inc/assets/css/customizer.css` - Live preview styling (admin only)
+- `/inc/assets/css/editor.css` - WordPress editor integration
+- `/inc/assets/css/recipes.css` - Recipe-specific styles (conditional)
+- `/inc/assets/css/single.css` - Single post/page styles (conditional)
+- `/inc/assets/css/archive.css` - Archive-specific styles (conditional)
+- `/inc/assets/css/image-mode.css` - Image gallery styles (conditional)
+- `/inc/assets/css/sidebar.css` - Sidebar styles (conditional)
+- `/inc/assets/css/contact.css` - Contact form styles (conditional)
 
 ### CSS Loading Strategy
 
 **Dependency Management**: Proper CSS dependency chains
 ```php
-wp_enqueue_style('sarai-chinwag-style', get_stylesheet_uri(), 
+// Root CSS loaded first with custom properties
+wp_enqueue_style('sarai-chinwag-root-css',
+    $theme_uri . '/inc/assets/css/root.css', array(), $root_version);
+
+// Main stylesheet depends on root CSS
+wp_enqueue_style('sarai-chinwag-style', get_stylesheet_uri(),
     array('sarai-chinwag-root-css'), $style_version);
 ```
 
+**Conditional Loading Examples**:
+```php
+// Recipe styles only on recipe pages
+if (!sarai_chinwag_recipes_disabled() && is_singular('recipe')) {
+    wp_enqueue_style('sarai-chinwag-recipes',
+        $theme_uri . '/inc/assets/css/recipes.css',
+        array('sarai-chinwag-root-css'), $recipes_version);
+}
+
+// Contact form styles only when shortcode is present
+if (sarai_chinwag_has_contact_form()) {
+    wp_enqueue_style('sarai-chinwag-contact',
+        $theme_uri . '/inc/assets/css/contact.css',
+        array('sarai-chinwag-root-css'), $contact_version);
+}
+```
+
 **Load Order Optimization**:
-1. Root CSS with custom properties (highest priority)
-2. Main theme stylesheet
-3. Customizer CSS for live preview
-4. Editor-specific CSS (admin only)
+1. Root CSS with custom properties (highest priority, always loaded)
+2. Main theme stylesheet (always loaded, depends on root)
+3. Context-specific CSS (conditional based on page type)
 
 ### CSS Performance Features
 
@@ -66,20 +110,32 @@ wp_enqueue_style('sarai-chinwag-style', get_stylesheet_uri(),
 
 ### Modular JavaScript Architecture
 
-**Core JavaScript Files**:
-- `/js/nav.js` - Header navigation functionality
+**Centralized JavaScript** (loaded via `inc/core/assets.php`):
+- `/inc/assets/js/nav.js` - Header navigation functionality
+- `/inc/assets/js/gallery-utils.js` - Image gallery utilities
+- `/inc/assets/js/pinterest.js` - Pinterest integration
+
+**Root-Level JavaScript** (specialized functionality):
 - `/js/filter-bar.js` - Advanced AJAX filtering system
 - `/js/load-more.js` - Infinite scroll functionality
 - `/js/rating.js` - Recipe rating system
-- `/js/gallery-utils.js` - Image gallery utilities
-- `/js/pinterest.js` - Pinterest integration
 - `/js/customizer.js` - Live preview functionality
+- `/js/contact-form.js` - Contact form handling
 
 ### JavaScript Loading Strategy
 
-**Footer Loading**: Scripts loaded in footer for optimal performance
+**Centralized Loading**: Core scripts loaded via `sarai_chinwag_enqueue_scripts()`
+```php
+// Navigation script with dynamic versioning
+$nav_version = filemtime($theme_dir . '/inc/assets/js/nav.js');
+wp_enqueue_script('sarai-chinwag-nav',
+    $theme_uri . '/inc/assets/js/nav.js',
+    array(), $nav_version, true);
+```
+
+**Footer Loading**: All scripts loaded in footer for optimal performance
 **Dependency Management**: Proper script dependencies defined
-**Conditional Loading**: Scripts loaded only when needed
+**Conditional Loading**: Specialized scripts loaded only when needed
 **No Inline JavaScript**: All JavaScript in external files
 
 ### Performance JavaScript Features

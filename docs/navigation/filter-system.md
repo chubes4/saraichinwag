@@ -7,8 +7,9 @@ The Sarai Chinwag theme features a comprehensive AJAX-powered filter system that
 ### Filter Bar Components
 
 **Template**: `template-parts/filter-bar.php`
-**JavaScript**: `/js/filter-bar.js`
+**JavaScript**: `/js/filter-bar.js` (root-level specialized script)
 **Styling**: Integrated responsive design with mobile-friendly buttons
+**Asset Management**: Filter bar JavaScript loaded separately from centralized system for specialized functionality
 
 **Filter Categories**:
 1. **Sort Filters** - Content ordering options

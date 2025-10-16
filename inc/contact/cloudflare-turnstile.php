@@ -2,19 +2,19 @@
 /**
  * Cloudflare Turnstile Integration
  *
- * Handles verification of Turnstile tokens with Cloudflare API
+ * Handles server-side verification with Cloudflare API
  *
  * @package Sarai_Chinwag
- * @since 1.0.0
+ * @since 2.2
  */
 
 /**
  * Verify Turnstile token with Cloudflare API
  *
- * @param string $token Turnstile response token from frontend
- * @param string $user_ip User's IP address
- * @return true|WP_Error True if verification succeeds, WP_Error on failure
- * @since 1.0.0
+ * @param string $token Turnstile response token
+ * @param string $user_ip User IP address
+ * @return true|WP_Error True if verification succeeds
+ * @since 2.2
  */
 function sarai_chinwag_verify_turnstile_token($token, $user_ip) {
     $secret_key = get_option('sarai_chinwag_turnstile_secret_key', '');

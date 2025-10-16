@@ -41,13 +41,32 @@ The theme uses organized PHP modules in the `/inc` directory loaded via function
 - **Core modules**: recipes.php, ratings.php for recipe functionality
 - **Integration modules**: bing-index-now.php, yoast-stuff.php for third-party compatibility
 
+### Centralized Asset Management
+- **inc/core/assets.php**: Centralized asset management system controlling all CSS and JavaScript enqueuing with conditional loading, dynamic versioning using `filemtime()`, and proper dependency management
+
+### CSS Structure
+- **inc/assets/css/root.css**: Centralized CSS custom properties and variables (loaded first)
+- **inc/assets/css/customizer.css**: Live preview styling for WordPress Customizer (admin only)
+- **inc/assets/css/editor.css**: WordPress Block Editor and Classic Editor font integration
+- **inc/assets/css/recipes.css**: Recipe-specific styles (conditionally loaded when viewing recipes)
+- **inc/assets/css/single.css**: Single post/page styles (conditionally loaded)
+- **inc/assets/css/archive.css**: Archive-specific styles (conditionally loaded)
+- **inc/assets/css/image-mode.css**: Image gallery mode styles (conditionally loaded)
+- **inc/assets/css/sidebar.css**: Sidebar-specific styles (conditionally loaded)
+- **inc/assets/css/contact.css**: Contact form styles (conditionally loaded when shortcode present)
+- **style.css**: Primary stylesheet (depends on root.css)
+
 ### JavaScript Structure
-- **js/nav.js**: Header search functionality with position adjustment for admin bar
+
+**Centralized Assets** (loaded via inc/core/assets.php):
+- **inc/assets/js/nav.js**: Header search functionality with position adjustment for admin bar
+- **inc/assets/js/gallery-utils.js**: Image gallery navigation, lightbox functionality, and gallery-specific interactions
+- **inc/assets/js/pinterest.js**: Pinterest save button integration and enhanced social functionality
+
+**Root-Level Scripts** (specialized functionality):
 - **js/customizer.js**: Live preview functionality for font changes and size scaling in WordPress Customizer
 - **js/filter-bar.js**: Advanced AJAX filtering system with sort options and post type filtering
 - **js/load-more.js**: AJAX Load More functionality that preserves filter state
-- **js/gallery-utils.js**: Image gallery navigation, lightbox functionality, and gallery-specific interactions
-- **js/pinterest.js**: Pinterest save button integration and enhanced social functionality
 - **js/rating.js**: AJAX rating system with localStorage persistence, nonce security, dual-state management (user + server average), and automatic default 5-star ratings for new recipes
 - **js/contact-form.js**: AJAX-powered contact form with Cloudflare Turnstile integration and validation
 
@@ -189,7 +208,7 @@ The theme includes a comprehensive image gallery system for enhanced content dis
 - **Automatic Image Extraction**: Extracts featured images, gallery images, and content images from posts
 - **Category/Tag Image Archives**: View all images from specific categories or tags in gallery format
 - **Image Search Integration**: Search specifically within image content with gallery display
-- **Lightbox Functionality**: Enhanced image viewing with navigation via `js/gallery-utils.js`
+- **Lightbox Functionality**: Enhanced image viewing with navigation via `inc/assets/js/gallery-utils.js`
 - **Performance Caching**: wp_cache_* with `sarai_chinwag_images` cache group for fast image retrieval
 - **Responsive Gallery Grid**: Adapts to 4-column grid system with optimized image sizing
 
@@ -439,7 +458,7 @@ The footer has been streamlined for better user experience and SEO performance:
 **Technical Implementation:**
 - Dynamic Pinterest username from admin settings (`sarai_chinwag_pinterest_username`)
 - Clean Bootstrap Icons SVG for Pinterest logo (16x16 viewBox)
-- Enhanced Pinterest save button functionality via `js/pinterest.js`
+- Enhanced Pinterest save button functionality via `inc/assets/js/pinterest.js`
 - Proper `rel="noopener noreferrer"` attributes for external links
 - Translation-ready text with `translate="no"` attributes for proper names
 

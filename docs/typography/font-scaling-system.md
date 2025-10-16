@@ -63,7 +63,7 @@ The Sarai Chinwag theme implements a comprehensive percentage-based font scaling
 
 ### CSS Custom Properties
 
-**Root Variables** (in `/css/root.css`):
+**Root Variables** (in `/inc/assets/css/root.css`):
 ```css
 :root {
     --font-heading-scale: 1.0;
@@ -179,10 +179,11 @@ wp.customize('sarai_chinwag_heading_font_size', function(setting) {
 
 ### CSS Generation Efficiency
 
-**File-Based Approach**: CSS custom properties written to `/css/root.css`
+**File-Based Approach**: CSS custom properties written to `/inc/assets/css/root.css`
 **Update Triggers**: File regenerated only when settings change
 **No Inline Styles**: Clean HTML without style attributes
 **Caching Friendly**: Static file can be cached effectively
+**Asset Management**: Loaded via centralized system in `inc/core/assets.php`
 
 ### Browser Performance
 
@@ -233,7 +234,7 @@ wp.customize('sarai_chinwag_heading_font_size', function(setting) {
 
 **Debug Steps**:
 1. Inspect CSS custom property values
-2. Check `/css/root.css` file updates
+2. Check `/inc/assets/css/root.css` file updates
 3. Verify JavaScript customizer integration
 4. Test live preview functionality
 

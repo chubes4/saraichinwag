@@ -96,17 +96,18 @@ The Sarai Chinwag theme provides seamless typography integration between WordPre
 
 ### Root CSS Integration
 
-**File**: `/css/root.css`
+**File**: `/inc/assets/css/root.css`
 **Loading Priority**: Highest priority to establish CSS custom properties
 **Editor Loading**: Same file loaded in editors and frontend
 **Consistency**: Ensures identical typography across all contexts
 
 ### Editor-Specific CSS
 
-**File**: `/css/editor.css`
+**File**: `/inc/assets/css/editor.css`
 **Purpose**: WordPress editor-specific styling adjustments
 **Integration**: Works with root CSS custom properties
 **Scope**: Editor interface only, not frontend
+**Loading**: Managed via centralized asset system in `inc/core/assets.php`
 
 ### Dynamic CSS Generation
 

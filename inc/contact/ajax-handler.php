@@ -2,19 +2,18 @@
 /**
  * Contact Form AJAX Handler
  *
- * Processes contact form submissions via AJAX
+ * Processes contact form submissions with Cloudflare Turnstile verification
  *
  * @package Sarai_Chinwag
- * @since 1.0.0
+ * @since 2.2
  */
 
 /**
- * Handle contact form submission
+ * Handle contact form submission via AJAX
  *
- * @since 1.0.0
+ * @since 2.2
  */
 function sarai_chinwag_submit_contact_form() {
-    // Nonce verification
     if (!check_ajax_referer('contact_form_nonce', 'nonce', false)) {
         wp_send_json_error(array('message' => __('Security verification failed.', 'sarai-chinwag')));
         wp_die();
@@ -27,7 +26,6 @@ function sarai_chinwag_submit_contact_form() {
     $message = isset($_POST['message']) ? sanitize_textarea_field($_POST['message']) : '';
     $turnstile_token = isset($_POST['turnstile_token']) ? sanitize_text_field($_POST['turnstile_token']) : '';
 
-    // Required field validation
     if (empty($name)) {
         wp_send_json_error(array('message' => __('Name is required.', 'sarai-chinwag')));
         wp_die();
@@ -48,10 +46,8 @@ function sarai_chinwag_submit_contact_form() {
         wp_die();
     }
 
-    // Get user IP
     $user_ip = $_SERVER['REMOTE_ADDR'];
 
-    // Verify Turnstile token
     $turnstile_result = sarai_chinwag_verify_turnstile_token($turnstile_token, $user_ip);
 
     if (is_wp_error($turnstile_result)) {
@@ -59,7 +55,6 @@ function sarai_chinwag_submit_contact_form() {
         wp_die();
     }
 
-    // Prepare form data
     $form_data = array(
         'name' => $name,
         'email' => $email,
@@ -68,7 +63,6 @@ function sarai_chinwag_submit_contact_form() {
         'ip' => $user_ip
     );
 
-    // Send admin notification
     $admin_sent = sarai_chinwag_send_admin_notification($form_data);
 
     if (!$admin_sent) {
@@ -76,7 +70,6 @@ function sarai_chinwag_submit_contact_form() {
         wp_die();
     }
 
-    // Send submitter copy
     sarai_chinwag_send_submitter_copy($form_data);
 
     wp_send_json_success(array(

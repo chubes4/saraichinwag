@@ -1,6 +1,11 @@
 <?php
 /**
- * Filter bar system for home and archive pages
+ * Filter Bar System
+ *
+ * Displays filter bar on home, archive, search, and image gallery pages
+ *
+ * @package Sarai_Chinwag
+ * @since 2.0
  */
 
 function sarai_chinwag_display_filter_bar() {
@@ -16,7 +21,10 @@ function sarai_chinwag_display_filter_bar() {
 }
 
 /**
- * Check if current page has both posts and recipes for type filtering
+ * Check if current page has both posts and recipes
+ *
+ * @return bool True if both types exist
+ * @since 2.0
  */
 function sarai_chinwag_show_type_filters() {
     if (sarai_chinwag_recipes_disabled()) {

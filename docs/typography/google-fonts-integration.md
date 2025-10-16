@@ -128,7 +128,7 @@ https://fonts.googleapis.com/css2?family=FontName:wght@400;500;600;700&display=s
 
 ### CSS Custom Properties
 
-**Root Variables**: Defined in `/css/root.css`
+**Root Variables**: Defined in `/inc/assets/css/root.css`
 ```css
 :root {
     --font-heading: [Selected Font], Helvetica, Arial, sans-serif;
@@ -137,8 +137,9 @@ https://fonts.googleapis.com/css2?family=FontName:wght@400;500;600;700&display=s
 ```
 
 **Dynamic Generation**: CSS file updated when customizer settings change
-**File Location**: `/css/root.css`
+**File Location**: `/inc/assets/css/root.css`
 **Update Triggers**: Customizer save, theme activation
+**Asset Management**: Loaded via centralized system in `inc/core/assets.php`
 
 ### Font Family Implementation
 

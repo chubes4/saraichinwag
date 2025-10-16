@@ -33,6 +33,7 @@ echo -e "${YELLOW}Copying theme files...${NC}"
 rsync -av --progress \
     --exclude='dist/' \
     --exclude='docs/' \
+    --exclude='.claude/' \
     --exclude='.git/' \
     --exclude='.DS_Store' \
     --exclude='*.log' \

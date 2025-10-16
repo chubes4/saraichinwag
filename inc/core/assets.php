@@ -163,19 +163,6 @@ function sarai_chinwag_enqueue_admin_styles() {
     );
 }
 
-/**
- * Enqueue block editor CSS assets
- *
- * Loads editor-specific styles for Gutenberg.
- * Note: Font loading is handled by customizer.php functions.
- */
-function sarai_chinwag_enqueue_editor_styles() {
-    // Editor styles are now handled by customizer.php for consistency
-    // This prevents double-loading of root.css and ensures proper dependency chain
-}
-
-// Hook asset loading into WordPress
 add_action('wp_enqueue_scripts', 'sarai_chinwag_enqueue_styles');
 add_action('wp_enqueue_scripts', 'sarai_chinwag_enqueue_scripts');
 add_action('admin_enqueue_scripts', 'sarai_chinwag_enqueue_admin_styles');
-add_action('after_setup_theme', 'sarai_chinwag_enqueue_editor_styles');

@@ -42,11 +42,12 @@ This documentation is organized by functional components:
 - **Font Scaling System** - Responsive typography with percentage-based scaling
 - **Editor Integration** - Consistent fonts between editors and frontend
 
-### [Contact Form System](https://github.com/chubes4/sarai-chinwag/tree/main/inc/contact)
-- **Cloudflare Turnstile Integration** - Bot protection for contact forms
+### Contact Form System
+- **Cloudflare Turnstile Integration** - Bot protection for contact forms (configured in Settings → Theme Settings)
 - **AJAX Form Processing** - Real-time form submission and validation
 - **Email Notifications** - Automated admin and submitter email handling
 - **Shortcode Integration** - Easy form embedding with `[sarai_contact_form]`
+- **Implementation**: See `/inc/contact/` directory for form processing and email handling
 
 ### [Performance & Caching](performance/)
 - **Object Caching** - wp_cache_* implementation across all systems

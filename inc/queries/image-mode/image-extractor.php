@@ -1,17 +1,21 @@
 <?php
 /**
- * Image Extractor System for gallery archives with caching
+ * Image Extractor System
+ *
+ * Extracts images from posts for gallery archives
  *
  * @package Sarai_Chinwag
+ * @since 2.1
  */
 
 /**
- * Extract all images from posts in specific term with caching
+ * Extract images from posts in specific term
  *
  * @param int $term_id Term ID
- * @param string $term_type Taxonomy (category, post_tag)
- * @param int $limit Maximum images to return
+ * @param string $term_type Taxonomy
+ * @param int $limit Maximum images
  * @return array Array of image data
+ * @since 2.1
  */
 function sarai_chinwag_extract_images_from_term($term_id, $term_type, $limit = 30) {
     $cache_key = "sarai_chinwag_term_images_{$term_id}_{$term_type}";
@@ -77,10 +81,11 @@ function sarai_chinwag_extract_images_from_term($term_id, $term_type, $limit = 3
 }
 
 /**
- * Extract all images from single post
+ * Extract images from single post
  *
  * @param int $post_id Post ID
- * @return array Array of image data
+ * @return array Image data
+ * @since 2.1
  */
 function sarai_chinwag_extract_images_from_post($post_id) {
     $images = array();
@@ -113,8 +118,9 @@ function sarai_chinwag_extract_images_from_post($post_id) {
  * Extract images from Gutenberg blocks
  *
  * @param array $blocks Block data
- * @param int $post_id Source post ID
- * @return array Array of image data
+ * @param int $post_id Post ID
+ * @return array Image data
+ * @since 2.1
  */
 function sarai_chinwag_extract_images_from_blocks($blocks, $post_id) {
     $images = array();
@@ -158,9 +164,10 @@ function sarai_chinwag_extract_images_from_blocks($blocks, $post_id) {
  * Get formatted image data for gallery display
  *
  * @param int $attachment_id Attachment ID
- * @param int $post_id Source post ID
- * @param string $source Where the image was found (featured, content, gallery, etc.)
- * @return array|false Image data or false if invalid
+ * @param int $post_id Post ID
+ * @param string $source Image source
+ * @return array|false Image data or false
+ * @since 2.1
  */
 function sarai_chinwag_get_image_data($attachment_id, $post_id, $source = 'content') {
     $attachment = get_post($attachment_id);
@@ -201,7 +208,8 @@ function sarai_chinwag_get_image_data($attachment_id, $post_id, $source = 'conte
 /**
  * Clear image cache when posts are updated
  *
- * @param int $post_id Post ID being modified
+ * @param int $post_id Post ID
+ * @since 2.1
  */
 function sarai_chinwag_clear_image_cache_on_post_update($post_id) {
     $categories = get_the_category($post_id);
@@ -228,12 +236,13 @@ add_action('delete_post', 'sarai_chinwag_clear_image_cache_on_post_update');
  * Get filtered and sorted images from term posts for AJAX
  *
  * @param int    $term_id         Term ID
- * @param string $term_type       Taxonomy (category, post_tag)
- * @param string $sort_by         Sort method (random, recent, oldest, popular)
- * @param string $post_type_filter Filter by post type (all, posts, recipes)
- * @param array  $loaded_images   Already loaded attachment IDs
- * @param int    $limit           Maximum images to return
- * @return array Array of image data
+ * @param string $term_type       Taxonomy
+ * @param string $sort_by         Sort method
+ * @param string $post_type_filter Post type filter
+ * @param array  $loaded_images   Loaded attachment IDs
+ * @param int    $limit           Maximum images
+ * @return array Image data
+ * @since 2.1
  */
 function sarai_chinwag_get_filtered_term_images($term_id, $term_type, $sort_by = 'random', $post_type_filter = 'all', $loaded_images = array(), $limit = 30) {
     $post_types = array('post');
@@ -325,10 +334,11 @@ function sarai_chinwag_get_filtered_term_images($term_id, $term_type, $sort_by =
 }
 
 /**
- * Get all images from site posts for /images/ gallery
+ * Get all images from site posts
  *
- * @param int $limit Maximum images to return
- * @return array Array of image data
+ * @param int $limit Maximum images
+ * @return array Image data
+ * @since 2.1
  */
 function sarai_chinwag_get_all_site_images($limit = 30) {
     $cache_key = "sarai_chinwag_all_site_images";
@@ -385,11 +395,12 @@ function sarai_chinwag_get_all_site_images($limit = 30) {
 /**
  * Get filtered images from all site posts for AJAX
  *
- * @param string $sort_by         Sort method (random, recent, oldest, popular)
- * @param string $post_type_filter Filter by post type (all, posts, recipes)
- * @param array  $loaded_images   Already loaded attachment IDs
- * @param int    $limit           Maximum images to return
- * @return array Array of image data
+ * @param string $sort_by         Sort method
+ * @param string $post_type_filter Post type filter
+ * @param array  $loaded_images   Loaded attachment IDs
+ * @param int    $limit           Maximum images
+ * @return array Image data
+ * @since 2.1
  */
 function sarai_chinwag_get_filtered_all_site_images($sort_by = 'random', $post_type_filter = 'all', $loaded_images = array(), $limit = 30) {
     // Determine post types to include

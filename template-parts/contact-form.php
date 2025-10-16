@@ -3,12 +3,11 @@
  * Contact Form Template
  *
  * @package Sarai_Chinwag
- * @since 1.0.0
+ * @since 2.2
  */
 
 $site_key = get_option('sarai_chinwag_turnstile_site_key', '');
 
-// Display error if Turnstile not configured
 if (empty($site_key)) {
     echo '<div class="sarai-contact-form-error">';
     echo '<p>' . __('Contact form is not configured. Please configure Cloudflare Turnstile in Theme Settings.', 'sarai-chinwag') . '</p>';

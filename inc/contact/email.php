@@ -2,18 +2,18 @@
 /**
  * Contact Form Email Functions
  *
- * Handles sending emails for contact form submissions
+ * Handles admin notifications and submitter confirmations
  *
  * @package Sarai_Chinwag
- * @since 1.0.0
+ * @since 2.2
  */
 
 /**
  * Send admin notification email
  *
  * @param array $form_data Form submission data
- * @return bool True if email sent successfully, false otherwise
- * @since 1.0.0
+ * @return bool True if email sent successfully
+ * @since 2.2
  */
 function sarai_chinwag_send_admin_notification($form_data) {
     $recipient = get_option('admin_email');
@@ -44,8 +44,8 @@ function sarai_chinwag_send_admin_notification($form_data) {
  * Send confirmation copy to submitter
  *
  * @param array $form_data Form submission data
- * @return bool True if email sent successfully, false otherwise
- * @since 1.0.0
+ * @return bool True if email sent successfully
+ * @since 2.2
  */
 function sarai_chinwag_send_submitter_copy($form_data) {
     $site_name = get_bloginfo('name');

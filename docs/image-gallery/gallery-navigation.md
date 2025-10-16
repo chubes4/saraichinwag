@@ -78,7 +78,8 @@ SaraiGalleryUtils.distributeFigures(figures, columns)
 ### Gallery JavaScript Utilities
 
 **Core Functions**: Provided by `SaraiGalleryUtils` object
-**File**: `/js/gallery-utils.js`
+**File**: `/inc/assets/js/gallery-utils.js`
+**Asset Management**: Loaded via centralized system in `inc/core/assets.php`
 
 ### Column Management
 

@@ -1,16 +1,17 @@
 <?php
 /**
- * Recipe post type registration with universal theme toggle
+ * Recipe Post Type Registration
+ *
+ * Registers recipe custom post type with universal theme toggle
  *
  * @package Sarai_Chinwag
- * @version 2.2
- * @since 1.0.0
+ * @since 2.0
  */
 
 /**
- * Register Recipe custom post type with Schema.org support
+ * Register Recipe custom post type
  *
- * @since 1.0.0
+ * @since 2.0
  */
 function sarai_chinwag_register_recipe_post_type() {
     if (sarai_chinwag_recipes_disabled()) {
@@ -66,13 +67,12 @@ function sarai_chinwag_register_recipe_post_type() {
 add_action( 'init', 'sarai_chinwag_register_recipe_post_type' );
 
 /**
- * Include recipe post type in all RSS feeds
- * 
- * @param WP_Query $query The WordPress query object
- * @since 1.0.0
+ * Include recipe post type in RSS feeds
+ *
+ * @param WP_Query $query WordPress query object
+ * @since 2.0
  */
 function sarai_chinwag_add_recipe_to_rss_feed( $query ) {
-    // Skip if recipes are disabled
     if (sarai_chinwag_recipes_disabled()) {
         return;
     }

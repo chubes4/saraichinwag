@@ -121,14 +121,33 @@ Toggle recipe functionality in **Settings → Theme Settings**:
 ```
 saraichinwag/
 ├── inc/                          # PHP module directory (organized functionality)
-├── js/                           # JavaScript files
-│   ├── filter-bar.js            # Advanced filter system frontend
+│   ├── admin/                    # Admin interface components
+│   ├── contact/                  # Contact form system
+│   ├── core/
+│   │   └── assets.php           # Centralized asset management
+│   ├── queries/                  # Query modification systems
+│   │   └── image-mode/          # Image gallery system
+│   └── assets/                   # Organized CSS and JavaScript
+│       ├── css/                  # Conditional CSS files
+│       │   ├── root.css         # CSS custom properties (loaded first)
+│       │   ├── archive.css      # Archive-specific styles
+│       │   ├── contact.css      # Contact form styles
+│       │   ├── customizer.css   # Live preview styling (admin)
+│       │   ├── editor.css       # Editor font integration
+│       │   ├── image-mode.css   # Image gallery styles
+│       │   ├── recipes.css      # Recipe-specific styles
+│       │   ├── sidebar.css      # Sidebar styles
+│       │   └── single.css       # Single post/page styles
+│       └── js/                   # Core JavaScript modules
+│           ├── nav.js           # Navigation enhancements
+│           ├── gallery-utils.js # Image gallery functionality
+│           └── pinterest.js     # Pinterest integration
+├── js/                           # Root-level JavaScript (specialized)
+│   ├── filter-bar.js            # Advanced filter system
 │   ├── load-more.js             # AJAX Load More functionality
-│   ├── gallery-utils.js         # Image gallery and lightbox functionality
-│   ├── pinterest.js             # Pinterest save button integration
 │   ├── customizer.js            # Live preview functionality
 │   ├── rating.js                # Recipe rating interactions
-│   └── nav.js                   # Navigation enhancements
+│   └── contact-form.js          # Contact form handling
 ├── template-parts/              # Reusable template components
 │   ├── content-recipe.php       # Recipe display templates
 │   ├── content-single.php       # Single post template
@@ -137,6 +156,7 @@ saraichinwag/
 │   ├── filter-bar.php               # Filter interface component
 │   ├── gallery-item.php             # Individual gallery item
 │   └── archive-image-mode-link.php  # "Try Image Mode" switcher link
+├── style.css                     # Primary stylesheet
 └── fonts/                       # Local theme fonts
 ```
 

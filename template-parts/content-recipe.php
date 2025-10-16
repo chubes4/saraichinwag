@@ -1,8 +1,9 @@
 <?php
 /**
- * Template part for displaying recipes in the loop and single views
+ * Template part for displaying recipes
  *
  * @package Sarai_Chinwag
+ * @since 2.0
  */
 ?>
 

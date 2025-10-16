@@ -166,12 +166,13 @@ The Sarai Chinwag theme provides extensive customization options through the Wor
 
 ### Root CSS Variables
 
-**File**: `/css/root.css`
+**File**: `/inc/assets/css/root.css`
 
 **Dynamic Generation**:
 - CSS custom properties updated when settings change
 - Centralized variable system for consistency
 - Responsive typography using clamp() functions
+- Loaded via centralized asset management system
 
 **Key Variables**:
 ```css
@@ -214,7 +215,7 @@ The Sarai Chinwag theme provides extensive customization options through the Wor
 ### CSS Generation
 
 **File-Based Approach**:
-- CSS variables written to `/css/root.css`
+- CSS variables written to `/inc/assets/css/root.css`
 - No inline styles in HTML
 - Consistent styling across all page loads
 
