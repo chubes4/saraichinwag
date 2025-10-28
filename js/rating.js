@@ -1,6 +1,5 @@
 /**
- * Recipe Rating System with AJAX submission and localStorage persistence
- * Dual-state management: localStorage for UI feedback, AJAX for server storage
+ * Recipe rating system with localStorage and AJAX
  */
 document.addEventListener('DOMContentLoaded', function () {
     const { __, sprintf } = wp.i18n;
@@ -15,10 +14,6 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
-    /**
-     * Update visual star display
-     * @param {number} rating Rating value (1-5)
-     */
     function setStars(rating) {
         stars.forEach((star, index) => {
             if (index < rating) {
@@ -59,10 +54,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    /**
-     * Submit rating to server with error handling and UI updates
-     * @param {number} rating User's rating (1-5)
-     */
     function saveRatingToServer(rating) {
         ratingWidget.classList.add('loading');
         

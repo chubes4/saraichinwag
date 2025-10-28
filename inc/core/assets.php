@@ -2,19 +2,13 @@
 /**
  * Centralized Asset Management
  *
- * Handles all CSS and JavaScript enqueuing for the Sarai Chinwag theme.
- * This file serves as the single source of truth for asset loading,
- * managing dependencies, versioning, and conditional loading.
+ * Single source of truth for all CSS/JavaScript enqueuing with
+ * dependency management, versioning, and conditional loading.
  *
  * @package Sarai_Chinwag
  * @since 2.2
  */
 
-/**
- * Enqueue all frontend CSS assets
- *
- * Loads stylesheets in proper dependency order with file-based versioning.
- */
 function sarai_chinwag_enqueue_styles() {
     $theme_dir = get_template_directory();
     $theme_uri = get_template_directory_uri();
@@ -104,12 +98,6 @@ function sarai_chinwag_enqueue_styles() {
     }
 }
 
-/**
- * Enqueue all frontend JavaScript assets
- *
- * Loads scripts with proper dependencies and versions.
- * All scripts load in footer for optimal page performance.
- */
 function sarai_chinwag_enqueue_scripts() {
     $theme_dir = get_template_directory();
     $theme_uri = get_template_directory_uri();
@@ -145,24 +133,5 @@ function sarai_chinwag_enqueue_scripts() {
     );
 }
 
-/**
- * Enqueue admin-only CSS assets
- *
- * Loads customizer styles in WordPress admin context.
- */
-function sarai_chinwag_enqueue_admin_styles() {
-    $theme_dir = get_template_directory();
-    $theme_uri = get_template_directory_uri();
-
-    $customizer_version = filemtime($theme_dir . '/inc/assets/css/customizer.css');
-    wp_enqueue_style(
-        'sarai-chinwag-customizer',
-        $theme_uri . '/inc/assets/css/customizer.css',
-        array(),
-        $customizer_version
-    );
-}
-
 add_action('wp_enqueue_scripts', 'sarai_chinwag_enqueue_styles');
 add_action('wp_enqueue_scripts', 'sarai_chinwag_enqueue_scripts');
-add_action('admin_enqueue_scripts', 'sarai_chinwag_enqueue_admin_styles');

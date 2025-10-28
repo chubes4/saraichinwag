@@ -70,6 +70,60 @@ h1.entry-title {
     position: relative;
 }
 
+/* ===== RANDOM DISCOVERY SECTION ===== */
+
+.random-discovery {
+    margin: 30px 0;
+    padding: 20px 0;
+    border-top: 3px dashed var(--color-secondary);
+}
+
+.random-discovery .widget-title {
+    text-align: center;
+    margin-bottom: 20px;
+    background: var(--color-primary);
+    color: var(--color-background);
+    padding: 8px 15px;
+    border-bottom: 4px solid #000;
+    border-radius: 10px;
+    width: max-content;
+    margin: 0 auto 20px;
+}
+
+.discovery-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    gap: 15px;
+}
+
+.discovery-post {
+    flex: 1 1 30%;
+    max-width: 30%;
+    min-width: 250px;
+    text-align: center;
+}
+
+.discovery-post .entry-title {
+    font-size: 1.1em;
+    margin: 10px 0 5px;
+    line-height: 1.4;
+}
+
+.discovery-post .entry-title a {
+    color: var(--color-text);
+    text-decoration: underline;
+    text-decoration-color: var(--color-primary);
+}
+
+.discovery-post .entry-title a:hover {
+    text-decoration-color: var(--color-secondary);
+}
+
+.discovery-post .post-thumbnail {
+    margin-bottom: 10px;
+}
+
 /* ===== MOBILE RESPONSIVE ===== */
 
 /* Consolidated badge-breadcrumb mobile styles */
@@ -82,5 +136,24 @@ h1.entry-title {
     .badge-breadcrumb {
         padding: 5px 10px;
         font-size: 0.7em;
+    }
+
+    .random-discovery {
+        margin: 20px 0;
+        padding: 15px 0;
+    }
+
+    .discovery-grid {
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .discovery-post {
+        flex: 1 1 100%;
+        max-width: 100%;
+    }
+
+    .discovery-post .post-thumbnail {
+        margin-bottom: 15px;
     }
 }

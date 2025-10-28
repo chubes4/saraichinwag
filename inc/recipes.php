@@ -8,11 +8,6 @@
  * @since 2.0
  */
 
-/**
- * Register Recipe custom post type
- *
- * @since 2.0
- */
 function sarai_chinwag_register_recipe_post_type() {
     if (sarai_chinwag_recipes_disabled()) {
         return;
@@ -66,12 +61,6 @@ function sarai_chinwag_register_recipe_post_type() {
 
 add_action( 'init', 'sarai_chinwag_register_recipe_post_type' );
 
-/**
- * Include recipe post type in RSS feeds
- *
- * @param WP_Query $query WordPress query object
- * @since 2.0
- */
 function sarai_chinwag_add_recipe_to_rss_feed( $query ) {
     if (sarai_chinwag_recipes_disabled()) {
         return;

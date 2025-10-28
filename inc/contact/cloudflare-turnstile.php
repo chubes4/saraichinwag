@@ -8,14 +8,6 @@
  * @since 2.2
  */
 
-/**
- * Verify Turnstile token with Cloudflare API
- *
- * @param string $token Turnstile response token
- * @param string $user_ip User IP address
- * @return true|WP_Error True if verification succeeds
- * @since 2.2
- */
 function sarai_chinwag_verify_turnstile_token($token, $user_ip) {
     $secret_key = get_option('sarai_chinwag_turnstile_secret_key', '');
 

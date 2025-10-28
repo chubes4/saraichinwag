@@ -1,10 +1,9 @@
 <?php
 /**
- * WordPress Customizer integration with Google Fonts and live preview
+ * WordPress Customizer with Google Fonts integration
  *
  * @package Sarai_Chinwag
- * @version 2.2
- * @since 1.0.0
+ * @since 2.2
  */
 
 function sarai_chinwag_customize_register($wp_customize) {
@@ -148,9 +147,6 @@ function sarai_chinwag_customize_register($wp_customize) {
 }
 add_action('customize_register', 'sarai_chinwag_customize_register');
 
-/**
- * Fetch Google Fonts from API by category with caching
- */
 function sarai_chinwag_fetch_google_fonts_by_category($category = '') {
     $api_key = get_option('sarai_chinwag_google_fonts_api_key', '');
     
@@ -191,9 +187,6 @@ function sarai_chinwag_fetch_google_fonts_by_category($category = '') {
     return $fonts;
 }
 
-/**
- * Get fonts for customizer dropdowns with fallbacks
- */
 function sarai_chinwag_get_google_fonts($type = '') {
     $fonts = array();
     
@@ -239,9 +232,6 @@ function sarai_chinwag_get_fonts_to_load() {
     return $fonts_to_load;
 }
 
-/**
- * Enqueue Google Fonts based on customizer selections
- */
 function sarai_chinwag_enqueue_google_fonts() {
     $fonts_to_load = sarai_chinwag_get_fonts_to_load();
     
@@ -257,9 +247,6 @@ function sarai_chinwag_enqueue_google_fonts() {
 }
 add_action('wp_enqueue_scripts', 'sarai_chinwag_enqueue_google_fonts');
 
-/**
- * Enqueue root.css, editor.css, and Google Fonts for Classic Editor
- */
 function sarai_chinwag_enqueue_admin_google_fonts($hook) {
     if (!in_array($hook, array('post.php', 'post-new.php'))) {
         return;
@@ -304,9 +291,6 @@ function sarai_chinwag_enqueue_admin_google_fonts($hook) {
 }
 add_action('admin_enqueue_scripts', 'sarai_chinwag_enqueue_admin_google_fonts');
 
-/**
- * Update root.css file with current customizer values
- */
 function sarai_chinwag_update_root_css() {
     $heading_font = get_theme_mod('sarai_chinwag_heading_font', 'System Fonts');
     $body_font = get_theme_mod('sarai_chinwag_body_font', 'System Fonts');
@@ -377,11 +361,11 @@ add_action('after_setup_theme', 'sarai_chinwag_initialize_root_css');
 function sarai_chinwag_get_font_family($font_name) {
     switch ($font_name) {
         case 'Gluten':
-            return "Gluten, Helvetica, Arial, sans-serif";
+            return "'Gluten', 'Helvetica', Arial, sans-serif";
         case 'System Fonts':
-            return "Helvetica, Arial, sans-serif";
+            return "'Helvetica', Arial, sans-serif";
         default:
-            return "{$font_name}, Helvetica, Arial, sans-serif";
+            return "'{$font_name}', 'Helvetica', Arial, sans-serif";
     }
 }
 

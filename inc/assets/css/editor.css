@@ -9,6 +9,18 @@
 .editor-styles-wrapper blockquote {
     font-family: var(--font-body);
     font-size: calc(20px * var(--font-body-scale));
+    line-height: 1.9;
+    font-weight: 400;
+}
+
+/* WordPress Block-specific selectors for better targeting */
+.editor-styles-wrapper .wp-block-paragraph,
+.editor-styles-wrapper .wp-block-list,
+.editor-styles-wrapper .wp-block-quote {
+    font-family: var(--font-body);
+    font-size: calc(20px * var(--font-body-scale));
+    line-height: 1.9;
+    font-weight: 400;
 }
 
 /* Heading styles - scoped to content area with text-transform */

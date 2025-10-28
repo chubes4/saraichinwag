@@ -55,12 +55,14 @@ The Sarai Chinwag theme provides seamless typography integration between WordPre
 
 ### Block-Specific Typography
 
-**Heading Blocks**: Use heading font and scaling from customizer
-**Paragraph Blocks**: Use body font and scaling from customizer  
-**List Blocks**: Inherit body typography settings
-**Quote Blocks**: Enhanced typography with proper scaling
+**Heading Blocks**: Use heading font and scaling from customizer with font-weight: 600
+**Paragraph Blocks**: Use body font and scaling from customizer with font-weight: 400 and line-height: 1.9
+**List Blocks**: Inherit body typography settings with font-weight: 400 and line-height: 1.9
+**Quote Blocks**: Enhanced typography with proper scaling and body font weight
 
-**Implementation**: CSS custom properties ensure consistent styling
+**Implementation**: CSS custom properties ensure consistent styling with explicit font-weight and line-height declarations
+**Body Font Consistency**: Matches frontend with font-weight: 400 (normal) and line-height: 1.9
+**WordPress Block Targeting**: Includes specific selectors for `.wp-block-paragraph`, `.wp-block-list`, `.wp-block-quote`
 **Responsive**: Editor typography scales with customizer settings
 **Live Updates**: Changes in customizer immediately visible in editor
 
@@ -104,10 +106,10 @@ The Sarai Chinwag theme provides seamless typography integration between WordPre
 ### Editor-Specific CSS
 
 **File**: `/inc/assets/css/editor.css`
-**Purpose**: WordPress editor-specific styling adjustments
+**Purpose**: WordPress editor-specific styling adjustments with body font weight and line-height
 **Integration**: Works with root CSS custom properties
 **Scope**: Editor interface only, not frontend
-**Loading**: Managed via centralized asset system in `inc/core/assets.php`
+**Loading**: Block Editor via `enqueue_block_editor_assets` hook in functions.php, Classic Editor via `admin_enqueue_scripts` in customizer.php
 
 ### Dynamic CSS Generation
 

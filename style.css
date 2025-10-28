@@ -432,7 +432,7 @@ fill: #fff;
         margin: auto;
     }
     }
-}
+
 
 /* Large Devices, Wide Screens */
 @media only screen and (min-width : 1200px) {
@@ -568,5 +568,293 @@ button:focus, a:focus {
     .pinterest-follow-btn {
         padding: 10px 20px;
         font-size: 14px;
+    }
+}
+
+/* ===== FILTER BAR SYSTEM ===== */
+
+.filter-bar {
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid var(--color-border);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px auto 30px;
+    max-width: 75%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.filter-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.filter-label {
+    font-weight: 600;
+    color: var(--color-text);
+    margin-right: 5px;
+    white-space: nowrap;
+}
+
+.filter-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    background: white;
+    border: 2px solid var(--color-border);
+    color: var(--color-text);
+    padding: 8px 16px;
+    border-radius: 24px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.filter-btn:hover {
+    border-color: var(--color-primary);
+    background: var(--color-primary);
+    color: white;
+    transform: translateY(-1px);
+}
+
+.filter-btn.active {
+    background: var(--color-primary);
+    border-color: var(--color-primary);
+    color: white;
+}
+
+.type-btn {
+    border-color: var(--color-secondary);
+}
+
+.type-btn:hover {
+    border-color: var(--color-secondary);
+    background: var(--color-secondary);
+    color: white;
+    transform: translateY(-1px);
+}
+
+.type-btn.active {
+    background: var(--color-secondary);
+    border-color: var(--color-secondary);
+    color: white;
+}
+
+.filter-data {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .filter-bar {
+        max-width: 95%;
+        flex-direction: column;
+        align-items: center;
+        gap: 12px;
+        padding: 12px;
+        margin: 15px auto 25px;
+    }
+
+    .filter-section {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .filter-buttons {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .filter-btn {
+        padding: 8px 12px;
+        font-size: 13px;
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    #random_posts a, #random_recipes a {
+        min-height: 44px;
+        padding: 12px;
+    }
+
+    #random-icon-link {
+        padding: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .filter-bar {
+        max-width: 98%;
+        margin: 10px auto 20px;
+        padding: 10px;
+    }
+
+    .filter-section {
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .filter-buttons {
+        width: 100%;
+        justify-content: center;
+        gap: 6px;
+    }
+
+    .filter-btn {
+        padding: 8px 12px;
+        font-size: 12px;
+        min-width: 50px;
+        min-height: 44px;
+    }
+
+    .pinterest-follow-btn {
+        min-height: 44px;
+        padding: 8px 12px;
+    }
+}
+
+/* ===== GALLERY DISCOVERY BADGES ===== */
+
+.gallery-discovery-badges {
+    margin: 20px 0 25px 0;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    border: 1px solid #e5e5e5;
+}
+
+.gallery-badges-title {
+    font-size: 1.1em;
+    font-weight: 600;
+    margin: 0 0 10px 0;
+    color: var(--color-text);
+    text-align: center;
+}
+
+.gallery-badges-description {
+    font-size: 0.9em;
+    color: #666;
+    text-align: center;
+    margin: 0 0 15px 0;
+    font-style: italic;
+}
+
+.gallery-badges-nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.gallery-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 14px;
+    font-size: 0.8em;
+    font-weight: 500;
+    text-decoration: none;
+    border-radius: 25px;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    border: 2px solid transparent;
+}
+
+.gallery-badge .badge-text {
+    font-weight: 600;
+}
+
+.gallery-badge .badge-count {
+    font-size: 0.9em;
+    opacity: 0.8;
+    font-weight: 400;
+}
+
+.gallery-badge.badge-category {
+    background-color: var(--color-primary);
+    color: var(--color-background);
+}
+
+.gallery-badge.badge-category:hover {
+    background-color: var(--color-secondary);
+    color: var(--color-background);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.gallery-badge.badge-tag {
+    background-color: var(--color-secondary);
+    color: var(--color-background);
+}
+
+.gallery-badge.badge-tag:hover {
+    background-color: var(--color-primary);
+    color: var(--color-background);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.gallery-badge.badge-site {
+    background-color: var(--color-primary);
+    color: var(--color-background);
+}
+
+.gallery-badge.badge-site:hover {
+    background-color: var(--color-secondary);
+    color: var(--color-background);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.gallery-badge.badge-search {
+    background-color: var(--color-secondary);
+    color: var(--color-background);
+}
+
+.gallery-badge.badge-search:hover {
+    background-color: var(--color-primary);
+    color: var(--color-background);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 768px) {
+    .gallery-discovery-badges {
+        margin: 15px 0 20px 0;
+        padding: 15px;
+        border-radius: 8px;
+    }
+
+    .gallery-badges-title {
+        font-size: 1em;
+        margin-bottom: 12px;
+    }
+
+    .gallery-badges-nav {
+        gap: 8px;
+    }
+
+    .gallery-badge {
+        padding: 6px 12px;
+        font-size: 0.75em;
+        gap: 5px;
+        border-radius: 20px;
+    }
+
+    .gallery-badge .badge-count {
+        font-size: 0.85em;
     }
 }

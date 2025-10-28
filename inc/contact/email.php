@@ -8,13 +8,6 @@
  * @since 2.2
  */
 
-/**
- * Send admin notification email
- *
- * @param array $form_data Form submission data
- * @return bool True if email sent successfully
- * @since 2.2
- */
 function sarai_chinwag_send_admin_notification($form_data) {
     $recipient = get_option('admin_email');
     $site_name = get_bloginfo('name');
@@ -40,13 +33,6 @@ function sarai_chinwag_send_admin_notification($form_data) {
     return wp_mail($recipient, $subject, $message, $headers);
 }
 
-/**
- * Send confirmation copy to submitter
- *
- * @param array $form_data Form submission data
- * @return bool True if email sent successfully
- * @since 2.2
- */
 function sarai_chinwag_send_submitter_copy($form_data) {
     $site_name = get_bloginfo('name');
     $admin_email = get_option('admin_email');

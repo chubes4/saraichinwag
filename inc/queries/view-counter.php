@@ -8,11 +8,6 @@
  * @since 2.0
  */
 
-/**
- * Track view for current post on singular pages
- *
- * @since 2.0
- */
 function sarai_chinwag_track_post_view() {
     if (!is_singular(array('post', 'recipe'))) {
         return;
@@ -36,25 +31,11 @@ function sarai_chinwag_track_post_view() {
     update_post_meta($post_id, '_post_views', $new_views);
 }
 
-/**
- * Get view count for post
- *
- * @param int $post_id Post ID
- * @return int View count
- * @since 2.0
- */
 function sarai_chinwag_get_post_views($post_id) {
     $views = get_post_meta($post_id, '_post_views', true);
     return $views ? intval($views) : 0;
 }
 
-/**
- * Display formatted view count
- *
- * @param int $post_id Post ID
- * @return string Formatted count
- * @since 2.0
- */
 function sarai_chinwag_display_post_views($post_id) {
     $views = sarai_chinwag_get_post_views($post_id);
     

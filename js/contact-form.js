@@ -1,12 +1,6 @@
 /**
- * Contact Form JavaScript
- *
- * Handles client-side validation and AJAX submission
- *
- * @package Sarai_Chinwag
- * @since 1.0.0
+ * Contact form AJAX submission and validation
  */
-
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('sarai-contact-form-element');
 

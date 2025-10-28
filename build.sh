@@ -1,18 +1,16 @@
 #!/bin/bash
 
 # Sarai Chinwag Theme Build Script
-# Creates optimized production package and versioned ZIP file
+# Creates optimized production package and ZIP file
 
-set -e  # Exit on any error
+set -e
 
-# Colors for output
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
-NC='\033[0m' # No Color
+NC='\033[0m'
 
-# Get theme version from style.css
 VERSION=$(grep "^Version:" style.css | sed 's/Version: //' | tr -d ' ')
 
 if [ -z "$VERSION" ]; then
@@ -23,12 +21,10 @@ fi
 echo -e "${BLUE}Building Sarai Chinwag Theme v${VERSION}${NC}"
 echo "=================================="
 
-# Clean and create dist directory
 echo -e "${YELLOW}Setting up build directory...${NC}"
 rm -rf dist
 mkdir -p dist
 
-# Copy all files except excluded ones
 echo -e "${YELLOW}Copying theme files...${NC}"
 rsync -av --progress \
     --exclude='dist/' \
@@ -43,13 +39,11 @@ rsync -av --progress \
     --exclude='*.md' \
     ./ dist/saraichinwag/
 
-# Create ZIP file from the saraichinwag directory contents
 echo -e "${YELLOW}Creating ZIP file...${NC}"
 cd dist/saraichinwag
 zip -r "../saraichinwag.zip" . -x "*.DS_Store" "*.log"
 cd ../..
 
-# Display build summary
 echo ""
 echo -e "${GREEN}✓ Build completed successfully!${NC}"
 echo ""

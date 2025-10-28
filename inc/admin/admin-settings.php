@@ -8,11 +8,6 @@
  * @since 2.0
  */
 
-/**
- * Add admin menu item for theme settings
- *
- * @since 2.0
- */
 function sarai_chinwag_add_admin_menu() {
     add_options_page(
         __('Theme Settings', 'sarai-chinwag'),
@@ -24,11 +19,6 @@ function sarai_chinwag_add_admin_menu() {
 }
 add_action('admin_menu', 'sarai_chinwag_add_admin_menu');
 
-/**
- * Initialize theme settings and register fields
- *
- * @since 2.0
- */
 function sarai_chinwag_settings_init() {
     register_setting('sarai_chinwag_settings', 'sarai_chinwag_indexnow_key');
     register_setting('sarai_chinwag_settings', 'sarai_chinwag_disable_recipes');
@@ -160,11 +150,6 @@ function sarai_chinwag_disable_recipes_render() {
     echo '<p class="description">' . __('When enabled, completely disables all recipe-related functionality. Existing recipe posts remain accessible via direct URL but are not discoverable.', 'sarai-chinwag') . '</p>';
 }
 
-/**
- * Render settings page HTML
- *
- * @since 2.0
- */
 function sarai_chinwag_settings_page() {
     ?>
     <div class="wrap">
@@ -189,13 +174,6 @@ function sarai_chinwag_settings_page() {
     <?php
 }
 
-/**
- * Sanitize and validate IndexNow API key
- *
- * @param string $input Raw input value
- * @return string Sanitized API key
- * @since 2.0
- */
 function sarai_chinwag_sanitize_indexnow_key($input) {
     $input = sanitize_text_field($input);
     
@@ -212,11 +190,6 @@ function sarai_chinwag_sanitize_indexnow_key($input) {
 }
 add_filter('pre_update_option_sarai_chinwag_indexnow_key', 'sarai_chinwag_sanitize_indexnow_key');
 
-/**
- * Display admin notice if Turnstile is not configured
- *
- * @since 2.2
- */
 function sarai_chinwag_turnstile_admin_notice() {
     $screen = get_current_screen();
 

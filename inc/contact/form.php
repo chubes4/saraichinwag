@@ -8,12 +8,6 @@
  * @since 2.2
  */
 
-/**
- * Contact form shortcode
- *
- * @return string Form HTML
- * @since 2.2
- */
 function sarai_chinwag_contact_form_shortcode() {
     ob_start();
     get_template_part('template-parts/contact-form');
@@ -21,11 +15,6 @@ function sarai_chinwag_contact_form_shortcode() {
 }
 add_shortcode('sarai_contact_form', 'sarai_chinwag_contact_form_shortcode');
 
-/**
- * Enqueue contact form scripts when shortcode is present
- *
- * @since 2.2
- */
 function sarai_chinwag_enqueue_contact_form_scripts() {
     global $post;
 

@@ -8,11 +8,6 @@
  * @since 2.2
  */
 
-/**
- * Handle contact form submission via AJAX
- *
- * @since 2.2
- */
 function sarai_chinwag_submit_contact_form() {
     if (!check_ajax_referer('contact_form_nonce', 'nonce', false)) {
         wp_send_json_error(array('message' => __('Security verification failed.', 'sarai-chinwag')));

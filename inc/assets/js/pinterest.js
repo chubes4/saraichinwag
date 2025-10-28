@@ -1,6 +1,5 @@
 /**
- * Pinterest integration script
- * Loads Pinterest's pinit.js with proper attributes
+ * Pinterest integration
  */
 (function() {
     const script = document.createElement('script');

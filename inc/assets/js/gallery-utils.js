@@ -1,12 +1,8 @@
 /**
- * Shared gallery utilities for responsive masonry layout
- * Provides column management and image placement utilities
+ * Gallery utilities for responsive masonry layout
  */
 window.SaraiGalleryUtils = (function() {
-    
-    /**
-     * Get responsive column count based on viewport width
-     */
+
     function getColumnCount() {
         if (window.innerWidth < 450) return 1;
         if (window.innerWidth <= 1200) return 3;
@@ -30,9 +26,6 @@ window.SaraiGalleryUtils = (function() {
         ));
     }
     
-    /**
-     * Load template from server
-     */
     function loadTemplate(templateName, args = {}) {
         return new Promise((resolve, reject) => {
             const xhr = new XMLHttpRequest();
@@ -58,16 +51,10 @@ window.SaraiGalleryUtils = (function() {
         });
     }
     
-    /**
-     * Get no-content message template
-     */
     function getNoContentMessage(contentType) {
         return loadTemplate('no-content', { content_type: contentType });
     }
     
-    /**
-     * Distribute figures across columns with balanced approach
-     */
     function distributeFigures(figures, columns) {
         if (columns.length === 0) return;
         

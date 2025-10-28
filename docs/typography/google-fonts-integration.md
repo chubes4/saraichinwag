@@ -146,16 +146,18 @@ https://fonts.googleapis.com/css2?family=FontName:wght@400;500;600;700&display=s
 **Function**: `sarai_chinwag_get_font_family($font_name)`
 
 **Fallback Strategy**:
-1. Selected Google Font (unquoted for Block Editor compatibility)
-2. Gluten (theme default)
-3. Helvetica (system fallback)
-4. Arial (secondary fallback) 
-5. sans-serif (generic fallback)
+1. Selected Google Font (properly quoted for fonts with spaces)
+2. Gluten (theme default, quoted)
+3. Helvetica (system fallback, quoted)
+4. Arial (secondary fallback, no quotes needed)
+5. sans-serif (generic fallback, no quotes needed)
 
 **Example Output**:
 ```css
-font-family: Open Sans, Gluten, Helvetica, Arial, sans-serif;
+font-family: 'Open Sans', 'Helvetica', Arial, sans-serif;
 ```
+
+**Quoting**: Font names with spaces (like "Open Sans", "Playfair Display") are properly quoted to ensure CSS validity and consistent rendering across all browsers and editors.
 
 ## Performance Optimization
 

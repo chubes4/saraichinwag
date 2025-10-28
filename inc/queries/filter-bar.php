@@ -20,12 +20,6 @@ function sarai_chinwag_display_filter_bar() {
     get_template_part('template-parts/filter', 'bar');
 }
 
-/**
- * Check if current page has both posts and recipes
- *
- * @return bool True if both types exist
- * @since 2.0
- */
 function sarai_chinwag_show_type_filters() {
     if (sarai_chinwag_recipes_disabled()) {
         return false;

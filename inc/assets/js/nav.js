@@ -1,6 +1,5 @@
 /**
- * Header search functionality with admin bar position adjustment
- * Handles search toggle positioning and click-outside-to-close behavior
+ * Header search toggle with admin bar positioning
  */
 document.addEventListener('DOMContentLoaded', function() {
     var header = document.querySelector('#masthead');

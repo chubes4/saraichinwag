@@ -24,16 +24,6 @@ function sarai_chinwag_setup() {
         add_editor_style( 'inc/assets/css/root.css' );
         add_editor_style( 'inc/assets/css/editor.css' );
 
-        $fonts_to_load = sarai_chinwag_get_fonts_to_load();
-        if (!empty($fonts_to_load)) {
-                $fonts_url = 'https://fonts.googleapis.com/css2?';
-                foreach ($fonts_to_load as $font) {
-                        $fonts_url .= 'family=' . urlencode($font) . ':wght@400;500;600;700&';
-                }
-                $fonts_url .= 'display=swap';
-                add_editor_style( $fonts_url );
-        }
-
         remove_image_size('thumbnail');
         remove_image_size('medium');
         remove_image_size('medium_large');
@@ -46,16 +36,44 @@ function sarai_chinwag_setup() {
 }
 add_action( 'after_setup_theme', 'sarai_chinwag_setup' );
 
+function sarai_chinwag_enqueue_block_editor_assets() {
+        $theme_dir = get_template_directory();
+        $theme_uri = get_template_directory_uri();
+
+        wp_enqueue_style(
+                'sarai-chinwag-editor-root',
+                $theme_uri . '/inc/assets/css/root.css',
+                array(),
+                filemtime($theme_dir . '/inc/assets/css/root.css')
+        );
+
+        $fonts_to_load = sarai_chinwag_get_fonts_to_load();
+        if (!empty($fonts_to_load)) {
+                $fonts_url = 'https://fonts.googleapis.com/css2?';
+                foreach ($fonts_to_load as $font) {
+                        $fonts_url .= 'family=' . urlencode($font) . ':wght@400;500;600;700&';
+                }
+                $fonts_url .= 'display=swap';
+
+                wp_enqueue_style(
+                        'sarai-chinwag-editor-google-fonts',
+                        $fonts_url,
+                        array('sarai-chinwag-editor-root'),
+                        null
+                );
+        }
+
+        wp_enqueue_style(
+                'sarai-chinwag-editor-styles',
+                $theme_uri . '/inc/assets/css/editor.css',
+                array('sarai-chinwag-editor-root', 'sarai-chinwag-editor-google-fonts'),
+                filemtime($theme_dir . '/inc/assets/css/editor.css')
+        );
+}
+add_action('enqueue_block_editor_assets', 'sarai_chinwag_enqueue_block_editor_assets');
+
 require_once get_template_directory() . '/inc/core/assets.php';
 
-/**
- * Add Pinterest data attributes to featured images on archive pages
- *
- * @param string $html Post thumbnail HTML
- * @param int    $post_id Post ID
- * @return string Modified HTML with Pinterest data-pin-url attribute
- * @since 2.0
- */
 function add_data_pin_url_to_featured_images($html, $post_id) {
     if (is_home() || is_archive() || is_search()) {
         $post_url = get_permalink($post_id);
@@ -95,11 +113,6 @@ require_once $queries_dir . '/image-mode/image-archives.php';
 require_once $queries_dir . '/image-mode/rewrite-rules.php';
 require_once $queries_dir . '/image-mode/search-images.php';
 
-/**
- * Wrap content images with anchorable spans for direct linking via #sc-image-{ID}
- *
- * @since 2.2
- */
 add_filter('the_content', function($content){
     if (!is_singular()) {
         return $content;
@@ -124,25 +137,12 @@ add_filter('the_content', function($content){
     return $content;
 }, 15);
 
-/**
- * Check if recipe functionality is disabled via admin settings
- *
- * @return bool True if recipes disabled
- * @since 2.0
- */
 function sarai_chinwag_recipes_disabled() {
     $disabled = get_option('sarai_chinwag_disable_recipes', false);
     return apply_filters('sarai_chinwag_recipes_disabled', $disabled);
 }
 
 
-/**
- * Get cached random post ID using rotation system to avoid expensive rand queries
- *
- * @param string $post_type Post type to query
- * @return int|false Random post ID or false if none found
- * @since 2.1
- */
 function sarai_chinwag_get_cached_random_post_id($post_type = 'post') {
     $cache_key = "random_{$post_type}_ids";
     $random_ids = wp_cache_get($cache_key, 'sarai_chinwag_random');
@@ -170,14 +170,6 @@ function sarai_chinwag_get_cached_random_post_id($post_type = 'post') {
     return $post_id;
 }
 
-/**
- * Get cached random post IDs for main query optimization
- *
- * @param array $post_types Array of post types
- * @param int $count Number of posts
- * @return array Array of random post IDs
- * @since 2.1
- */
 function sarai_chinwag_get_cached_random_query_ids($post_types, $count = 10) {
     $cache_key = 'random_query_' . md5(serialize($post_types) . $count);
     $random_ids = wp_cache_get($cache_key, 'sarai_chinwag_random');
@@ -203,11 +195,6 @@ function sarai_chinwag_get_cached_random_query_ids($post_types, $count = 10) {
     return array_slice($random_ids, 0, $count);
 }
 
-/**
- * Clear performance caches when content changes
- *
- * @since 2.1
- */
 function sarai_chinwag_clear_performance_caches() {
     wp_cache_flush_group('sarai_chinwag_random');
     wp_cache_flush_group('sarai_chinwag_related');
@@ -239,11 +226,6 @@ function sarai_chinwag_set_content_language_header() {
 }
 add_action('wp_head', 'sarai_chinwag_set_content_language_header', 1);
 
-/**
- * Display category/tag badges on singular content
- *
- * @since 2.0
- */
 function sarai_chinwag_post_badges() {
     if (!is_singular(array('post', 'recipe'))) {
         return;
@@ -281,11 +263,6 @@ function sarai_chinwag_post_badges() {
     echo '</nav>';
 }
 
-/**
- * Display hierarchical breadcrumbs on archive and search pages
- *
- * @since 2.0
- */
 function sarai_chinwag_archive_breadcrumbs() {
     if (!is_archive() && !is_search()) {
         return;

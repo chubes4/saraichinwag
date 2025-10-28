@@ -2,17 +2,12 @@
 /**
  * Recipe Rating System
  *
- * Provides default 5-star ratings for new recipes and AJAX user rating functionality
+ * Default 5-star ratings for new recipes and AJAX user rating functionality
  *
  * @package Sarai_Chinwag
  * @since 2.2
  */
 
-/**
- * Handle AJAX recipe rating submissions with weighted average calculation
- *
- * @since 2.2
- */
 function sarai_chinwag_rate_recipe() {
     if (sarai_chinwag_recipes_disabled()) {
         wp_send_json_error(['message' => 'Recipe functionality is disabled.']);
@@ -66,11 +61,6 @@ function sarai_chinwag_rate_recipe() {
 add_action('wp_ajax_rate_recipe', 'sarai_chinwag_rate_recipe');
 add_action('wp_ajax_nopriv_rate_recipe', 'sarai_chinwag_rate_recipe');
 
-/**
- * Enqueue rating script on recipe pages
- *
- * @since 2.2
- */
 function sarai_chinwag_enqueue_rating_script() {
     if (sarai_chinwag_recipes_disabled()) {
         return;
@@ -88,14 +78,6 @@ function sarai_chinwag_enqueue_rating_script() {
 }
 add_action('wp_enqueue_scripts', 'sarai_chinwag_enqueue_rating_script');
 
-/**
- * Assign default 5-star rating to newly published recipes
- *
- * @param int $post_id Post ID
- * @param WP_Post $post Post object
- * @param bool $update Whether existing post being updated
- * @since 2.2
- */
 function sarai_chinwag_set_default_recipe_rating($post_id, $post, $update) {
     if (sarai_chinwag_recipes_disabled()) {
         return;
@@ -121,12 +103,6 @@ function sarai_chinwag_set_default_recipe_rating($post_id, $post, $update) {
 add_action('save_post', 'sarai_chinwag_set_default_recipe_rating', 10, 3);
 add_action('publish_recipe', 'sarai_chinwag_set_default_recipe_rating', 10, 3);
 
-/**
- * Apply default 5-star ratings to existing recipes without ratings
- *
- * @return int Number of recipes updated
- * @since 2.2
- */
 function sarai_chinwag_apply_default_ratings_to_existing() {
     if (sarai_chinwag_recipes_disabled()) {
         return 0;
