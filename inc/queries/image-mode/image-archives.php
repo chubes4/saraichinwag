@@ -10,16 +10,39 @@
  */
 
 /**
+ * Determine whether the current frontend request is in image gallery mode.
+ *
+ * @return bool
+ */
+function sarai_chinwag_is_image_mode() {
+    if (is_admin()) {
+        return false;
+    }
+
+    $images_var = get_query_var('images', null);
+    if (null === $images_var) {
+        return false;
+    }
+
+    $request_uri = isset($_SERVER['REQUEST_URI']) ? wp_unslash($_SERVER['REQUEST_URI']) : '';
+    if ($request_uri === '') {
+        return false;
+    }
+
+    $url_has_images = (bool) preg_match('#/images(?:/|$|\?)#', $request_uri);
+
+    if (!$url_has_images) {
+        return false;
+    }
+
+    return (is_home() || is_archive() || is_search());
+}
+
+/**
  * Handle image gallery template loading
  */
 function sarai_chinwag_load_image_gallery_template() {
-    // Check if this is an image gallery request using WordPress native endpoint
-    // Must check both query var exists AND URL contains /images to avoid false positives
-    $has_images_var = get_query_var('images') !== false;
-    $url_has_images = strpos($_SERVER['REQUEST_URI'], '/images/') !== false || strpos($_SERVER['REQUEST_URI'], '/images') !== false;
-    $is_images_endpoint = $has_images_var && $url_has_images;
-    
-    if ($is_images_endpoint && ((is_category() || is_tag()) || is_home() || is_search())) {
+    if (sarai_chinwag_is_image_mode()) {
         // Load our custom template for all image gallery types
         sarai_chinwag_display_image_gallery();
         exit;
@@ -120,11 +143,7 @@ function sarai_chinwag_get_term_images($term_id, $term_type, $limit = 30) {
  */
 function sarai_chinwag_activate_smi_on_gallery($should_load) {
     // Check if this is an actual image gallery request, not just an archive with endpoint available
-    $has_images_var = get_query_var('images') !== false;
-    $url_has_images = strpos($_SERVER['REQUEST_URI'], '/images/') !== false || strpos($_SERVER['REQUEST_URI'], '/images') !== false;
-    $is_images_endpoint = $has_images_var && $url_has_images;
-    
-    if ($is_images_endpoint && ((is_category() || is_tag()) || is_home() || is_search())) {
+    if (sarai_chinwag_is_image_mode()) {
         return true;
     }
     return $should_load;

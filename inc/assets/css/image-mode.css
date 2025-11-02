@@ -175,6 +175,25 @@ body.search #primary {
     column-span: all;
 }
 
+/* ===== LOAD MORE CONTROLS ===== */
+
+/* Align the async load more trigger with the centered masonry output */
+.load-more-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+    clear: both;
+    margin: 2rem auto 0;
+    column-span: all;
+}
+
+.load-more-container #load-more {
+    margin-left: auto;
+    margin-right: auto;
+}
+
 /* ===== ARCHIVE IMAGE MODE ===== */
 
 /* Archive image mode card width constraint */

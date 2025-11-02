@@ -11,9 +11,13 @@
 /**
  * Extract all images from posts matching a search query
  *
+ * Count functions use high limit (99999), display functions use default (30).
+ * Results cached for 1 hour with MD5 hash of query as cache key.
+ *
  * @param string $search_query The search query
- * @param int $limit Maximum number of images to return
+ * @param int    $limit        Maximum images (99999 for counts, 30 for display)
  * @return array Array of image data
+ * @since 2.1
  */
 function sarai_chinwag_extract_images_from_search($search_query, $limit = 30) {
     // Check cache first
@@ -82,14 +86,17 @@ function sarai_chinwag_extract_images_from_search($search_query, $limit = 30) {
 
 /**
  * Get filtered and sorted images from posts matching a search query
- * Used for AJAX filtering on search image gallery pages
  *
- * @param string $search_query The search query
- * @param string $sort_by Sort method (random, recent, oldest, popular)
+ * Used for AJAX filtering on search image gallery pages.
+ * Supports sort methods, post type filtering, and duplicate prevention.
+ *
+ * @param string $search_query     The search query
+ * @param string $sort_by          Sort method (random, recent, oldest, popular)
  * @param string $post_type_filter Filter by post type (all, posts, recipes)
- * @param array $loaded_images Already loaded image attachment IDs
- * @param int $limit Maximum number of images to return
+ * @param array  $loaded_images    Already loaded image attachment IDs
+ * @param int    $limit            Maximum number of images to return
  * @return array Array of image data
+ * @since 2.1
  */
 function sarai_chinwag_get_filtered_search_images($search_query, $sort_by = 'random', $post_type_filter = 'all', $loaded_images = array(), $limit = 30) {
     // Determine post types to include
@@ -182,10 +189,22 @@ function sarai_chinwag_get_filtered_search_images($search_query, $sort_by = 'ran
 
 /**
  * Clear search image cache when posts are updated
+ *
+ * Clears data cache for post title search and delegates count cache clearing.
+ * Search count caches use MD5 hashes of query strings, preventing individual invalidation.
+ * These caches expire naturally after 2 hours.
+ *
+ * @param int $post_id Post ID
+ * @since 2.1
+ * @since 2.2.1 Updated to use centralized count cache clearing
  */
 function sarai_chinwag_clear_search_image_cache_on_post_update($post_id) {
-    // Clear all search image caches (we use md5 hashes so can't be specific)
-    wp_cache_flush_group('sarai_chinwag_images');
+    $cache_key = "sarai_chinwag_search_images_" . md5(get_the_title($post_id));
+    wp_cache_delete($cache_key, 'sarai_chinwag_images');
+
+    if (function_exists('sarai_chinwag_clear_all_image_count_caches')) {
+        sarai_chinwag_clear_all_image_count_caches($post_id);
+    }
 }
 add_action('save_post', 'sarai_chinwag_clear_search_image_cache_on_post_update');
 add_action('delete_post', 'sarai_chinwag_clear_search_image_cache_on_post_update');

@@ -1,0 +1,25 @@
+# Saraichinwag AI Coding Guide
+
+- This repo is a production WordPress theme; `functions.php` boots the theme and pulls feature modules from `inc/`, so new functionality should live in a dedicated `inc/*` module and be required there.
+- `inc/core/assets.php` is the single entry for CSS/JS registration with `filemtime()` versioning; add or adjust assets here and keep handles aligned with the existing naming pattern.
+- PHP is organized by responsibility: `inc/admin/` (settings + customizer), `inc/contact/` (AJAX form & Turnstile), `inc/queries/` (query mutations + image mode), `inc/recipes.php` & `inc/ratings.php` (recipe toggle + rating defaults). Respect this separation when adding code.
+- The theme defaults to anti-chronological browsing: home/search/archive queries are randomized and filtered via helpers in `inc/queries/filter-bar.php`; preserve fallback sort orders and the combined `post` + `recipe` post type support.
+- Recipe features hinge on the admin toggle (option `sarai_chinwag_recipes_enabled`); guard recipe-specific logic with the same check and maintain `rating_value`/`review_count` meta conventions when updating ratings.
+- Image Mode is a first-class system: extraction/search/archive helpers live under `inc/queries/image-mode/` and cache into the `sarai_chinwag_images` group; invalidate with `sarai_chinwag_clear_all_image_count_caches()` when changing image data flows.
+- Gallery UX relies on `template-parts/content-image-gallery.php`, `template-parts/gallery-item.php`, and `inc/assets/js/gallery-utils.js`; new gallery views should reuse these partials for consistency and lightbox support.
+- The advanced filter & load-more experience is coordinated between `template-parts/filter-bar.php`, `js/filter-bar.js`, and `js/load-more.js`; any AJAX endpoints must echo JSON the scripts expect (`items_html`, `max_pages`, `views`).
+- Front-end styles are modular: base variables in `inc/assets/css/root.css`, context styles in `inc/assets/css/{archive,contact,image-mode,recipes,single,sidebar}.css`, and global `style.css`; add new scopes as separate files and register via `inc/core/assets.php`.
+- Typography is Google Fonts-driven: selection + caching functions are in `functions.php` and `inc/admin/customizer.php`, live preview handled by `js/customizer.js`, and editors styled via `inc/assets/css/editor.css`; reuse the stored options and cache keys (`sarai_chinwag_fonts`) when extending.
+- Contact forms (`inc/contact/*.php` + `js/contact-form.js`) require Cloudflare Turnstile tokens; server handlers must verify `sarai_chinwag_verify_turnstile_token()` before processing and sanitize inputs with WP helpers.
+- Navigation helpers (breadcrumb badges, random access, view counter) reside in `inc/queries/random-*.php`, `inc/queries/view-counter.php`, and `template-parts/archive-image-mode-link.php`; keep caching groups (`sarai_chinwag_related`, etc.) intact when touching them.
+- All output should use WordPress escaping (`esc_html`, `esc_attr`, `wp_kses_post`) and translation wrappers (`__`, `_e`); follow the existing pattern seen in template parts.
+- Build workflow: run `./build.sh` (or VS Code task "Build Theme") to produce `dist/saraichinwag.zip`; script reads the version header from `style.css`, so bump it before packaging.
+- The build script excludes `/docs`, tests, and dotfiles; if you introduce new dev-only assets make sure `build.sh` ignores them.
+- There is no automated test suite; sanity-check changes in a local WordPress instance, especially AJAX endpoints, caching, and customizer options.
+- When touching cached data (image counts, random pools, fonts), either call the provided clear helpers or document the need for manual cache flush to avoid stale output.
+- JavaScript is vanilla (no bundler); keep files ES5-compatible and wrap in IIFEs like the existing scripts to avoid polluting globals.
+- Fonts and assets load conditionally (e.g., contact CSS only when shortcode detected); match that pattern for new context-specific assets to preserve performance.
+- New template output should live in `template-parts/` and be included via `get_template_part()` for consistency with existing architecture.
+- WordPress hooks are declared near usage; prefer anonymous functions only when the logic is trivial, otherwise add named functions inside the relevant module.
+- Respect the theme’s randomization ethos: don’t revert to chronological ordering unless gated behind the existing filter-bar options.
+- Keep PHP strictly ASCII and adhere to WordPress indentation (tabs in PHP, spaces in JS/CSS) as seen throughout the repo.

@@ -41,4 +41,25 @@ function sarai_chinwag_enqueue_contact_form_scripts() {
     ));
 }
 add_action('wp_enqueue_scripts', 'sarai_chinwag_enqueue_contact_form_scripts');
+
+/**
+ * Determine whether current view contains the contact form shortcode.
+ *
+ * @return bool
+ */
+function sarai_chinwag_has_contact_form() {
+    if (is_admin()) {
+        return false;
+    }
+
+    global $post;
+
+    $has_form = false;
+
+    if (is_singular() && $post instanceof WP_Post) {
+        $has_form = has_shortcode($post->post_content, 'sarai_contact_form');
+    }
+
+    return (bool) apply_filters('sarai_chinwag_has_contact_form', $has_form);
+}
 ?>

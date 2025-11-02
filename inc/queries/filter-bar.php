@@ -9,9 +9,7 @@
  */
 
 function sarai_chinwag_display_filter_bar() {
-    $has_images_var = get_query_var('images') !== false;
-    $url_has_images = strpos($_SERVER['REQUEST_URI'], '/images/') !== false || strpos($_SERVER['REQUEST_URI'], '/images') !== false;
-    $is_image_gallery = $has_images_var && $url_has_images;
+    $is_image_gallery = function_exists('sarai_chinwag_is_image_mode') && sarai_chinwag_is_image_mode();
     
     if (!is_home() && !is_archive() && !is_search() && !$is_image_gallery) {
         return;

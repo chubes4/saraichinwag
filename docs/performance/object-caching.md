@@ -112,12 +112,76 @@ $cache_key = "sarai_chinwag_all_site_images";
 wp_cache_set($cache_key, $images, 'sarai_chinwag_images', 3600);
 ```
 
-### Image Count Caching
+### Image System Caching Strategy
 
-**Accurate Count Caching**: Image counts cached separately for performance
-**Cache Keys**: Term and search-specific cache keys
-**Duration**: 2 hours for relatively stable counts
-**Invalidation**: Automatic clearing when posts updated
+The theme implements a sophisticated dual-cache strategy to balance performance with accuracy for image galleries and counts.
+
+#### Image Data Caches
+
+**Purpose**: Store extracted image arrays for gallery display
+**Cache Keys**:
+- Term images: `sarai_chinwag_term_images_{$term_id}_{$term_type}`
+- Site-wide images: `sarai_chinwag_all_site_images`
+- Search images: `sarai_chinwag_search_images_{md5($search_query)}`
+
+**Limitations**: 30 images per cache for display performance
+**Duration**: 2 hours (7200 seconds)
+**Usage**: Gallery archives, image mode displays
+
+#### Image Count Caches
+
+**Purpose**: Store accurate total counts for badges and archive mode links
+**Cache Keys**:
+- Term counts: `term_image_count_{$term_id}_{$taxonomy}`
+- Site-wide count: `site_wide_image_count`
+- Search counts: `search_image_count_{md5($search_query)}`
+
+**Limitations**: 99999 images per query for accurate counting
+**Duration**: 2 hours (7200 seconds)
+**Usage**: Gallery discovery badges, archive image mode links, image counts
+
+#### Cache Invalidation System
+
+**Centralized Invalidation**:
+```php
+sarai_chinwag_clear_all_image_count_caches($post_id)
+```
+Clears all image count caches when content changes. Handles:
+- Site-wide image count cache
+- Category-specific count caches for the post
+- Tag-specific count caches for the post
+
+**Media Attachment Invalidation**:
+```php
+sarai_chinwag_clear_image_cache_on_media_change($attachment_id)
+```
+Clears both data and count caches when media library changes. Triggered by:
+- `add_attachment` hook - New media uploaded
+- `edit_attachment` hook - Media metadata edited
+- `delete_attachment` hook - Media removed
+
+**Post Update Invalidation**:
+Existing `sarai_chinwag_clear_image_cache_on_post_update()` function handles:
+- Post save (`save_post` hook)
+- Post deletion (`delete_post` hook)
+- Clears image data caches for affected terms
+
+**Search Cache Limitation**:
+Search image count caches use MD5 hashes of query strings, making individual invalidation impractical. These caches expire naturally after 2 hours or are cleared by the search invalidation function when posts are updated.
+
+#### Performance Benefits
+
+**Dual Strategy Advantages**:
+- Gallery displays load quickly with 30-image limit
+- Count badges show accurate totals with 99999-image queries
+- Separate caching prevents display queries from overwhelming memory
+- Count caches enable accurate badges for sites with tens of thousands of images
+
+**Automatic Updates**:
+- Media uploads immediately reflect in image counts
+- Media deletions update counts without manual cache clearing
+- Post edits trigger appropriate cache invalidation
+- Category/tag changes update relevant count caches
 
 ### Gallery Badge Caching
 

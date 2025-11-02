@@ -14,21 +14,20 @@
 
 function sarai_chinwag_setup() {
         load_theme_textdomain( 'sarai-chinwag', get_template_directory() . '/languages' );
-
+        
         add_theme_support( 'title-tag' );
         add_theme_support( 'post-thumbnails' );
         add_theme_support( 'custom-logo' );
         add_theme_support( 'menus' );
         add_theme_support( 'editor-styles' );
-
-        add_editor_style( 'inc/assets/css/root.css' );
-        add_editor_style( 'inc/assets/css/editor.css' );
-
+        add_editor_style( 'style.css' );
+        add_editor_style( 'css/editor.css' );
+        
         remove_image_size('thumbnail');
         remove_image_size('medium');
         remove_image_size('medium_large');
         add_image_size('grid-thumb', 450, 450, true);
-
+        
         register_nav_menus( array(
             'primary' => __( 'Primary Menu', 'sarai-chinwag' ),
             'footer'  => __( 'Footer Menu', 'sarai-chinwag' ),
@@ -36,44 +35,29 @@ function sarai_chinwag_setup() {
 }
 add_action( 'after_setup_theme', 'sarai_chinwag_setup' );
 
-function sarai_chinwag_enqueue_block_editor_assets() {
-        $theme_dir = get_template_directory();
-        $theme_uri = get_template_directory_uri();
+function sarai_chinwag_scripts() {
+    $style_version = filemtime( get_template_directory() . '/style.css' );
+    wp_enqueue_style( 'sarai-chinwag-style', get_stylesheet_uri(), array('sarai-chinwag-root-css'), $style_version );
 
-        wp_enqueue_style(
-                'sarai-chinwag-editor-root',
-                $theme_uri . '/inc/assets/css/root.css',
-                array(),
-                filemtime($theme_dir . '/inc/assets/css/root.css')
-        );
+    $nav_version = filemtime( get_template_directory() . '/js/nav.js' );
+    wp_enqueue_script( 'sarai-chinwag-nav', get_template_directory_uri() . '/js/nav.js', array(), $nav_version, true );
 
-        $fonts_to_load = sarai_chinwag_get_fonts_to_load();
-        if (!empty($fonts_to_load)) {
-                $fonts_url = 'https://fonts.googleapis.com/css2?';
-                foreach ($fonts_to_load as $font) {
-                        $fonts_url .= 'family=' . urlencode($font) . ':wght@400;500;600;700&';
-                }
-                $fonts_url .= 'display=swap';
+    $gallery_utils_version = filemtime( get_template_directory() . '/js/gallery-utils.js' );
+    wp_enqueue_script( 'sarai-chinwag-gallery-utils', get_template_directory_uri() . '/js/gallery-utils.js', array(), $gallery_utils_version, true );
 
-                wp_enqueue_style(
-                        'sarai-chinwag-editor-google-fonts',
-                        $fonts_url,
-                        array('sarai-chinwag-editor-root'),
-                        null
-                );
-        }
-
-        wp_enqueue_style(
-                'sarai-chinwag-editor-styles',
-                $theme_uri . '/inc/assets/css/editor.css',
-                array('sarai-chinwag-editor-root', 'sarai-chinwag-editor-google-fonts'),
-                filemtime($theme_dir . '/inc/assets/css/editor.css')
-        );
+    $pinterest_version = filemtime( get_template_directory() . '/js/pinterest.js' );
+    wp_enqueue_script( 'sarai-chinwag-pinterest', get_template_directory_uri() . '/js/pinterest.js', array(), $pinterest_version, true );
 }
-add_action('enqueue_block_editor_assets', 'sarai_chinwag_enqueue_block_editor_assets');
+add_action( 'wp_enqueue_scripts', 'sarai_chinwag_scripts' );
 
-require_once get_template_directory() . '/inc/core/assets.php';
 
+/**
+ * Add Pinterest data attributes to featured images for save functionality
+ *
+ * @param string $html Post thumbnail HTML
+ * @param int    $post_id Post ID
+ * @return string Modified HTML with Pinterest data attributes
+ */
 function add_data_pin_url_to_featured_images($html, $post_id) {
     if (is_home() || is_archive() || is_search()) {
         $post_url = get_permalink($post_id);
@@ -89,13 +73,16 @@ require_once get_template_directory() . '/inc/admin/admin-notices.php';
 require_once get_template_directory() . '/inc/admin/admin-settings.php';
 require_once get_template_directory() . '/inc/admin/customizer.php';
 
+require_once get_template_directory() . '/inc/core/assets.php';
+
 require_once get_template_directory() . '/inc/recipes.php';
 require_once get_template_directory() . '/inc/ratings.php';
 
-require_once get_template_directory() . '/inc/contact/form.php';
-require_once get_template_directory() . '/inc/contact/ajax-handler.php';
-require_once get_template_directory() . '/inc/contact/email.php';
-require_once get_template_directory() . '/inc/contact/cloudflare-turnstile.php';
+$contact_dir = get_template_directory() . '/inc/contact';
+require_once $contact_dir . '/cloudflare-turnstile.php';
+require_once $contact_dir . '/ajax-handler.php';
+require_once $contact_dir . '/email.php';
+require_once $contact_dir . '/form.php';
 
 $queries_dir = get_template_directory() . '/inc/queries';
 require_once $queries_dir . '/view-counter.php';
@@ -113,6 +100,12 @@ require_once $queries_dir . '/image-mode/image-archives.php';
 require_once $queries_dir . '/image-mode/rewrite-rules.php';
 require_once $queries_dir . '/image-mode/search-images.php';
 
+/**
+ * Wrap content images with anchorable spans for gallery deep linking
+ *
+ * Enables direct linking to specific images using #sc-image-{ID} hash fragments.
+ * Only processes images with wp-image-{ID} class on singular pages.
+ */
 add_filter('the_content', function($content){
     if (!is_singular()) {
         return $content;
@@ -126,7 +119,7 @@ add_filter('the_content', function($content){
             $img = $m[0];
             $id  = $m[1];
             if (strpos($img, 'data-sc-anchor="1"') !== false) {
-                return $img;
+                return $img; // Already processed
             }
             return '<span id="sc-image-' . esc_attr($id) . '" class="sc-image-anchor">'
                 . preg_replace('/<img/i','<img data-sc-anchor="1"',$img,1)
@@ -137,12 +130,26 @@ add_filter('the_content', function($content){
     return $content;
 }, 15);
 
+/**
+ * Check if recipe functionality is disabled
+ *
+ * @return bool True if recipes are disabled, false if enabled
+ */
 function sarai_chinwag_recipes_disabled() {
     $disabled = get_option('sarai_chinwag_disable_recipes', false);
     return apply_filters('sarai_chinwag_recipes_disabled', $disabled);
 }
 
 
+/**
+ * Get cached random post ID using rotation system
+ *
+ * Avoids expensive orderby => 'rand' queries by maintaining cached arrays.
+ * Rotates through cached IDs and refreshes cache when exhausted.
+ *
+ * @param string $post_type Post type to query
+ * @return int|false Random post ID or false if none found
+ */
 function sarai_chinwag_get_cached_random_post_id($post_type = 'post') {
     $cache_key = "random_{$post_type}_ids";
     $random_ids = wp_cache_get($cache_key, 'sarai_chinwag_random');
@@ -170,6 +177,16 @@ function sarai_chinwag_get_cached_random_post_id($post_type = 'post') {
     return $post_id;
 }
 
+/**
+ * Get cached random IDs for main query performance optimization
+ *
+ * Pre-generates random post arrays to replace orderby => 'rand' in main queries.
+ * Maintains separate cache per post type combination.
+ *
+ * @param array $post_types Array of post types to include
+ * @param int $count Number of random posts needed
+ * @return array Array of random post IDs
+ */
 function sarai_chinwag_get_cached_random_query_ids($post_types, $count = 10) {
     $cache_key = 'random_query_' . md5(serialize($post_types) . $count);
     $random_ids = wp_cache_get($cache_key, 'sarai_chinwag_random');
@@ -195,6 +212,12 @@ function sarai_chinwag_get_cached_random_query_ids($post_types, $count = 10) {
     return array_slice($random_ids, 0, $count);
 }
 
+/**
+ * Clear performance caches when content changes
+ *
+ * Flushes random and related post caches to ensure fresh content.
+ * Triggered on save, delete, trash, and untrash operations.
+ */
 function sarai_chinwag_clear_performance_caches() {
     wp_cache_flush_group('sarai_chinwag_random');
     wp_cache_flush_group('sarai_chinwag_related');
@@ -226,6 +249,10 @@ function sarai_chinwag_set_content_language_header() {
 }
 add_action('wp_head', 'sarai_chinwag_set_content_language_header', 1);
 
+/**
+ * Display category/tag badges as part of badge-breadcrumb navigation system
+ * Shows primary category (blue) and up to 3 tags (pink) on singular content
+ */
 function sarai_chinwag_post_badges() {
     if (!is_singular(array('post', 'recipe'))) {
         return;
@@ -263,6 +290,10 @@ function sarai_chinwag_post_badges() {
     echo '</nav>';
 }
 
+/**
+ * Display traditional breadcrumbs as part of dual navigation system
+ * Generates hierarchical navigation for archive and search pages
+ */
 function sarai_chinwag_archive_breadcrumbs() {
     if (!is_archive() && !is_search()) {
         return;
@@ -311,9 +342,7 @@ function sarai_chinwag_archive_breadcrumbs() {
 }
 
 /**
- * Display gallery discovery badges with image counts for related categories/tags
- *
- * @since 2.2
+ * Display gallery discovery badges with cached image counts for related categories/tags
  */
 function sarai_chinwag_gallery_discovery_badges() {
     if (!is_singular(array('post', 'recipe'))) {
@@ -393,12 +422,11 @@ function sarai_chinwag_gallery_discovery_badges() {
 }
 
 /**
- * Get cached image count for category/tag
+ * Get cached image count for category/tag with 2-hour cache
  *
  * @param int    $term_id  Term ID
  * @param string $taxonomy Taxonomy name
  * @return int Image count
- * @since 2.2
  */
 function sarai_chinwag_get_accurate_term_image_count($term_id, $taxonomy) {
     $cache_key = "term_image_count_{$term_id}_{$taxonomy}";
@@ -409,9 +437,9 @@ function sarai_chinwag_get_accurate_term_image_count($term_id, $taxonomy) {
     }
     
     if (function_exists('sarai_chinwag_extract_images_from_term')) {
-        $images = sarai_chinwag_extract_images_from_term($term_id, $taxonomy, 999);
+        $images = sarai_chinwag_extract_images_from_term($term_id, $taxonomy, 99999);
         $count = count($images);
-        wp_cache_set($cache_key, $count, 'sarai_chinwag_images', 2 * HOUR_IN_SECONDS);
+        wp_cache_set($cache_key, $count, 'sarai_chinwag_images', YEAR_IN_SECONDS);
         return $count;
     }
     
@@ -419,10 +447,9 @@ function sarai_chinwag_get_accurate_term_image_count($term_id, $taxonomy) {
 }
 
 /**
- * Get cached site-wide image count
+ * Get cached site-wide image count with 2-hour cache
  *
  * @return int Total site image count
- * @since 2.2
  */
 function sarai_chinwag_get_site_wide_image_count() {
     $cache_key = "site_wide_image_count";
@@ -433,9 +460,9 @@ function sarai_chinwag_get_site_wide_image_count() {
     }
     
     if (function_exists('sarai_chinwag_get_all_site_images')) {
-        $images = sarai_chinwag_get_all_site_images(999);
+        $images = sarai_chinwag_get_all_site_images(99999);
         $count = count($images);
-        wp_cache_set($cache_key, $count, 'sarai_chinwag_images', 2 * HOUR_IN_SECONDS);
+        wp_cache_set($cache_key, $count, 'sarai_chinwag_images', YEAR_IN_SECONDS);
         return $count;
     }
     
@@ -443,11 +470,10 @@ function sarai_chinwag_get_site_wide_image_count() {
 }
 
 /**
- * Get cached search image count
+ * Get cached search image count with 2-hour cache
  *
  * @param string $search_query Search query
  * @return int Search image count
- * @since 2.2
  */
 function sarai_chinwag_get_search_image_count($search_query) {
     $cache_key = "search_image_count_" . md5($search_query);
@@ -458,9 +484,9 @@ function sarai_chinwag_get_search_image_count($search_query) {
     }
     
     if (function_exists('sarai_chinwag_extract_images_from_search')) {
-        $images = sarai_chinwag_extract_images_from_search($search_query, 999);
+        $images = sarai_chinwag_extract_images_from_search($search_query, 99999);
         $count = count($images);
-        wp_cache_set($cache_key, $count, 'sarai_chinwag_images', 2 * HOUR_IN_SECONDS);
+        wp_cache_set($cache_key, $count, 'sarai_chinwag_images', YEAR_IN_SECONDS);
         return $count;
     }
     
@@ -468,9 +494,7 @@ function sarai_chinwag_get_search_image_count($search_query) {
 }
 
 /**
- * AJAX endpoint for loading template parts
- *
- * @since 2.0
+ * AJAX endpoint for loading template parts with nonce verification
  */
 function sarai_chinwag_load_template() {
     if (!wp_verify_nonce($_POST['nonce'], 'filter_posts_nonce')) {
@@ -495,34 +519,10 @@ add_action('wp_ajax_load_template', 'sarai_chinwag_load_template');
 add_action('wp_ajax_nopriv_load_template', 'sarai_chinwag_load_template');
 
 /**
- * Check if current request is for image gallery mode
+ * Display featured image styled as Gutenberg image block with proper attributes
  *
- * @return bool True if viewing image gallery
- * @since 2.1
- */
-function sarai_chinwag_is_image_mode() {
-    $has_images_var = get_query_var('images') !== false;
-    $url_has_images = strpos($_SERVER['REQUEST_URI'], '/images/') !== false || strpos($_SERVER['REQUEST_URI'], '/images') !== false;
-    return $has_images_var && $url_has_images && ((is_category() || is_tag()) || is_home() || is_search());
-}
-
-/**
- * Check if contact form shortcode is present on current page
- *
- * @return bool True if shortcode present
- * @since 2.2
- */
-function sarai_chinwag_has_contact_form() {
-    global $post;
-    return is_a($post, 'WP_Post') && has_shortcode($post->post_content, 'sarai_contact_form');
-}
-
-/**
- * Display featured image styled as Gutenberg image block
- *
- * @param string $size Image size
- * @param array $attr Additional attributes
- * @since 2.2
+ * @param string $size Image size (default: 'large')
+ * @param array $attr Additional image attributes
  */
 function sarai_chinwag_display_featured_image_as_block($size = 'large', $attr = array()) {
     if (!has_post_thumbnail()) {

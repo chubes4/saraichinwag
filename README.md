@@ -206,6 +206,14 @@ This theme is designed for personal use and white-labeling. Commercial distribut
 
 ## Changelog
 
+### v2.2.1 - Image Count Cache Invalidation System
+- **NEW**: Centralized cache invalidation system for image counts with `sarai_chinwag_clear_all_image_count_caches()` function
+- **NEW**: Automatic cache clearing on media attachment add/edit/delete via WordPress hooks
+- **NEW**: `sarai_chinwag_clear_image_cache_on_media_change()` function for attachment-specific invalidation
+- **IMPROVED**: Dual cache strategy - image data caches (30 limit) separate from image count caches (99999 limit)
+- **IMPROVED**: Archive image mode links now accurately count tens of thousands of images while maintaining performance
+- **PERFORMANCE**: Immediate cache updates ensure image counts reflect media library changes instantly
+
 ### v2.2 - WordPress Editor Integration & Contact Form System
 - **NEW**: Default 5-Star Rating System - new recipes automatically receive 5.0 rating with 1 review count for immediate visibility in popularity sorting
 - **NEW**: WordPress Editor Font Integration - consistent fonts between editors and frontend

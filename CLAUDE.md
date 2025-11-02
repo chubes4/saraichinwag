@@ -221,7 +221,7 @@ The theme includes a comprehensive image gallery system for enhanced content dis
 - **sarai_chinwag_extract_images_from_term()**: Main extraction function with caching
 - **sarai_chinwag_get_image_search_results()**: Image-specific search queries
 - **sarai_chinwag_image_archive_query()**: Modifies main query for image archive pages
-- **Performance**: Limited results (30 images default), cached for 2 hours, optimized queries
+- **Performance**: Display queries limited to 30 images, count queries use 99999 for accuracy, cached for 2 hours, optimized queries
 
 ### Archive Image Mode Link System
 The theme includes an intelligent "Try Image Mode" link system that appears on archives to encourage gallery exploration:
@@ -471,13 +471,16 @@ The footer has been streamlined for better user experience and SEO performance:
 - **Limited query results** (max 500 posts) to prevent memory issues in large sites
 
 **Specific Optimizations:**
-- Random posts cached for 1 hour with rotation system to reduce `orderby => 'rand'` queries  
+- Random posts cached for 1 hour with rotation system to reduce `orderby => 'rand'` queries
 - Related content cached for 15 minutes per post
 - Google Fonts API responses cached for 24 hours
 - Editor font integration with conditional loading based on customizer selections
 - View counter system uses efficient wp_cache with `sarai_chinwag_views` cache group
 - Sidebar widgets cached for 15 minutes
 - Image gallery system cached for 2 hours with `sarai_chinwag_images` cache group
+- Dual cache strategy: Image data caches (30 limit) separate from image count caches (99999 limit)
+- Centralized cache invalidation via `sarai_chinwag_clear_all_image_count_caches()` for media changes
+- Media attachment hooks (`add_attachment`, `edit_attachment`, `delete_attachment`) trigger automatic cache clearing
 - CSS uses custom properties for dynamic styling instead of inline styles
 - All queries use proper WordPress functions and avoid direct database access
 
@@ -519,6 +522,8 @@ if (!sarai_chinwag_recipes_disabled()) {
 - `sarai_chinwag_get_accurate_term_image_count($term_id, $taxonomy)`: Get precise image counts for archive image mode links
 - `sarai_chinwag_get_site_wide_image_count()`: Count all images across site for homepage image mode link
 - `sarai_chinwag_get_search_image_count($search_query)`: Count images for search result image mode link
+- `sarai_chinwag_clear_all_image_count_caches($post_id)`: Centralized function to clear all image count caches when media changes
+- `sarai_chinwag_clear_image_cache_on_media_change($attachment_id)`: Clear image caches on attachment add/edit/delete
 - `sarai_chinwag_post_badges()`: Display category/tag badges
 - `sarai_chinwag_archive_breadcrumbs()`: Generate breadcrumb navigation
 - `sarai_chinwag_gallery_discovery_badges()`: Display gallery discovery badges with image counts
@@ -553,6 +558,13 @@ if (!sarai_chinwag_recipes_disabled()) {
 **Current Version**: 2.2 (WordPress Editor Integration & Contact Form System)  
 **Live Demo**: [saraichinwag.com](https://saraichinwag.com)  
 **Developer**: Chris Huber ([chubes.net](https://chubes.net))
+
+### Recent Major Updates (v2.2.1)
+- **Image Count Cache Invalidation**: Centralized cache clearing system for immediate count updates on media changes
+- **Dual Cache Strategy**: Separate image data caches (30 limit) and image count caches (99999 limit) for optimal performance
+- **Media Attachment Hooks**: Automatic cache invalidation on attachment add/edit/delete via WordPress hooks
+- **Accurate Image Counts**: Archive image mode links now support tens of thousands of images with precise counts
+- **Cache Management Functions**: New `sarai_chinwag_clear_all_image_count_caches()` and `sarai_chinwag_clear_image_cache_on_media_change()` functions
 
 ### Recent Major Updates (v2.2)
 - **Default 5-Star Rating System**: New recipes automatically receive 5.0 rating with 1 review count upon publication for immediate visibility in popularity sorting

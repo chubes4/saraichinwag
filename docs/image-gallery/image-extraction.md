@@ -129,15 +129,22 @@ sarai_chinwag_extract_images_from_blocks($blocks, $post_id)
 - Cache Duration: 1-2 hours depending on content type
 - wp_cache_* functions for efficient retrieval
 
-**Cache Keys**:
+**Cache Keys (Image Data)**:
 - Term images: `sarai_chinwag_term_images_{$term_id}_{$term_type}`
 - Site images: `sarai_chinwag_all_site_images`
-- Search images: `search_image_count_{md5($search_query)}`
+- Search images: `sarai_chinwag_search_images_{md5($search_query)}`
+
+**Cache Keys (Image Counts)**:
+- Term counts: `term_image_count_{$term_id}_{$taxonomy}`
+- Site-wide count: `site_wide_image_count`
+- Search counts: `search_image_count_{md5($search_query)}`
 
 **Cache Invalidation**:
-- Automatic cache clearing on post save/delete
-- Category and tag cache clearing when posts updated
-- Manual cache flushing available for troubleshooting
+- **Post Updates**: Automatic cache clearing on post save/delete via `sarai_chinwag_clear_image_cache_on_post_update()`
+- **Media Changes**: Automatic invalidation on attachment add/edit/delete via `sarai_chinwag_clear_image_cache_on_media_change()`
+- **Centralized Clearing**: `sarai_chinwag_clear_all_image_count_caches($post_id)` handles all count cache invalidation
+- **Category/Tag Updates**: Term-specific cache clearing when posts updated
+- **Search Limitation**: Search count caches use MD5 hashes, expire naturally after 2 hours
 
 ### Cache Management Functions
 

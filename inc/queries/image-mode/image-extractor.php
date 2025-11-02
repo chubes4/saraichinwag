@@ -11,9 +11,12 @@
 /**
  * Extract images from posts in specific term
  *
- * @param int $term_id Term ID
+ * Count functions use high limit (99999), display functions use default (30).
+ * Results cached for 1 hour in sarai_chinwag_images cache group.
+ *
+ * @param int    $term_id   Term ID
  * @param string $term_type Taxonomy
- * @param int $limit Maximum images
+ * @param int    $limit     Maximum images (99999 for counts, 30 for display)
  * @return array Array of image data
  * @since 2.1
  */
@@ -206,28 +209,37 @@ function sarai_chinwag_get_image_data($attachment_id, $post_id, $source = 'conte
 }
 
 /**
- * Clear image cache when posts are updated
+ * Clear image caches when posts are updated
+ *
+ * Clears both count caches (via centralized function) and data caches.
+ * Count caches: accurate image counts for archive image mode links.
+ * Data caches: actual image arrays for gallery display.
  *
  * @param int $post_id Post ID
  * @since 2.1
+ * @since 2.2.1 Updated to use centralized count cache clearing
  */
 function sarai_chinwag_clear_image_cache_on_post_update($post_id) {
+    if (function_exists('sarai_chinwag_clear_all_image_count_caches')) {
+        sarai_chinwag_clear_all_image_count_caches($post_id);
+    }
+
     $categories = get_the_category($post_id);
     $tags = get_the_tags($post_id);
-    
+
     if ($categories) {
         foreach ($categories as $category) {
-            $cache_key = "sarai_chinwag_term_images_{$category->term_id}_category";
-            wp_cache_delete($cache_key, 'sarai_chinwag_images');
+            wp_cache_delete("sarai_chinwag_term_images_{$category->term_id}_category", 'sarai_chinwag_images');
         }
     }
-    
+
     if ($tags) {
         foreach ($tags as $tag) {
-            $cache_key = "sarai_chinwag_term_images_{$tag->term_id}_post_tag";
-            wp_cache_delete($cache_key, 'sarai_chinwag_images');
+            wp_cache_delete("sarai_chinwag_term_images_{$tag->term_id}_post_tag", 'sarai_chinwag_images');
         }
     }
+
+    wp_cache_delete('sarai_chinwag_all_site_images', 'sarai_chinwag_images');
 }
 add_action('save_post', 'sarai_chinwag_clear_image_cache_on_post_update');
 add_action('delete_post', 'sarai_chinwag_clear_image_cache_on_post_update');
@@ -336,7 +348,10 @@ function sarai_chinwag_get_filtered_term_images($term_id, $term_type, $sort_by =
 /**
  * Get all images from site posts
  *
- * @param int $limit Maximum images
+ * Count functions use high limit (99999), display functions use default (30).
+ * Results cached for 1 hour in sarai_chinwag_images cache group.
+ *
+ * @param int $limit Maximum images (99999 for counts, 30 for display)
  * @return array Image data
  * @since 2.1
  */
