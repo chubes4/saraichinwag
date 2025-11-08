@@ -15,6 +15,28 @@ h1.entry-title {
     margin: 0 auto;
 }
 
+/* Ensure WordPress block images stay centered on larger screens */
+.entry-content figure.wp-block-image {
+    display: block;
+    text-align: center;
+}
+
+.entry-content figure.wp-block-image > img,
+.entry-content .wp-block-image img,
+.entry-content img.aligncenter {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media (min-width: 769px) {
+    .entry-content figure.wp-block-image:not(.alignleft):not(.alignright):not(.alignfull):not(.alignwide),
+    .entry-content figure.aligncenter {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
 /* ===== BADGE-BREADCRUMB NAVIGATION ===== */
 
 /* Badge-breadcrumbs for single posts */
