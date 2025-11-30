@@ -199,12 +199,18 @@ This theme is designed for personal use and white-labeling. Commercial distribut
 
 ---
 
-**Version**: 2.2  
+**Version**: 2.2.1  
 **Author**: Chris Huber  
 **Website**: [chubes.net](https://chubes.net)  
 **Theme URI**: [saraichinwag.com](https://saraichinwag.com)
 
 ## Changelog
+
+### v2.2.2 - Performance Optimizations and Bug Fixes
+- **PERFORMANCE**: Removed random sections from sidebar to reduce database queries on single post pages
+- **FIXED**: Image centering in post content
+- **IMPROVED**: Various style fixes and modularization improvements
+- **ENHANCED**: Comprehensive documentation alignment and code comment cleanup
 
 ### v2.2.1 - Image Count Cache Invalidation System
 - **NEW**: Centralized cache invalidation system for image counts with `sarai_chinwag_clear_all_image_count_caches()` function
