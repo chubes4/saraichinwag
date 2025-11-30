@@ -199,18 +199,18 @@ This theme is designed for personal use and white-labeling. Commercial distribut
 
 ---
 
-**Version**: 2.2.1  
+**Version**: 2.2.2  
 **Author**: Chris Huber  
 **Website**: [chubes.net](https://chubes.net)  
 **Theme URI**: [saraichinwag.com](https://saraichinwag.com)
 
 ## Changelog
 
-### v2.2.2 - Performance Optimizations and Bug Fixes
-- **PERFORMANCE**: Removed random sections from sidebar to reduce database queries on single post pages
-- **FIXED**: Image centering in post content
-- **IMPROVED**: Various style fixes and modularization improvements
-- **ENHANCED**: Comprehensive documentation alignment and code comment cleanup
+### v2.2.2 - Async View Counter & Related Posts Improvements
+- **NEW**: Async view counter system using REST API to eliminate blocking page loads and improve performance
+- **NEW**: SessionStorage-based duplicate prevention for view tracking within same browser session
+- **IMPROVED**: Related posts system now prevents duplicate posts by accumulating excluded IDs across taxonomy queries
+- **PERFORMANCE**: View tracking moved from wp_head to async JavaScript for better page load performance
 
 ### v2.2.1 - Image Count Cache Invalidation System
 - **NEW**: Centralized cache invalidation system for image counts with `sarai_chinwag_clear_all_image_count_caches()` function
