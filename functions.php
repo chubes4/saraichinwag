@@ -21,7 +21,7 @@ function sarai_chinwag_setup() {
         add_theme_support( 'menus' );
         add_theme_support( 'editor-styles' );
         add_editor_style( 'style.css' );
-        add_editor_style( 'css/editor.css' );
+        add_editor_style( 'inc/assets/css/editor.css' );
         
         remove_image_size('thumbnail');
         remove_image_size('medium');

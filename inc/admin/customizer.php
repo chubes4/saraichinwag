@@ -247,28 +247,16 @@ function sarai_chinwag_enqueue_google_fonts() {
 }
 add_action('wp_enqueue_scripts', 'sarai_chinwag_enqueue_google_fonts');
 
-function sarai_chinwag_enqueue_admin_google_fonts($hook) {
-    if (!in_array($hook, array('post.php', 'post-new.php'))) {
-        return;
-    }
-
+function sarai_chinwag_enqueue_editor_assets() {
     $theme_dir = get_template_directory();
     $theme_uri = get_template_directory_uri();
 
-    // Root CSS variables (must load first)
+    // Root CSS variables (must load first for editor iframe)
     wp_enqueue_style(
-        'sarai-chinwag-admin-root',
+        'sarai-chinwag-editor-root',
         $theme_uri . '/inc/assets/css/root.css',
         array(),
         filemtime($theme_dir . '/inc/assets/css/root.css')
-    );
-
-    // Editor-specific styles (depends on root variables)
-    wp_enqueue_style(
-        'sarai-chinwag-admin-editor-styles',
-        $theme_uri . '/inc/assets/css/editor.css',
-        array('sarai-chinwag-admin-root'),
-        filemtime($theme_dir . '/inc/assets/css/editor.css')
     );
 
     // Google Fonts (only if selected, depends on root)
@@ -282,14 +270,14 @@ function sarai_chinwag_enqueue_admin_google_fonts($hook) {
         $fonts_url .= 'display=swap';
 
         wp_enqueue_style(
-            'sarai-chinwag-admin-google-fonts',
+            'sarai-chinwag-editor-google-fonts',
             $fonts_url,
-            array('sarai-chinwag-admin-root'),
+            array('sarai-chinwag-editor-root'),
             null
         );
     }
 }
-add_action('admin_enqueue_scripts', 'sarai_chinwag_enqueue_admin_google_fonts');
+add_action('enqueue_block_editor_assets', 'sarai_chinwag_enqueue_editor_assets');
 
 function sarai_chinwag_update_root_css() {
     $heading_font = get_theme_mod('sarai_chinwag_heading_font', 'System Fonts');
