@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## [2.2.6] - 2026-02-01
 
 ### Changed
 - Changed: Moved 404 page styles to separate CSS file (inc/assets/css/404.css)
