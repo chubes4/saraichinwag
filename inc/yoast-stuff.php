@@ -1,13 +1,69 @@
 <?php
 /**
- * Yoast SEO integration and sitemap enhancements
+ * Image Gallery SEO Meta
  *
- * Provides custom meta titles and descriptions for image gallery routes,
- * and integration with the image mode rewrite system for SEO optimization.
+ * Provides custom meta titles and descriptions for image gallery routes.
+ * Integrates with Lean SEO plugin via filters.
  *
  * @package Sarai_Chinwag
  * @since 1.0.0
  */
+
+// Hook into Lean SEO for custom descriptions on image gallery routes
+add_filter('lean_seo_custom_description', 'sarai_chinwag_lean_seo_image_description');
+function sarai_chinwag_lean_seo_image_description($desc) {
+    $gallery_desc = sarai_chinwag_image_gallery_meta_description();
+    return $gallery_desc ? $gallery_desc : $desc;
+}
+
+// Add image gallery URLs to Lean SEO sitemap
+add_action('lean_seo_sitemap_index', 'sarai_chinwag_lean_seo_images_sitemap');
+function sarai_chinwag_lean_seo_images_sitemap() {
+    echo '  <sitemap>' . "\n";
+    echo '    <loc>' . home_url('/sitemap-images.xml') . '</loc>' . "\n";
+    echo '  </sitemap>' . "\n";
+}
+
+// Register images sitemap route
+add_action('init', 'sarai_chinwag_register_images_sitemap');
+function sarai_chinwag_register_images_sitemap() {
+    add_rewrite_rule('^sitemap-images\.xml$', 'index.php?sarai_images_sitemap=1', 'top');
+}
+
+add_filter('query_vars', 'sarai_chinwag_images_sitemap_query_vars');
+function sarai_chinwag_images_sitemap_query_vars($vars) {
+    $vars[] = 'sarai_images_sitemap';
+    return $vars;
+}
+
+add_action('template_redirect', 'sarai_chinwag_handle_images_sitemap');
+function sarai_chinwag_handle_images_sitemap() {
+    if (!get_query_var('sarai_images_sitemap')) {
+        return;
+    }
+    
+    header('Content-Type: application/xml; charset=UTF-8');
+    header('X-Robots-Tag: noindex, follow');
+    
+    echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+    echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+    
+    // Main images page
+    echo '  <url>' . "\n";
+    echo '    <loc>' . home_url('/images/') . '</loc>' . "\n";
+    echo '  </url>' . "\n";
+    
+    // Category image galleries
+    $categories = get_categories(array('hide_empty' => true));
+    foreach ($categories as $category) {
+        echo '  <url>' . "\n";
+        echo '    <loc>' . trailingslashit(get_category_link($category->term_id)) . 'images/</loc>' . "\n";
+        echo '  </url>' . "\n";
+    }
+    
+    echo '</urlset>';
+    exit;
+}
 
 /**
  * Compute the meta title for image gallery routes to match the on-page H1
@@ -22,7 +78,6 @@
  */
 function sarai_chinwag_image_gallery_meta_title() {
     // Only affect our image gallery requests using native endpoint
-    // Must check both query var exists AND URL contains /images to avoid false positives on normal archives
     $has_images_var = get_query_var('images') !== false;
     $url_has_images = strpos($_SERVER['REQUEST_URI'], '/images/') !== false || strpos($_SERVER['REQUEST_URI'], '/images') !== false;
     $is_images_endpoint = $has_images_var && $url_has_images;
@@ -36,13 +91,13 @@ function sarai_chinwag_image_gallery_meta_title() {
         return __('Digital Wallpapers & High-Res Artwork', 'sarai-chinwag');
     }
 
-    // Search gallery (/search/{query}/images or /?s={query}/images)
+    // Search gallery
     if (is_search()) {
         $search_query = get_search_query();
         return sprintf(__('"%s" Digital Wallpapers & High-Res Artwork', 'sarai-chinwag'), $search_query);
     }
 
-    // Category gallery (/category/{slug}/images)
+    // Category gallery
     if (is_category()) {
         $term = get_queried_object();
         if ($term && !is_wp_error($term)) {
@@ -50,7 +105,7 @@ function sarai_chinwag_image_gallery_meta_title() {
         }
     }
 
-    // Tag gallery (/tag/{slug}/images)
+    // Tag gallery
     if (is_tag()) {
         $term = get_queried_object();
         if ($term && !is_wp_error($term)) {
@@ -64,17 +119,9 @@ function sarai_chinwag_image_gallery_meta_title() {
 /**
  * Compute the meta description for image gallery routes
  *
- * Routes handled by image-mode rewrite rules:
- * - /images/ (site-wide gallery)
- * - /category/{slug}/images/
- * - /tag/{slug}/images/
- * - /?s={query}/images/ (search gallery)
- *
  * @return string|false Description to use, or false when not on an image gallery route
  */
 function sarai_chinwag_image_gallery_meta_description() {
-    // Only affect our image gallery requests using native endpoint
-    // Must check both query var exists AND URL contains /images to avoid false positives on normal archives
     $has_images_var = get_query_var('images') !== false;
     $url_has_images = strpos($_SERVER['REQUEST_URI'], '/images/') !== false || strpos($_SERVER['REQUEST_URI'], '/images') !== false;
     $is_images_endpoint = $has_images_var && $url_has_images;
@@ -88,13 +135,13 @@ function sarai_chinwag_image_gallery_meta_description() {
         return __('Discover premium digital wallpapers, AI artwork & high resolution backgrounds. Download stunning images for phone wallpapers, social media & wall art', 'sarai-chinwag');
     }
 
-    // Search gallery (/search/{query}/images or /?s={query}/images)
+    // Search gallery
     if (is_search()) {
         $search_query = get_search_query();
         return sprintf(__('Discover premium digital wallpapers and AI artwork matching "%s". Download stunning images for phone wallpapers, social media & wall art', 'sarai-chinwag'), $search_query);
     }
 
-    // Category gallery (/category/{slug}/images)
+    // Category gallery
     if (is_category()) {
         $term = get_queried_object();
         if ($term && !is_wp_error($term)) {
@@ -102,7 +149,7 @@ function sarai_chinwag_image_gallery_meta_description() {
         }
     }
 
-    // Tag gallery (/tag/{slug}/images)
+    // Tag gallery
     if (is_tag()) {
         $term = get_queried_object();
         if ($term && !is_wp_error($term)) {
@@ -115,60 +162,12 @@ function sarai_chinwag_image_gallery_meta_description() {
 
 /**
  * Override the core document <title> parts on image gallery routes
- * This ensures the browser title matches the H1, even without Yoast.
  */
 function sarai_chinwag_filter_document_title_for_images($parts) {
     $title = sarai_chinwag_image_gallery_meta_title();
     if ($title) {
-        $parts['title'] = $title; // Keep site name/sep handling intact
+        $parts['title'] = $title;
     }
     return $parts;
 }
 add_filter('document_title_parts', 'sarai_chinwag_filter_document_title_for_images', 99);
-
-/**
- * Yoast SEO: override SEO title and social titles for image gallery routes
- */
-function sarai_chinwag_filter_wpseo_titles_for_images($current) {
-    $title = sarai_chinwag_image_gallery_meta_title();
-    return $title ? $title : $current;
-}
-add_filter('wpseo_title', 'sarai_chinwag_filter_wpseo_titles_for_images', 99);
-add_filter('wpseo_opengraph_title', 'sarai_chinwag_filter_wpseo_titles_for_images', 99);
-add_filter('wpseo_twitter_title', 'sarai_chinwag_filter_wpseo_titles_for_images', 99);
-
-/**
- * Yoast SEO: override meta descriptions and social descriptions for image gallery routes
- */
-function sarai_chinwag_filter_wpseo_metadesc_for_images($current) {
-    $description = sarai_chinwag_image_gallery_meta_description();
-    return $description ? $description : $current;
-}
-add_filter('wpseo_metadesc', 'sarai_chinwag_filter_wpseo_metadesc_for_images', 99);
-add_filter('wpseo_opengraph_desc', 'sarai_chinwag_filter_wpseo_metadesc_for_images', 99);
-add_filter('wpseo_twitter_description', 'sarai_chinwag_filter_wpseo_metadesc_for_images', 99);
-
-/**
- * Add custom image gallery URLs to Yoast sitemap index
- */
-function sarai_chinwag_add_image_galleries_to_sitemap($sitemap_index) {
-    // Add site-wide image gallery
-    $sitemap_index .= '<sitemap><loc>' . home_url('/images/') . '</loc></sitemap>' . "\n";
-    
-    // Get all public categories with posts
-    $categories = get_categories(array('hide_empty' => true));
-    foreach ($categories as $category) {
-        $category_images_url = trailingslashit(get_category_link($category->term_id)) . 'images/';
-        $sitemap_index .= '<sitemap><loc>' . esc_url($category_images_url) . '</loc></sitemap>' . "\n";
-    }
-    
-    // Get all public tags with posts
-    $tags = get_tags(array('hide_empty' => true));
-    foreach ($tags as $tag) {
-        $tag_images_url = trailingslashit(get_tag_link($tag->term_id)) . 'images/';
-        $sitemap_index .= '<sitemap><loc>' . esc_url($tag_images_url) . '</loc></sitemap>' . "\n";
-    }
-    
-    return $sitemap_index;
-}
-add_filter('wpseo_sitemap_index', 'sarai_chinwag_add_image_galleries_to_sitemap');
