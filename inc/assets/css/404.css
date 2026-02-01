@@ -1,0 +1,85 @@
+.error-404 {
+    text-align: center;
+    padding: 2rem;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.error-404 .entry-title {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.error-404 .entry-content p {
+    font-size: 1.1rem;
+    margin-bottom: 2rem;
+}
+
+.error-404 h2 {
+    font-size: 1.3rem;
+    margin: 2rem 0 1rem;
+}
+
+.error-404 .error-search {
+    margin: 2rem 0;
+}
+
+.error-404 .searchform {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.error-404 .searchform input[type="text"] {
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    border: 2px solid #ddd;
+    border-radius: 4px;
+    width: 250px;
+}
+
+.error-404 .searchform input[type="submit"] {
+    padding: 0.5rem 1.5rem;
+    font-size: 1rem;
+    background: #333;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.error-404 .button {
+    display: inline-block;
+    padding: 0.75rem 1.5rem;
+    background: #333;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.error-404 .button:hover {
+    background: #555;
+}
+
+.error-404 .error-popular ul {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.error-404 .error-popular li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eee;
+}
+
+.error-404 .error-popular a {
+    color: #333;
+    text-decoration: none;
+}
+
+.error-404 .error-popular a:hover {
+    text-decoration: underline;
+}
