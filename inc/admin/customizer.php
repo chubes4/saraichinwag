@@ -259,6 +259,26 @@ function sarai_chinwag_enqueue_editor_assets() {
         filemtime($theme_dir . '/inc/assets/css/root.css')
     );
 
+    // Add dynamic CSS variables for editor (override root.css defaults)
+    $heading_font = get_theme_mod('sarai_chinwag_heading_font', 'System Fonts');
+    $body_font = get_theme_mod('sarai_chinwag_body_font', 'System Fonts');
+    $heading_font_size = get_theme_mod('sarai_chinwag_heading_font_size', 50);
+    $body_font_size = get_theme_mod('sarai_chinwag_body_font_size', 50);
+
+    $heading_font_family = sarai_chinwag_get_font_family($heading_font);
+    $body_font_family = sarai_chinwag_get_font_family($body_font);
+    $heading_scale = $heading_font_size / 50;
+    $body_scale = $body_font_size / 50;
+
+    $editor_css = ":root {
+        --font-heading: {$heading_font_family};
+        --font-body: {$body_font_family};
+        --font-heading-scale: {$heading_scale};
+        --font-body-scale: {$body_scale};
+    }";
+
+    wp_add_inline_style('sarai-chinwag-editor-root', $editor_css);
+
     // Google Fonts (only if selected, depends on root)
     $fonts_to_load = sarai_chinwag_get_fonts_to_load();
 
