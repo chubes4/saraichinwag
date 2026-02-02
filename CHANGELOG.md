@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.2.8] - 2026-02-02
+
+### Fixed
+- Fixed: Editor now uses Customizer-selected fonts (dynamic CSS variables)
+
 ## [2.2.7] - 2026-02-02
 
 ### Fixed
