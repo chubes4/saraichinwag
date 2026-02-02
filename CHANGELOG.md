@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.2.7] - 2026-02-02
+
+### Fixed
+- Fixed: Responsive sidebar stacking on mobile (was staying 28% width)
+- Fixed: Editor styles not loading - added root.css for CSS variables
+
 ## [2.2.6] - 2026-02-01
 
 ### Changed
