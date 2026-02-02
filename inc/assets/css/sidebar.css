@@ -64,6 +64,22 @@
     }
 }
 
+/* Tablet and below - Stack sidebar below content */
+@media only screen and (max-width : 768px) {
+    #secondary {
+        float: none;
+        width: 100%;
+        clear: both;
+        padding: 0;
+        margin-top: 20px;
+    }
+    
+    #primary {
+        float: none;
+        width: 100%;
+    }
+}
+
 /* Medium Devices, Desktops - Enhanced sidebar layout */
 @media only screen and (min-width : 992px) {
     .related-items {
