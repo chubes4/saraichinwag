@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.2.9] - 2026-02-02
+
+### Fixed
+- Fixed: Footer menu items now wrap on mobile (added flex-wrap)
+
 ## [2.2.8] - 2026-02-02
 
 ### Fixed
