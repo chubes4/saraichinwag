@@ -9,11 +9,16 @@
 get_header();
 ?>
 
-<div class="content-wrap spawn-content" role="main" lang="en" itemscope itemtype="https://schema.org/WebPage">
-	<meta itemprop="inLanguage" content="en">
 	<div id="primary" class="content-area full-width">
 		<main id="main" class="site-main">
 			<?php sarai_chinwag_page_breadcrumbs(); ?>
+			<?php
+			/**
+			 * Hook: sarai_chinwag_before_page_content
+			 * Fires before page content on single pages.
+			 */
+			do_action( 'sarai_chinwag_before_page_content' );
+			?>
 			<?php
 			while ( have_posts() ) :
 				the_post();
@@ -31,7 +36,6 @@ get_header();
 			?>
 		</main>
 	</div>
-</div>
 
 <?php
 get_footer();

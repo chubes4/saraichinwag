@@ -49,6 +49,8 @@ h3 {
 
 h1.entry-title {
     margin: 15px 0;
+    margin-block-start: 15px;
+    margin-block-end: 15px;
     line-height: 1.4;
 }
 .entry-header .recipe-rating {
@@ -423,7 +425,8 @@ fill: #fff;
     #secondary {
         margin: auto;
     }
-    #primary p, #primary h1, #primary h2, #primary h3, #primary h4, #primary h5, ul.wp-block-list, ol.wp-block-list  {
+    #primary p, #primary h1, #primary h2, #primary h3, #primary h4, #primary h5, ul.wp-block-list, ol.wp-block-list,
+    .wp-block-spawn-tier-select, .wp-block-spawn-domain-search, .wp-block-spawn-checkout {
         width: 92%;
         margin-left: auto;
         margin-right: auto;
@@ -444,6 +447,8 @@ fill: #fff;
     }
     .post-badge-breadcrumbs, .archive-breadcrumbs {
         width: 92%;
+        margin-left: auto;
+        margin-right: auto;
     }
     #secondary #random_posts h2, #secondary #random_recipes h2{
         width: max-content;
@@ -494,7 +499,8 @@ fill: #fff;
     .site-main {
         max-width: 89%;
     }
-    #primary p, #primary h1, #primary h2, #primary h3, #primary h4, #primary h5, ul.wp-block-list, ol.wp-block-list, .post-badge-breadcrumbs, .archive-breadcrumbs {
+    #primary p, #primary h1, #primary h2, #primary h3, #primary h4, #primary h5, ul.wp-block-list, ol.wp-block-list, .post-badge-breadcrumbs, .archive-breadcrumbs,
+    .wp-block-spawn-tier-select, .wp-block-spawn-domain-search, .wp-block-spawn-checkout {
         width: 100%;
     }
     #primary {
@@ -1446,31 +1452,10 @@ body.page-template-template-full-width #primary {
 body.page-template-template-full-width #primary .site-main {
 	max-width: 1000px;
 	margin: 0 auto;
-	padding: 0 20px;
 }
 
 body.page-template-template-full-width .content-wrap {
 	max-width: 1000px;
-}
-
-/* Full-width template mobile overrides */
-@media (max-width: 767px) {
-	body.page-template-template-full-width .content-wrap {
-		width: 100%;
-		max-width: 100%;
-	}
-	
-	body.page-template-template-full-width #primary .site-main {
-		padding: 0;
-	}
-	
-	body.page-template-template-full-width .entry-header {
-		padding: 0 15px;
-	}
-	
-	body.page-template-template-full-width .entry-content {
-		padding: 0;
-	}
 }
 
 /* WordPress Button Blocks - match theme style */

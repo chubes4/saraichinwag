@@ -11,6 +11,14 @@ get_header(); ?>
     <main id="main" class="site-main">
 
     <?php
+    /**
+     * Hook: sarai_chinwag_before_page_content
+     * Fires before page content on single pages.
+     */
+    do_action( 'sarai_chinwag_before_page_content' );
+    ?>
+
+    <?php
     while ( have_posts() ) :
         the_post();
 
