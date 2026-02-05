@@ -903,7 +903,8 @@ button:focus, a:focus {
 /* Full-width layout for home and archive pages */
 .home #primary, 
 .archive #primary, 
-.search #primary {
+.search #primary,
+.error-404 {
     width: 100%;
     max-width: 100%;
     float: none;
@@ -913,6 +914,53 @@ button:focus, a:focus {
 .archive #secondary, 
 .search #secondary {
     display: none;
+}
+
+/* 404 page full-width styling */
+.error-404 {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+.error-404 .entry-title {
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+}
+
+.error-404 .entry-content > p:first-of-type {
+    font-size: 1.2rem;
+    margin-bottom: 30px;
+}
+
+.error-404 .error-search,
+.error-404 .error-suggestions,
+.error-404 .error-popular {
+    margin: 30px 0;
+}
+
+.error-404 .error-popular ul {
+    list-style: none;
+    padding: 0;
+}
+
+.error-404 .error-popular li {
+    margin: 10px 0;
+}
+
+.error-404 .button {
+    display: inline-block;
+    padding: 12px 24px;
+    background: var(--color-accent, #333);
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background 0.2s ease;
+}
+
+.error-404 .button:hover {
+    background: var(--color-accent-hover, #555);
 }
 
 
