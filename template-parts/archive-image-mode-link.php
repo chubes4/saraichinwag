@@ -88,11 +88,11 @@ if (empty($link_data)) {
             <span class="badge-count">(<?php echo absint($link_data['count']); ?>)</span>
         </a>
     </nav>
+    <?php
+    /**
+     * Hook: sarai_chinwag_after_gallery_badges
+     * Fires inside gallery discovery badges, below the nav buttons.
+     */
+    do_action( 'sarai_chinwag_after_gallery_badges' );
+    ?>
 </aside>
-<?php
-/**
- * Hook: sarai_chinwag_after_gallery_badges
- * Fires after gallery discovery badges.
- */
-do_action( 'sarai_chinwag_after_gallery_badges' );
-?>

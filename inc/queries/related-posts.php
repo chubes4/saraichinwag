@@ -120,12 +120,6 @@ function sarai_chinwag_random_discovery() {
 
     // Display gallery discovery badges before "Keep Exploring" section
     sarai_chinwag_gallery_discovery_badges();
-    
-    /**
-     * Hook: sarai_chinwag_after_gallery_badges
-     * Fires after gallery discovery badges on single posts.
-     */
-    do_action( 'sarai_chinwag_after_gallery_badges' );
 
     echo '<aside class="random-discovery">';
     echo '<h2 class="widget-title">' . __('Keep Exploring', 'sarai-chinwag') . '</h2>';
