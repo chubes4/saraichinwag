@@ -26,9 +26,7 @@ get_header();
 				<div class="error-suggestions">
 					<h2>Or explore something random:</h2>
 					<p>
-						<a href="<?php echo esc_url( home_url( '/random-all' ) ); ?>" class="button">
-							✨ Surprise Me
-						</a>
+						<a href="<?php echo esc_url( home_url( '/random-all' ) ); ?>">✨ Surprise Me</a>
 					</p>
 				</div>
 
