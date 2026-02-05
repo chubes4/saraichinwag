@@ -7,6 +7,14 @@
 ?>
 
 <aside id="secondary" class="widget-area">
+    <?php
+    /**
+     * Hook: sarai_chinwag_before_sidebar_widgets
+     * Fires before sidebar widgets.
+     */
+    do_action( 'sarai_chinwag_before_sidebar_widgets' );
+    ?>
+    
     <?php 
     // Check if Pinterest username is set
     $pinterest_username = get_option('sarai_chinwag_pinterest_username', '');
@@ -21,6 +29,14 @@
         </a>
     </section>
     <?php endif; ?>
+    
+    <?php
+    /**
+     * Hook: sarai_chinwag_after_sidebar_widgets
+     * Fires after sidebar widgets.
+     */
+    do_action( 'sarai_chinwag_after_sidebar_widgets' );
+    ?>
 
 </aside><!-- #secondary -->
 

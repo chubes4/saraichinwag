@@ -1465,7 +1465,7 @@ body.page-template-template-full-width .content-wrap {
 	}
 	
 	body.page-template-template-full-width .entry-header {
-		padding: 0 15px;
+		padding: 0;
 	}
 	
 	body.page-template-template-full-width .entry-content {
@@ -1487,6 +1487,21 @@ body.page-template-template-full-width .content-wrap {
 
 .wp-block-button__link:hover {
 	background-color: var(--color-secondary, #ff6eb1);
+	color: var(--color-background, #fff);
+}
+
+/* Outline/Secondary Button Style - match WordPress specificity */
+:root :where(.wp-block-button.is-style-outline) .wp-block-button__link,
+:root :where(.wp-block-button[class*="is-style-outline--"]) .wp-block-button__link {
+	background-color: transparent;
+	border: 2px solid var(--color-primary, #1fc5e2);
+	color: var(--color-primary, #1fc5e2);
+	padding: 10px 20px;
+}
+
+:root :where(.wp-block-button.is-style-outline) .wp-block-button__link:hover,
+:root :where(.wp-block-button[class*="is-style-outline--"]) .wp-block-button__link:hover {
+	background-color: var(--color-primary, #1fc5e2);
 	color: var(--color-background, #fff);
 }
 
