@@ -89,3 +89,10 @@ if (empty($link_data)) {
         </a>
     </nav>
 </aside>
+<?php
+/**
+ * Hook: sarai_chinwag_after_gallery_badges
+ * Fires after gallery discovery badges.
+ */
+do_action( 'sarai_chinwag_after_gallery_badges' );
+?>

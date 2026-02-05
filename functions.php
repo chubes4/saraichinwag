@@ -414,6 +414,12 @@ function sarai_chinwag_gallery_discovery_badges() {
         
         echo '</nav>';
         echo '</aside>';
+        
+        /**
+         * Hook: sarai_chinwag_after_gallery_badges
+         * Fires after gallery discovery badges on single posts.
+         */
+        do_action( 'sarai_chinwag_after_gallery_badges' );
     }
     
     $output = ob_get_contents();
