@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.2.18] - 2026-02-05
+
+- Active filter buttons: transparent border (highlight only, no extra border)
+
 ## [2.2.17] - 2026-02-05
 
 - Fix filter button specificity - use button.filter-btn selector to ensure shape preserved on all states
