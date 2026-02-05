@@ -8,6 +8,7 @@
 
 <header class="entry-header">
     <?php
+    sarai_chinwag_page_breadcrumbs();
     sarai_chinwag_post_badges();
     
     the_title( '<h1 class="entry-title">', '</h1>' );

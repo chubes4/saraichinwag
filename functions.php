@@ -547,7 +547,7 @@ function sarai_chinwag_display_featured_image_as_block($size = 'large', $attr = 
  * Display breadcrumbs for pages.
  */
 function sarai_chinwag_page_breadcrumbs() {
-    if (!is_page()) {
+    if (!is_page() || is_front_page()) {
         return;
     }
     
