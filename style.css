@@ -445,6 +445,12 @@ fill: #fff;
     .post-badge-breadcrumbs, .archive-breadcrumbs {
         width: 92%;
     }
+    .gallery-discovery-badges {
+        width: 92%;
+        margin-left: auto;
+        margin-right: auto;
+        box-sizing: border-box;
+    }
     #secondary #random_posts h2, #secondary #random_recipes h2{
         width: max-content;
         margin-left:4%;
