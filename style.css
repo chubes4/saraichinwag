@@ -68,7 +68,7 @@ button {
     color: var(--color-background);
     padding: 10px;
     cursor: pointer;
-    border: 3px solid var(--color-secondary); 
+    border: 2px solid var(--color-secondary); 
     margin: 15px 0;
     font-size: inherit;
 }
