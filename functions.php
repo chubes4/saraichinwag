@@ -413,13 +413,6 @@ function sarai_chinwag_gallery_discovery_badges() {
         }
         
         echo '</nav>';
-        
-        /**
-         * Hook: sarai_chinwag_after_gallery_badges
-         * Fires inside gallery discovery badges, below the nav buttons.
-         */
-        do_action( 'sarai_chinwag_after_gallery_badges' );
-        
         echo '</aside>';
     }
     
