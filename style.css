@@ -788,9 +788,16 @@ button:focus, a:focus {
 
 /* Archive image mode card width constraint */
 .archive-image-mode {
+    width: 92%;
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
+}
+
+@media (min-width: 992px) {
+    .archive-image-mode {
+        width: 100%;
+    }
 }
 
 /* Traditional breadcrumbs for archive pages */
