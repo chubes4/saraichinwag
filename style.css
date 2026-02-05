@@ -4,7 +4,7 @@ Description: A versatile WordPress theme with dynamic Google Fonts integration a
 Author: Chris Huber
 Author URI: https://chubes.net
 Theme URI: https://saraichinwag.com
-Version: 2.2.9
+Version: 2.2.10
 License: Custom
 License URI: https://saraichinwag.com/license
 Text Domain: sarai-chinwag
@@ -1123,7 +1123,8 @@ button:focus, a:focus {
 /* Mobile responsiveness for filter bar */
 @media (max-width: 768px) {
     .filter-bar {
-        max-width: 95%;
+        width: 92%;
+        max-width: 92%;
         flex-direction: column;
         align-items: center;
         gap: 12px;
