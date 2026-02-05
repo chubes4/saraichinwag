@@ -543,4 +543,31 @@ function sarai_chinwag_display_featured_image_as_block($size = 'large', $attr = 
     echo '</figure>';
 }
 
-?>
+/**
+ * Display breadcrumbs for pages.
+ */
+function sarai_chinwag_page_breadcrumbs() {
+    if (!is_page()) {
+        return;
+    }
+    
+    $separator = ' > ';
+    $breadcrumbs = array();
+    $breadcrumbs[] = '<a href="' . esc_url(home_url('/')) . '">' . esc_html__('Home', 'sarai-chinwag') . '</a>';
+    
+    // Get ancestors (parent pages)
+    $ancestors = get_post_ancestors(get_the_ID());
+    if ($ancestors) {
+        $ancestors = array_reverse($ancestors);
+        foreach ($ancestors as $ancestor_id) {
+            $breadcrumbs[] = '<a href="' . esc_url(get_permalink($ancestor_id)) . '">' . esc_html(get_the_title($ancestor_id)) . '</a>';
+        }
+    }
+    
+    // Current page
+    $breadcrumbs[] = esc_html(get_the_title());
+    
+    echo '<nav class="archive-breadcrumbs" aria-label="' . esc_attr__('Page navigation', 'sarai-chinwag') . '">';
+    echo implode($separator, $breadcrumbs);
+    echo '</nav>';
+}
