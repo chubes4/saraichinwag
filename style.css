@@ -1627,3 +1627,13 @@ body.error404 .error-404 li {
 	margin: 0;
 	color: var(--color-text-light, #666);
 }
+
+/* 404 Surprise Me link with shuffle icon */
+.surprise-me-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5em;
+}
+.surprise-me-link svg {
+    flex-shrink: 0;
+}
