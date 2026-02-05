@@ -571,3 +571,25 @@ function sarai_chinwag_page_breadcrumbs() {
     echo implode($separator, $breadcrumbs);
     echo '</nav>';
 }
+
+/**
+ * Add body class to disable ads on specific pages
+ * Configure Mediavine to exclude the 'disable-ads' class
+ */
+add_filter('body_class', function($classes) {
+    // Pages where we don't want ads
+    $no_ads_pages = array(
+        'upscale',
+        'spawn',
+        'login',
+        'account',
+        'dashboard',
+        'checkout',
+    );
+    
+    if (is_page($no_ads_pages)) {
+        $classes[] = 'disable-ads';
+    }
+    
+    return $classes;
+});
