@@ -60,7 +60,8 @@ h1.entry-title {
     width: max-content;
 }
 /* ===== BUTTONS AND FORM ELEMENTS ===== */
-button {
+button,
+.searchform input[type="submit"] {
     background-color: var(--color-primary);
     border-radius: 5px;
     color: var(--color-background);
@@ -69,6 +70,11 @@ button {
     border: 2px solid var(--color-secondary); 
     margin: 15px 0;
     font-size: inherit;
+}
+
+.searchform input[type="submit"]:hover {
+    background-color: var(--color-secondary);
+    border-color: var(--color-primary);
 }
 
 /* ===== LAYOUT AND BASE STYLES ===== */
