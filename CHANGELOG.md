@@ -1,5 +1,9 @@
 # Changelog
 
+## [2.2.17] - 2026-02-05
+
+- Fix filter button specificity - use button.filter-btn selector to ensure shape preserved on all states
+
 ## [2.2.9] - 2026-02-02
 
 ### Fixed
