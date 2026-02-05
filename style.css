@@ -1643,3 +1643,138 @@ body.error404 .error-404 li {
 .surprise-me-link svg {
     flex-shrink: 0;
 }
+
+/* ==========================================================================
+   SPAWN APP TEMPLATE
+   ========================================================================== */
+
+/* Spawn App - Page wrapper */
+body.spawn-app {
+	background: var(--color-background, #fff);
+	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
+}
+
+/* Spawn Header */
+.spawn-header {
+	background: var(--color-background, #fff);
+	border-bottom: 2px solid var(--color-border, #eee);
+	padding: var(--space-md, 15px) var(--space-lg, 20px);
+	position: sticky;
+	top: 0;
+	z-index: 100;
+}
+
+.spawn-header__inner {
+	max-width: 1200px;
+	margin: 0 auto;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.spawn-header__logo {
+	display: flex;
+	align-items: center;
+	gap: 0.5em;
+	text-decoration: none;
+	font-family: var(--font-heading, 'Gluten', sans-serif);
+	font-size: 1.5rem;
+	color: var(--color-text, #333);
+}
+
+.spawn-header__logo:hover {
+	color: var(--color-primary, #1fc5e2);
+}
+
+.spawn-header__logo-icon {
+	font-size: 1.2em;
+}
+
+.spawn-header__nav {
+	display: flex;
+	align-items: center;
+	gap: var(--space-md, 15px);
+}
+
+.spawn-header__link {
+	color: var(--color-text-light, #666);
+	text-decoration: none;
+	padding: var(--space-xs, 5px) var(--space-sm, 10px);
+	border-radius: 5px;
+	transition: color 0.2s, background-color 0.2s;
+}
+
+.spawn-header__link:hover,
+.spawn-header__link.is-active {
+	color: var(--color-primary, #1fc5e2);
+}
+
+.spawn-header__button {
+	background: var(--color-primary, #1fc5e2);
+	color: #fff;
+	padding: var(--space-xs, 5px) var(--space-md, 15px);
+	border-radius: 5px;
+	text-decoration: none;
+	font-weight: 600;
+	transition: background-color 0.2s;
+}
+
+.spawn-header__button:hover {
+	background: var(--color-secondary, #ff6eb1);
+	color: #fff;
+}
+
+/* Spawn Main Content */
+.spawn-main {
+	flex: 1;
+	padding: var(--space-xl, 30px) var(--space-lg, 20px);
+}
+
+.spawn-container {
+	max-width: 900px;
+	margin: 0 auto;
+}
+
+/* Spawn Footer */
+.spawn-footer {
+	background: #f9f9f9;
+	border-top: 2px solid var(--color-border, #eee);
+	padding: var(--space-lg, 20px);
+	text-align: center;
+	font-size: var(--font-size-small, 0.9em);
+}
+
+.spawn-footer a {
+	color: var(--color-text-light, #666);
+}
+
+.spawn-footer a:hover {
+	color: var(--color-primary, #1fc5e2);
+}
+
+.spawn-footer__copyright {
+	margin-top: var(--space-sm, 10px);
+	color: var(--color-text-light, #999);
+}
+
+/* Spawn Page Title - hide default WP title in favor of block content */
+body.spawn-app .entry-title {
+	display: none;
+}
+
+/* Spawn App mobile adjustments */
+@media (max-width: 600px) {
+	.spawn-header__logo-text {
+		display: none;
+	}
+	
+	.spawn-header__nav {
+		gap: var(--space-sm, 10px);
+	}
+	
+	.spawn-container {
+		padding: 0 var(--space-sm, 10px);
+	}
+}
