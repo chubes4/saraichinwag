@@ -1435,3 +1435,104 @@ button:focus, a:focus {
         margin-bottom: 1rem;
     }
 }
+
+/* Full Width Template - uses WordPress auto-generated body class */
+body.page-template-template-full-width #primary {
+	width: 100%;
+	max-width: 100%;
+	float: none;
+}
+
+body.page-template-template-full-width #primary .site-main {
+	max-width: 1000px;
+	margin: 0 auto;
+	padding: 0 20px;
+}
+
+body.page-template-template-full-width .content-wrap {
+	max-width: 1000px;
+}
+
+/* Full-width template mobile overrides */
+@media (max-width: 767px) {
+	body.page-template-template-full-width .content-wrap {
+		width: 100%;
+		max-width: 100%;
+	}
+	
+	body.page-template-template-full-width #primary .site-main {
+		padding: 0;
+	}
+	
+	body.page-template-template-full-width .entry-header {
+		padding: 0 15px;
+	}
+	
+	body.page-template-template-full-width .entry-content {
+		padding: 0;
+	}
+}
+
+/* WordPress Button Blocks - match theme style */
+.wp-block-button__link {
+	background-color: var(--color-primary, #1fc5e2);
+	border: 2px solid var(--color-secondary, #ff6eb1);
+	border-radius: 5px;
+	color: var(--color-background, #fff);
+	padding: 10px 20px;
+	font-weight: 600;
+	text-decoration: none;
+	transition: background-color 0.2s;
+}
+
+.wp-block-button__link:hover {
+	background-color: var(--color-secondary, #ff6eb1);
+	color: var(--color-background, #fff);
+}
+
+/* WordPress Details/Accordion Blocks - match theme style */
+.wp-block-details {
+	border: 2px solid var(--color-border, #ddd);
+	border-radius: 5px;
+	margin-bottom: var(--space-sm, 10px);
+	overflow: hidden;
+}
+
+.wp-block-details summary {
+	padding: var(--space-md, 15px);
+	font-weight: 600;
+	cursor: pointer;
+	background: var(--color-background, #fff);
+	transition: background-color 0.2s;
+	list-style: none;
+}
+
+.wp-block-details summary::-webkit-details-marker {
+	display: none;
+}
+
+.wp-block-details summary::before {
+	content: "+";
+	display: inline-block;
+	width: 20px;
+	color: var(--color-primary, #1fc5e2);
+	font-weight: bold;
+}
+
+.wp-block-details[open] summary::before {
+	content: "−";
+}
+
+.wp-block-details summary:hover {
+	background: #f9f9f9;
+}
+
+.wp-block-details[open] {
+	border-color: var(--color-primary, #1fc5e2);
+}
+
+.wp-block-details p {
+	padding: 0 var(--space-md, 15px) var(--space-md, 15px);
+	margin: 0;
+	color: var(--color-text-light, #666);
+}
