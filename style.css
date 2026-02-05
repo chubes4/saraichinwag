@@ -451,6 +451,13 @@ fill: #fff;
         margin-right: auto;
         box-sizing: border-box;
     }
+    /* Reset width for elements inside the card - card handles the margins */
+    .gallery-discovery-badges h3,
+    .gallery-discovery-badges p {
+        width: 100%;
+        margin-left: 0;
+        margin-right: 0;
+    }
     #secondary #random_posts h2, #secondary #random_recipes h2{
         width: max-content;
         margin-left:4%;
