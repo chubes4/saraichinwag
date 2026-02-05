@@ -1487,38 +1487,64 @@ button.filter-btn.active {
 }
 
 /* Full Width Template - uses WordPress auto-generated body class */
-body.page-template-template-full-width #primary {
+body.page-template-template-full-width #primary,
+body.error404 #primary {
 	width: 100%;
 	max-width: 100%;
 	float: none;
 }
 
-body.page-template-template-full-width #primary .site-main {
+body.page-template-template-full-width #primary .site-main,
+body.error404 #primary .site-main {
 	max-width: 1000px;
 	margin: 0 auto;
 	padding: 0 20px;
 }
 
-body.page-template-template-full-width .content-wrap {
+body.page-template-template-full-width .content-wrap,
+body.error404 .content-wrap {
 	max-width: 1000px;
+}
+
+/* 404 page centering */
+body.error404 .error-404 {
+	text-align: center;
+}
+
+body.error404 .error-404 .searchform {
+	max-width: 400px;
+	margin: 0 auto 2rem;
+}
+
+body.error404 .error-404 ul {
+	list-style: none;
+	padding: 0;
+}
+
+body.error404 .error-404 li {
+	margin: 0.5rem 0;
 }
 
 /* Full-width template mobile overrides */
 @media (max-width: 767px) {
-	body.page-template-template-full-width .content-wrap {
+	body.page-template-template-full-width .content-wrap,
+	body.error404 .content-wrap {
 		width: 100%;
 		max-width: 100%;
 	}
 	
-	body.page-template-template-full-width #primary .site-main {
+	body.page-template-template-full-width #primary .site-main,
+	body.error404 #primary .site-main {
 		padding: 0;
 	}
 	
-	body.page-template-template-full-width .entry-header {
+	body.page-template-template-full-width .entry-header,
+	body.error404 .entry-header {
 		padding: 0;
 	}
 	
-	body.page-template-template-full-width .entry-content {
+	body.page-template-template-full-width .entry-content,
+	body.error404 .entry-content {
 		padding: 0;
 	}
 }
