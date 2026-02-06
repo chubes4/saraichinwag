@@ -19,7 +19,14 @@
 <body <?php body_class( 'spawn-app' ); ?>>
 <?php wp_body_open(); ?>
 
-<?php get_template_part( 'template-parts/spawn-header' ); ?>
+<?php
+// Show template header unless page has a block with built-in header (chat, dashboard).
+$content = get_the_content();
+$has_block_header = has_block( 'spawn/chat' ) || has_block( 'spawn/dashboard' );
+if ( ! $has_block_header ) {
+	get_template_part( 'template-parts/spawn-header' );
+}
+?>
 
 <main class="spawn-main">
 	<div class="spawn-container">
