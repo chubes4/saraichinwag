@@ -28,15 +28,23 @@ if ( ! $has_block_header ) {
 }
 ?>
 
+<?php
+// Fullpage blocks (chat, dashboard) don't want the container wrapper.
+$is_fullpage = has_block( 'spawn/chat' ) || has_block( 'spawn/dashboard' );
+?>
 <main class="spawn-main">
+	<?php if ( ! $is_fullpage ) : ?>
 	<div class="spawn-container">
+	<?php endif; ?>
 		<?php
 		while ( have_posts() ) :
 			the_post();
 			the_content();
 		endwhile;
 		?>
+	<?php if ( ! $is_fullpage ) : ?>
 	</div>
+	<?php endif; ?>
 </main>
 
 <?php wp_footer(); ?>
