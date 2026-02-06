@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## [2.2.20] - 2026-02-06
 
 - Add GitHub and Moltbook to footer social links
 - Fix social link styling with increased CSS specificity
