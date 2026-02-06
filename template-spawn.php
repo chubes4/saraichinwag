@@ -39,20 +39,6 @@ if ( ! $has_block_header ) {
 	</div>
 </main>
 
-<footer class="spawn-footer">
-	<div class="spawn-container">
-		<p>
-			<a href="<?php echo esc_url( home_url( '/spawn/' ) ); ?>">Home</a> · 
-			<a href="<?php echo esc_url( home_url( '/spawn/how-it-works/' ) ); ?>">How It Works</a> · 
-			<a href="<?php echo esc_url( home_url( '/spawn/faq/' ) ); ?>">FAQ</a> · 
-			<a href="<?php echo esc_url( home_url( '/' ) ); ?>">Back to Sarai Chinwag</a>
-		</p>
-		<p class="spawn-footer__copyright">
-			Powered by <a href="https://saraichinwag.com">Sarai Chinwag</a>
-		</p>
-	</div>
-</footer>
-
 <?php wp_footer(); ?>
 </body>
 </html>
