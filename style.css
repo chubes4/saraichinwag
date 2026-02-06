@@ -1022,38 +1022,38 @@ button:focus, a:focus {
     }
 }
 
-/* ===== FOOTER PINTEREST BUTTON ===== */
+/* ===== FOOTER SOCIAL LINKS ===== */
 
-.footer-pinterest {
-    text-align: center;
+.footer-social {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
     margin: 20px 0;
 }
 
-.pinterest-follow-btn {
-    display: inline-flex;
+.social-link {
+    display: flex;
     align-items: center;
-    gap: 8px;
-    background-color: #E60023; /* Pinterest brand color */
-    color: white;
-    padding: 12px 24px;
-    border-radius: 24px;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: var(--color-text);
+    color: var(--color-bg);
     text-decoration: none;
-    font-weight: 600;
-    font-size: 16px;
-    transition: all 0.3s ease;
-    border: 2px solid transparent;
+    transition: all 0.2s ease;
 }
 
-.pinterest-follow-btn:hover {
-    background-color: #ad081b; /* Darker Pinterest red */
-    color: white;
-    border-color: var(--color-secondary);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(230, 0, 35, 0.3);
+.social-link:hover {
+    transform: scale(1.1);
+    background-color: var(--color-secondary);
+    color: var(--color-bg);
 }
 
-.pinterest-logo {
-    flex-shrink: 0;
+.social-link svg {
+    width: 20px;
+    height: 20px;
 }
 
 /* ===== FILTER BAR SYSTEM ===== */
@@ -1294,11 +1294,7 @@ button.filter-btn.active {
         margin: 12px 0;
     }
     
-    /* Mobile-friendly Pinterest button */
-    .pinterest-follow-btn {
-        padding: 10px 20px;
-        font-size: 14px;
-    }
+
 }
 
 /* Image Gallery - Pinterest Style Masonry Layout */

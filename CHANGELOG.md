@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Replace Pinterest follow button with social media icons (X, Instagram, Pinterest)
+
 ## [2.2.18] - 2026-02-05
 
 - Active filter buttons: transparent border (highlight only, no extra border)
