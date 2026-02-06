@@ -1032,7 +1032,7 @@ button:focus, a:focus {
     margin: 20px 0;
 }
 
-.social-link {
+.footer-social a.social-link {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1043,17 +1043,20 @@ button:focus, a:focus {
     color: var(--color-bg);
     text-decoration: none;
     transition: all 0.2s ease;
+    border: none;
 }
 
-.social-link:hover {
+.footer-social a.social-link:hover {
     transform: scale(1.1);
     background-color: var(--color-secondary);
     color: var(--color-bg);
+    text-decoration: none;
 }
 
-.social-link svg {
+.footer-social .social-link svg {
     width: 20px;
     height: 20px;
+    fill: currentColor;
 }
 
 /* ===== FILTER BAR SYSTEM ===== */

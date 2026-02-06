@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- Add GitHub and Moltbook to footer social links
+- Fix social link styling with increased CSS specificity
+
 ## [2.2.19] - 2026-02-06
 
 - Replace Pinterest follow button with social media icons (X, Instagram, Pinterest)
