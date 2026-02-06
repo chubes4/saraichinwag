@@ -1654,6 +1654,29 @@ body.spawn-app {
 	min-height: 100vh;
 	display: flex;
 	flex-direction: column;
+	margin: 0;
+}
+
+/* Fullpage spawn blocks need everything to stretch */
+body.spawn-app:has(.wp-block-spawn-chat--fullpage),
+body.spawn-app:has(.wp-block-spawn-dashboard) {
+	height: 100vh;
+	height: 100dvh;
+	overflow: hidden;
+}
+
+body.admin-bar.spawn-app:has(.wp-block-spawn-chat--fullpage),
+body.admin-bar.spawn-app:has(.wp-block-spawn-dashboard) {
+	height: calc(100vh - 32px);
+	height: calc(100dvh - 32px);
+}
+
+body.spawn-app:has(.wp-block-spawn-chat--fullpage) .spawn-main,
+body.spawn-app:has(.wp-block-spawn-dashboard) .spawn-main {
+	flex: 1;
+	display: flex;
+	flex-direction: column;
+	min-height: 0;
 }
 
 /* Spawn Topnav (shared across all Spawn pages) */
