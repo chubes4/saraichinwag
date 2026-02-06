@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## [2.2.19] - 2026-02-06
 
 - Replace Pinterest follow button with social media icons (X, Instagram, Pinterest)
 
