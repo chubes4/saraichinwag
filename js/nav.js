@@ -7,6 +7,11 @@ document.addEventListener('DOMContentLoaded', function() {
     var adminBar = document.getElementById('wpadminbar');
     var searchForm = document.querySelector('.header-search');
 
+    // Exit early if required elements don't exist (e.g., Spawn pages)
+    if (!header || !searchForm) {
+        return;
+    }
+
     function adjustSearchPosition() {
         var scrollTop = window.pageYOffset || document.documentElement.scrollTop;
         var headerHeight = header.offsetHeight;
