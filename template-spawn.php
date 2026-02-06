@@ -33,6 +33,13 @@ if ( ! $has_block_header ) {
 $is_fullpage = has_block( 'spawn/chat' ) || has_block( 'spawn/dashboard' );
 ?>
 <main class="spawn-main">
+	<?php
+	/**
+	 * Hook: sarai_chinwag_before_page_content
+	 * Used by sarai-ad-blocker mu-plugin to disable ads on Spawn pages.
+	 */
+	do_action( 'sarai_chinwag_before_page_content' );
+	?>
 	<?php if ( ! $is_fullpage ) : ?>
 	<div class="spawn-container">
 	<?php endif; ?>
