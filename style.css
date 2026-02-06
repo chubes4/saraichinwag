@@ -1789,6 +1789,12 @@ body.spawn-app {
 	padding: var(--space-xl, 30px) var(--space-lg, 20px);
 }
 
+/* Fullpage blocks need no padding */
+.spawn-main:has(.wp-block-spawn-chat--fullpage),
+.spawn-main:has(.wp-block-spawn-dashboard) {
+	padding: 0;
+}
+
 .spawn-container {
 	max-width: 900px;
 	margin: 0 auto;
